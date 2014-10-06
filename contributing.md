@@ -50,7 +50,7 @@ Read [GitHub Help][pullrequesthelp] for more details about creating pull request
 
 ## <a name="cla"></a> Contributor License Agreement
 
-By contributing your code to SharpNL.NET you grant Gustavo J Knuppe a non-exclusive, irrevocable, worldwide,
+By contributing your code to SharpNL you grant Gustavo J Knuppe a non-exclusive, irrevocable, worldwide,
 royalty-free, sublicenseable, transferable license under all of Your relevant intellectual property rights
 (including copyright, patent, and any other rights), to use, copy, prepare derivative works of, distribute and
 publicly perform and display the Contributions on any licensing terms, including without limitation:
