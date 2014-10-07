@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dictionary>
+<entry tags="JJ VB">
+<token>brave</token>
+</entry>
+<entry tags="JJ">
+<token>wishful</token>
+</entry>
+<entry tags="NNP">
+<token>Cabrera</token>
+</entry>
+<entry tags="NN">
+<token>indignation</token>
+</entry>
+<entry tags="VBZ NNS">
+<token>champions</token>
+</entry>
+<entry tags="VBN">
+<token>liquidated</token>
+</entry>
+<entry tags="JJ">
+<token>computer-driven</token>
+</entry>
+</dictionary>
