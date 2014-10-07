@@ -40,6 +40,14 @@ namespace SharpNL.POSTag {
 
         #region + Properties .
 
+        /// <summary>
+        /// Gets the default tool factory.
+        /// </summary>
+        /// <returns>The default tool factory.</returns>
+        protected override Type DefaultFactory {
+            get { return typeof(POSTaggerFactory); }
+        }
+
         #region . Factory .
         /// <summary>
         /// Gets the <see cref="POSTaggerFactory"/> factory.
@@ -58,6 +66,25 @@ namespace SharpNL.POSTag {
         internal IMaxentModel MaxentModel {
             get {
                 return artifactMap[EntryName] as IMaxentModel;
+            }
+        }
+        #endregion
+
+        #region . PosSequenceModel .
+        /// <summary>
+        /// Gets the position sequence model.
+        /// </summary>
+        /// <returns>The position sequence model.</returns>
+        public ISequenceClassificationModel<string> PosSequenceModel {
+            get {
+                var posModel = artifactMap[EntryName];
+                var meModel = posModel as IMaxentModel;
+                if (meModel != null) {
+                    var beamSize = Manifest.Get(Parameters.BeamSize, NameFinderME.DefaultBeamSize);
+                    return new ML.BeamSearch<string>(beamSize, meModel);
+                }
+
+                return posModel as ISequenceClassificationModel<string>;
             }
         }
         #endregion
@@ -123,35 +150,6 @@ namespace SharpNL.POSTag {
         /// <param name="fileName">The model filename.</param>
         /// <exception cref="System.IO.FileNotFoundException">The model file does not exist.</exception>
         public POSModel(string fileName) : base(ComponentName, fileName) {}
-
-        #region . GetDefaultFactory .
-        /// <summary>
-        /// Gets the default tool factory.
-        /// </summary>
-        /// <returns>The default tool factory.</returns>
-        protected override Type GetDefaultFactory() {
-            return typeof (POSTaggerFactory);
-        }
-        #endregion
-
-        #region . GetPosSequenceModel .
-        /// <summary>
-        /// Gets the position sequence model.
-        /// </summary>
-        /// <returns>The position sequence model.</returns>
-        public ISequenceClassificationModel<string> GetPosSequenceModel() {
-
-            var posModel = artifactMap[EntryName];
-            var meModel = posModel as IMaxentModel;
-            if (meModel != null) {
-                var beamSize = Manifest.Get(Parameters.BeamSize, NameFinderME.DefaultBeamSize);
-                return new ML.BeamSearch<string>(beamSize, meModel);
-            }
-
-            return posModel as ISequenceClassificationModel<string>;
-            
-        }
-        #endregion
 
 
     }

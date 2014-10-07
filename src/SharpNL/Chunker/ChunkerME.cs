@@ -46,7 +46,7 @@ namespace SharpNL.Chunker {
             contextGenerator = model.Factory.GetContextGenerator();
             sequenceValidator = model.Factory.GetSequenceValidator();
 
-            var seqModel = model.GetChunkerSequenceModel();
+            var seqModel = model.ChunkerSequenceModel;
             this.model = seqModel ?? new BeamSearch(model.BeamSize, model.MaxentModel);
         }
 

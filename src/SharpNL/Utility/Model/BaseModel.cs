@@ -27,12 +27,14 @@ using System.Globalization;
 using SharpNL.Utility.Serialization;
 
 namespace SharpNL.Utility.Model {
+    /// <summary>
+    /// Abstract class used by the models.
+    /// </summary>
     public abstract class BaseModel : ArtifactProvider {
         private readonly string componentName;
         private readonly bool isLoadedFromSerialized;
 
         protected BaseToolFactory ToolFactory;
-        private bool subclassSerializersInitiated;
 
         #region + Constructors .
 
@@ -49,6 +51,15 @@ namespace SharpNL.Utility.Model {
 
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseModel"/> class.
+        /// </summary>
+        /// <param name="componentName">Name of the component.</param>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="manifestInfoEntries">The manifest information entries.</param>
+        /// <param name="toolFactory">The tool factory.</param>
+        /// <exception cref="System.ArgumentNullException">The language cannot be null.</exception>
+        /// <exception cref="System.InvalidOperationException">Unable to initialize the factory.</exception>
         protected BaseModel(
             string componentName,
             string languageCode,
@@ -142,6 +153,19 @@ namespace SharpNL.Utility.Model {
 
         #endregion
 
+        #region + Properties .
+
+        #region . DefaultFactory .
+
+        /// <summary>
+        /// Gets the default tool factory.
+        /// </summary>
+        /// <returns>The default tool factory.</returns>
+        protected abstract Type DefaultFactory { get; }
+
+        #endregion
+
+        #region . Language .
         /// <summary>
         /// Gets the language code of the material which was used to train the model or x-unspecified if non was set.
         /// </summary>
@@ -150,6 +174,9 @@ namespace SharpNL.Utility.Model {
             get { return Manifest[LANGUAGE_PROPERTY]; }
             protected set { Manifest[LANGUAGE_PROPERTY] = value; }
         }
+        #endregion
+
+        #endregion
 
         #region . CreateArtifactSerializers .
         /// <summary>
@@ -172,7 +199,6 @@ namespace SharpNL.Utility.Model {
         }
         #endregion
 
-
         #region . CheckArtifactMap .
 
         /// <summary>
@@ -194,18 +220,7 @@ namespace SharpNL.Utility.Model {
 
         #endregion
 
-        #region . GetDefaultFactory .
-
-        /// <summary>
-        /// Gets the default tool factory.
-        /// </summary>
-        /// <returns>The default tool factory.</returns>
-        protected abstract Type GetDefaultFactory();
-
-        #endregion
-
         #region . InitializeFactory .
-
         /// <summary>
         /// Initializes the tool factory.
         /// </summary>
@@ -215,9 +230,8 @@ namespace SharpNL.Utility.Model {
             var factoryName = Manifest[FACTORY_NAME];
 
             if (string.IsNullOrEmpty(factoryName)) {
-                var factoryType = GetDefaultFactory();
-                if (factoryType != null) {
-                    ToolFactory = (BaseToolFactory) Activator.CreateInstance(factoryType);
+                if (DefaultFactory != null) {
+                    ToolFactory = (BaseToolFactory)Activator.CreateInstance(DefaultFactory);
                     ToolFactory.Initialize(this);
                 }
             } else {
@@ -238,20 +252,21 @@ namespace SharpNL.Utility.Model {
         #endregion
 
         #region . ManifestLoaded .
-
+        /// <summary>
+        /// Called when the manifest is deserialized from a stream. This method initialize the tool factory of the model.
+        /// </summary>
+        /// <remarks>Subclasses MUST invoke base.ManifestDeserialized at the beginning of this method, otherwise the factory will be not initialized properly.</remarks>
         protected override void ManifestDeserialized() {
             InitializeFactory();
         }
-
         #endregion
 
         #region . ValidateArtifactMap .
-
         /// <summary>
         /// Validates the parsed artifacts.
         /// </summary>
         /// <exception cref="InvalidFormatException">Unable to find the manifest entry.</exception>
-        /// <remarks>Subclasses should generally invoke super.validateArtifactMap at the beginning of this method.</remarks>
+        /// <remarks>Subclasses should generally invoke base.ValidateArtifactMap at the beginning of this method.</remarks>
         protected override void ValidateArtifactMap() {
             base.ValidateArtifactMap();
 

@@ -37,8 +37,9 @@ namespace SharpNL.Featurizer {
         /// Gets the default tool factory.
         /// </summary>
         /// <returns>The default tool factory.</returns>
-        protected override Type GetDefaultFactory() {
-            throw new NotImplementedException();
+        protected override Type DefaultFactory {
+            get { throw new NotImplementedException(); }
         }
+
     }
 }

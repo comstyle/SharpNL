@@ -85,6 +85,14 @@ namespace SharpNL.Tokenize {
         }
         #endregion
 
+        /// <summary>
+        /// Gets the default tool factory.
+        /// </summary>
+        /// <returns>The default tool factory.</returns>
+        protected override Type DefaultFactory {
+            get { return typeof(TokenizerFactory); }
+        }
+
         #region . Factory .
         /// <summary>
         /// Gets the tokenizer factory.
@@ -120,16 +128,6 @@ namespace SharpNL.Tokenize {
         }
         #endregion
 
-        #endregion
-
-        #region . GetDefaultFactory .
-        /// <summary>
-        /// Gets the default tool factory.
-        /// </summary>
-        /// <returns>The default tool factory.</returns>
-        protected override Type GetDefaultFactory() {
-            return typeof (TokenizerFactory);
-        }
         #endregion
 
     }

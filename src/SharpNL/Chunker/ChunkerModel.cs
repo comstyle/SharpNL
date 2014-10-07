@@ -88,6 +88,32 @@ namespace SharpNL.Chunker {
         }
         #endregion
 
+        #region . ChunkerSequenceModel .
+
+        public ISequenceClassificationModel<string> ChunkerSequenceModel {
+            get {
+                var maxentModel = artifactMap[ChunkerEntry] as IMaxentModel;
+                if (maxentModel != null) {
+                    return new BeamSearch(BeamSize, maxentModel);
+                }
+
+                return artifactMap[ChunkerEntry] as ISequenceClassificationModel<string>;
+            }
+        }
+
+        #endregion
+
+        #region . DefaultFactory .
+        /// <summary>
+        /// Gets the default tool factory.
+        /// </summary>
+        /// <returns>The default tool factory.</returns>
+        protected override Type DefaultFactory {
+            get { return typeof (ChunkerFactory); }
+        }
+
+        #endregion
+
         #region . MaxentModel .
         /// <summary>
         /// Gets the maxent model.
@@ -115,20 +141,6 @@ namespace SharpNL.Chunker {
         }
         #endregion
 
-        #region . GetChunkerSequenceModel .
-
-        public ISequenceClassificationModel<string> GetChunkerSequenceModel() {
-
-            var maxentModel = artifactMap[ChunkerEntry] as IMaxentModel;
-            if (maxentModel != null) {
-                return new BeamSearch(BeamSize, maxentModel);
-            }
-
-            return artifactMap[ChunkerEntry] as ISequenceClassificationModel<string>;
-        }
-
-        #endregion
-
         #region . ValidateArtifactMap .
         /// <summary>
         /// Validates the parsed artifacts.
@@ -141,16 +153,6 @@ namespace SharpNL.Chunker {
             if (!artifactMap.ContainsKey(ChunkerEntry) || !(artifactMap[ChunkerEntry] is AbstractModel)) {
                 throw new InvalidFormatException("Chunker model is incomplete!");
             }
-        }
-        #endregion
-
-        #region . GetDefaultFactory .
-        /// <summary>
-        /// Gets the default tool factory.
-        /// </summary>
-        /// <returns>The default tool factory.</returns>
-        protected override Type GetDefaultFactory() {
-            return typeof (ChunkerFactory);
         }
         #endregion
 

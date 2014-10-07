@@ -150,6 +150,16 @@ namespace SharpNL.Parser {
         }
         #endregion
 
+        #region . DefaultFactory .
+        /// <summary>
+        /// Gets the default tool factory.
+        /// </summary>
+        /// <returns>The default tool factory.</returns>
+        protected override Type DefaultFactory {
+            get { return null; }
+        }
+        #endregion
+
         #region . HeadRules .
 
         public AbstractHeadRules HeadRules {
@@ -233,18 +243,6 @@ namespace SharpNL.Parser {
 
                 model.Serialize(stream);
             }, stream => new ChunkerModel(stream));
-        }
-
-        #endregion
-
-        #region . GetDefaultFactory .
-
-        /// <summary>
-        /// Gets the default tool factory.
-        /// </summary>
-        /// <returns>The default tool factory.</returns>
-        protected override Type GetDefaultFactory() {
-            return null;
         }
 
         #endregion

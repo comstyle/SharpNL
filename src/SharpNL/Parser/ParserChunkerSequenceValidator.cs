@@ -29,7 +29,7 @@ namespace SharpNL.Parser {
         private readonly Dictionary<string, string> continueStartMap;
 
         public ParserChunkerSequenceValidator(ChunkerModel model) {
-            var seqModel = model.GetChunkerSequenceModel();
+            var seqModel = model.ChunkerSequenceModel;
             var outcomes = seqModel.GetOutcomes();
 
             continueStartMap = new Dictionary<string, string>();

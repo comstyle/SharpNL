@@ -94,7 +94,7 @@ namespace SharpNL.POSTag {
             ContextGenerator = model.Factory.GetPOSContextGenerator(cacheSize);
             SequenceValidator = modelPackage.Factory.GetSequenceValidator();
 
-            this.model = model.GetPosSequenceModel();
+            this.model = model.PosSequenceModel;
 
             if (this.model == null) {
                 throw new InvalidOperationException("Unable to retrieve the model.");
