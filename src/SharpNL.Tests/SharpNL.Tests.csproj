@@ -84,6 +84,7 @@
     <Compile Include="ML\Perceptron\PerceptronPrepAttachTest.cs" />
     <Compile Include="ML\PrepAttachDataUtility.cs" />
     <Compile Include="ML\TrainerFactoryTest.cs" />
+    <Compile Include="NameFind\NameFinderEventStreamTest.cs" />
     <Compile Include="NameFind\NameSampleTest.cs" />
     <Compile Include="Parser\Chunking\ParserTest.cs" />
     <Compile Include="Parser\ChunkSampleStreamTest.cs" />
