@@ -33,8 +33,6 @@ namespace SharpNL.Sentence {
     /// <seealso cref="ISentenceDetector"/>
     /// <seealso cref="SentenceSample"/>
     public class SentenceDetectorEvaluator : Evaluator<SentenceSample> {
-
-        private readonly FMeasure fm;
         private readonly ISentenceDetector sentenceDetector;
 
         #region . Constructor .
@@ -48,17 +46,7 @@ namespace SharpNL.Sentence {
             params IEvaluationMonitor<SentenceSample>[] listeners) : base(listeners) {
 
             this.sentenceDetector = sentenceDetector;
-            fm = new FMeasure();
-        }
-        #endregion
-
-        #region . FMeasure .
-        /// <summary>
-        /// Gets the f-measure.
-        /// </summary>
-        /// <value>The f-measure.</value>
-        public FMeasure FMeasure {
-            get { return fm; }
+            FMeasure = new FMeasure();
         }
         #endregion
 
@@ -74,7 +62,7 @@ namespace SharpNL.Sentence {
             var predictions = TrimSpans(doc, sentenceDetector.SentPosDetect(doc));
             var references = TrimSpans(doc, reference.Sentences);
 
-            fm.UpdateScores(references, predictions);
+            FMeasure.UpdateScores(references, predictions);
 
             return new SentenceSample(reference.Document, Array.ConvertAll(predictions, input => (Span)input));
         }
@@ -88,7 +76,6 @@ namespace SharpNL.Sentence {
             return trimmedSpans;
         }
         #endregion
-
 
     }
 }

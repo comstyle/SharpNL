@@ -29,15 +29,26 @@ namespace SharpNL.Utility.Evaluation {
     /// Evaluation results are the arithmetic mean of the scores calculated for each reference sample.
     /// </summary>
     /// <typeparam name="T">The object type to be evaluated.</typeparam>
-    public abstract class Evaluator<T> {
-
+    public abstract class Evaluator<T> where T : class {
         protected readonly ReadOnlyCollection<IEvaluationMonitor<T>> listeners;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Evaluator{T}"/> class.
+        /// </summary>
+        /// <param name="listeners">The evaluation listeners.</param>
         protected Evaluator(params IEvaluationMonitor<T>[] listeners) {
             this.listeners = listeners == null ? 
                 new List<IEvaluationMonitor<T>>().AsReadOnly():
                 new List<IEvaluationMonitor<T>>(listeners).AsReadOnly();
         }
+
+        #region . FMeasure .
+        /// <summary>
+        /// Gets or sets the f-measure.
+        /// </summary>
+        /// <value>The f-measure.</value>
+        public FMeasure FMeasure { get; protected set; }
+        #endregion
 
         #region . ProcessSample .
         /// <summary>

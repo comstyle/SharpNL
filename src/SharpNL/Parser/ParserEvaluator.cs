@@ -30,26 +30,13 @@ namespace SharpNL.Parser {
     /// Parser Evaluator.
     /// </summary>
     public class ParserEvaluator : Evaluator<Parse> {
-        private readonly FMeasure fMeasure;
         private readonly Chunking.Parser parser;
 
         public ParserEvaluator(Chunking.Parser parser, params IEvaluationMonitor<Parse>[] listeners)
             : base(listeners) {
             this.parser = parser;
-            fMeasure = new FMeasure();
+            FMeasure = new FMeasure();
         }
-
-        #region . FMeasure .
-
-        /// <summary>
-        /// Gets the f-measure result.
-        /// </summary>
-        /// <value>The f-measure result.</value>
-        public FMeasure FMeasure {
-            get { return fMeasure; }
-        }
-
-        #endregion
 
         #region . GetConstituencySpans .
 
@@ -102,7 +89,7 @@ namespace SharpNL.Parser {
                 prediction = predictions[0];
             }
 
-            fMeasure.UpdateScores(
+            FMeasure.UpdateScores(
                 Array.ConvertAll(GetConstituencySpans(reference), input => (object) input),
                 Array.ConvertAll(GetConstituencySpans(prediction), input => (object) input));
 

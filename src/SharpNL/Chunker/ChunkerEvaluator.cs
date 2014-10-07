@@ -56,12 +56,5 @@ namespace SharpNL.Chunker {
 
             return result;
         }
-
-        /// <summary>
-        /// Gets the f-measure.
-        /// </summary>
-        /// <value>The f-measure.</value>
-        public FMeasure FMeasure { get; private set; }
-
     }
 }
