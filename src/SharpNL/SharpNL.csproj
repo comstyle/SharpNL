@@ -195,6 +195,7 @@
     <Compile Include="NameFind\NameSample.cs" />
     <Compile Include="NameFind\NameSampleDataStream.cs" />
     <Compile Include="NameFind\NameSampleSequenceStream.cs" />
+    <Compile Include="NameFind\TokenNameFinderEvaluator.cs" />
     <Compile Include="NameFind\TokenNameFinderFactory.cs" />
     <Compile Include="NameFind\TokenNameFinderModel.cs" />
     <Compile Include="NGram\NGramModel.cs" />
