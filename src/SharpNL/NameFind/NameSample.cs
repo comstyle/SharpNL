@@ -40,7 +40,7 @@ namespace SharpNL.NameFind {
 
         private static readonly Regex StartTagRegex;
         static NameSample() {
-            StartTagRegex = new Regex("<START(:([^:>\\s]*))?>", RegexOptions.Compiled);
+            StartTagRegex = new Regex("<START(:([^:>\\s]*))?>(?=\\s|$)", RegexOptions.Compiled);
         }
 
         public NameSample(string[] sentence, Span[] names, bool clearAdaptiveData)
@@ -180,11 +180,37 @@ namespace SharpNL.NameFind {
         #endregion
 
         #region + Parse .
-
+        /// <summary>
+        /// Parses the specified tagged tokens.
+        /// </summary>
+        /// <param name="taggedTokens">The tagged tokens.</param>
+        /// <param name="ClearAdaptiveData">if set to <c>true</c> the clear adaptive data.</param>
+        /// <returns>The parsed <see cref="NameSample"/> object.</returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// Found unexpected annotation while handling a name sequence: [Token]
+        /// or
+        /// Missing a name type: [Token]
+        /// or
+        /// Found unexpected annotation: [Token]
+        /// </exception>
         public static NameSample Parse(string taggedTokens, bool ClearAdaptiveData) {
             return Parse(taggedTokens, DefaultType, ClearAdaptiveData);
         }
 
+        /// <summary>
+        /// Parses the specified tagged tokens.
+        /// </summary>
+        /// <param name="taggedTokens">The tagged tokens.</param>
+        /// <param name="defaultType">The default type.</param>
+        /// <param name="ClearAdaptiveData">if set to <c>true</c> to clear adaptive data.</param>
+        /// <returns>The parsed <see cref="NameSample"/> object.</returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// Found unexpected annotation while handling a name sequence: [Token]
+        /// or
+        /// Missing a name type: [Token]
+        /// or
+        /// Found unexpected annotation: [Token]
+        /// </exception>
         public static NameSample Parse(string taggedTokens, string defaultType, bool ClearAdaptiveData) {
             var parts = WhitespaceTokenizer.Instance.Tokenize(taggedTokens);
 
@@ -209,23 +235,14 @@ namespace SharpNL.NameFind {
                     }
                     catchingName = true;
                     startIndex = wordIndex;
-                    string nameTypeFromSample = match.Groups[2].Value;
 
-                    if (string.IsNullOrEmpty(nameTypeFromSample))
-                        throw new InvalidOperationException("Missing a name type: " + ErrorTokenWithContext(parts, pi));
-
-                    nameType = nameTypeFromSample;
-
-                    /*
-                     * java 
-                    if (nameTypeFromSample != null) {
-                        if (nameTypeFromSample.length() == 0) {
-                            throw new IOException("Missing a name type: " + ErrorTokenWithContext(parts, pi));
+                    if (match.Groups[2].Success) {
+                        var nameTypeFromSample = match.Groups[2].Value;
+                        if (nameTypeFromSample == string.Empty) {
+                            throw new InvalidOperationException("Missing a name type: " + ErrorTokenWithContext(parts, pi));
                         }
                         nameType = nameTypeFromSample;
                     }
-                     */
-
                 } else if (parts[pi] == NameSampleDataStream.END_TAG) {
                     if (catchingName == false) {
                         throw new InvalidOperationException("Found unexpected annotation: " +
