@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Security.Permissions;
@@ -136,6 +137,32 @@ namespace SharpNL {
         internal static void Each<T>(this IEnumerable<T> ie, Action<T, int> action) {
             var i = 0;
             foreach (var e in ie) action(e, i++);
+        }
+        #endregion
+
+        #region . ReadAllBytes .
+        /// <summary>
+        /// Reads the contents of the stream into a byte array, and then closes the stream.
+        /// </summary>
+        /// <param name="stream">The stream to read.</param>
+        /// <returns>A byte array containing the contents of the stream.</returns>
+        /// <exception cref="System.ArgumentNullException">stream</exception>
+        /// <exception cref="System.NotSupportedException">The stream was not readable.</exception>
+        public static byte[] ReadAllBytes(this Stream stream) {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            if (stream.CanRead)
+                throw new NotSupportedException("The stream was not readable.");
+
+            var memory = stream as MemoryStream;
+            if (memory != null)
+                return memory.ToArray();
+
+            using (memory = new MemoryStream()) {
+                stream.CopyTo(memory);
+                return memory.ToArray();
+            }
         }
         #endregion
 
