@@ -86,10 +86,9 @@ namespace SharpNL.Utility.FeatureGen {
         /// which are then used to generate the features by one of the opennlp components.
         /// </summary>
         /// <param name="inputStream">The <see cref="Stream"/> from which the descriptor is read, the stream remains open and must be closed by the caller.</param>
-        /// <param name="resourceManager">The resource manager which is used to resolve resources referenced by a key in the descriptor.</param>
+        /// <param name="provider">The resource provider which is used to resolve resources referenced by a key in the descriptor.</param>
         /// <returns>Created feature generators.</returns>
-        public static IAdaptiveFeatureGenerator Create(Stream inputStream,
-            IFeatureGeneratorResourceProvider resourceManager) {
+        public static IAdaptiveFeatureGenerator Create(Stream inputStream, FeatureGeneratorResourceProvider provider) {
 
             var doc = new XmlDocument();
             try {
@@ -98,7 +97,7 @@ namespace SharpNL.Utility.FeatureGen {
                 throw new InvalidDataException("Unable to load the XML file.", ex);
             }
 
-            return CreateGenerator(doc.DocumentElement, resourceManager);
+            return CreateGenerator(doc.DocumentElement, provider);
         }
         #endregion
 
@@ -111,15 +110,14 @@ namespace SharpNL.Utility.FeatureGen {
         /// of the generator from the element.
         /// </summary>
         /// <param name="generatorElement">The generator element.</param>
-        /// <param name="resourceManager">The resource manager.</param>
+        /// <param name="provider">The resource provider which is used to resolve resources referenced by a key in the descriptor.</param>
         /// <returns>IAdaptiveFeatureGenerator.</returns>
         /// <exception cref="InvalidFormatException">Unexpected element:  + generatorElement.Name</exception>
-        internal static IAdaptiveFeatureGenerator CreateGenerator(XmlElement generatorElement,
-            IFeatureGeneratorResourceProvider resourceManager) {
+        internal static IAdaptiveFeatureGenerator CreateGenerator(XmlElement generatorElement, FeatureGeneratorResourceProvider provider) {
             if (factories.ContainsKey(generatorElement.Name)) {
                 var factory = factories[generatorElement.Name];
 
-                return factory.Create(generatorElement, resourceManager);
+                return factory.Create(generatorElement, provider);
             }
 
             throw new InvalidFormatException("Unexpected element: " + generatorElement.Name);

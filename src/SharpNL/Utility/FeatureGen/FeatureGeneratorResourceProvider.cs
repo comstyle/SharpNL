@@ -20,22 +20,11 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Xml;
-
-namespace SharpNL.Utility.FeatureGen.Factories {
-    internal class TokenClassFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
-        public TokenClassFeatureGeneratorFactory() : base("tokenclass") {}
-
-        /// <summary>
-        /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
-        /// </summary>
-        /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
-        /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
-        public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
-            FeatureGeneratorResourceProvider provider) {
-            // TODO: Make it configurable ...
-            return new TokenClassFeatureGenerator(true);
-        }
-    }
+namespace SharpNL.Utility.FeatureGen {
+    /// <summary>
+    /// Retrieves the resource object for the given name/identifier.
+    /// </summary>
+    /// <param name="resourceIdentifier">The identifier which names the resource.</param>
+    /// <returns>The resource object.</returns>
+    public delegate object FeatureGeneratorResourceProvider(string resourceIdentifier);
 }

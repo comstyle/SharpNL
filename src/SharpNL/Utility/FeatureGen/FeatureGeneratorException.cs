@@ -20,21 +20,23 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
+
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
-    /// The <see cref="IFeatureGeneratorResourceProvider"/> provides access to the resources
-    /// provided in the model. Inside the model resources are identified by a name.
+    /// Represents erros that occur with feature generators.
     /// </summary>
-    /// <remarks>
-    /// This class is not be intended to be implemented by users. <br />
-    /// All implementing classes must be thread safe.
-    /// </remarks>
-    public interface IFeatureGeneratorResourceProvider {
+    public class FeatureGeneratorException : Exception {
         /// <summary>
-        /// Retrieves the resource object for the given name/identifier.
+        /// Initializes a new instance of the <see cref="T:FeatureGeneratorException"/> class with a specified error message.
         /// </summary>
-        /// <param name="resourceIdentifier">The identifier which names the resource.</param>
-        /// <returns>The resource object.</returns>
-        object GetResource(string resourceIdentifier);
+        /// <param name="message">The message that describes the error. </param>
+        public FeatureGeneratorException(string message) : base(message) {}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:FeatureGeneratorException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+        /// </summary>
+        /// <param name="message">The error message that explains the reason for the exception. </param><param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified. </param>
+        public FeatureGeneratorException(string message, Exception innerException) : base(message, innerException) {}
     }
 }

@@ -42,8 +42,8 @@ namespace SharpNL.Utility.FeatureGen {
         /// Initialized the Custom Feature Generator with defined properties and loaded resources.
         /// </summary>
         /// <param name="properties">The properties.</param>
-        /// <param name="resourceProvider">The resource provider.</param>
-        public abstract void Init(Dictionary<string, string> properties, IFeatureGeneratorResourceProvider resourceProvider);
+        /// <param name="provider">The resource provider.</param>
+        public abstract void Init(Dictionary<string, string> properties, FeatureGeneratorResourceProvider provider);
 
         /// <summary>
         /// Informs the feature generator that the specified tokens have been classified with the

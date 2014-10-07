@@ -390,11 +390,12 @@
     <Compile Include="Utility\FeatureGen\Factories\W2VClassesFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\WindowFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\FeatureGeneratorAdapter.cs" />
+    <Compile Include="Utility\FeatureGen\FeatureGeneratorException.cs" />
     <Compile Include="Utility\FeatureGen\FeatureGeneratorUtil.cs" />
     <Compile Include="Utility\FeatureGen\GeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\IAdaptiveFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\IdentityFeatureGenerator.cs" />
-    <Compile Include="Utility\FeatureGen\IFeatureGeneratorResourceProvider.cs" />
+    <Compile Include="Utility\FeatureGen\FeatureGeneratorResourceProvider.cs" />
     <Compile Include="Utility\FeatureGen\InSpanGenerator.cs" />
     <Compile Include="Utility\FeatureGen\OutcomePriorFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\PrefixFeatureGenerator.cs" />

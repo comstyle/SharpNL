@@ -30,10 +30,10 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
         /// </summary>
         /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="resourceManager">The resource manager which could be used to access referenced resources.</param>
+        /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
         public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
-            IFeatureGeneratorResourceProvider resourceManager) {
+            FeatureGeneratorResourceProvider provider) {
             XmlElement nestedGeneratorElement = null;
             foreach (var childNode in generatorElement.ChildNodes) {
                 if (childNode is XmlElement) {
@@ -45,7 +45,7 @@ namespace SharpNL.Utility.FeatureGen.Factories {
             if (nestedGeneratorElement == null)
                 throw new InvalidFormatException("window feature generator must contain an aggregator element");
 
-            var nestedGenerator = GeneratorFactory.CreateGenerator(nestedGeneratorElement, resourceManager);
+            var nestedGenerator = GeneratorFactory.CreateGenerator(nestedGeneratorElement, provider);
 
             var prevLengthString = generatorElement.GetAttribute("prevLength");
 

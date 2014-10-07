@@ -75,9 +75,9 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
         /// </summary>
         /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="resourceManager">The resource manager which could be used to access referenced resources.</param>
+        /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
-        public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement, IFeatureGeneratorResourceProvider resourceManager) {
+        public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement, FeatureGeneratorResourceProvider provider) {
 
             //opennlp.tools.util.featuregen.TokenFeatureGenerator
             var className = generatorElement.GetAttribute("class");
@@ -99,8 +99,8 @@ namespace SharpNL.Utility.FeatureGen.Factories {
                     }
 
                     // TODO: why this condition ?!
-                    if (resourceManager != null) {
-                        customGenerator.Init(properties, resourceManager);
+                    if (provider != null) {
+                        customGenerator.Init(properties, provider);
                     }
                 }
 

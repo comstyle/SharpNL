@@ -30,13 +30,13 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
         /// </summary>
         /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="resourceManager">The resource manager which could be used to access referenced resources.</param>
+        /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
         public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
-            IFeatureGeneratorResourceProvider resourceManager) {
+            FeatureGeneratorResourceProvider provider) {
             var dictKey = generatorElement.GetAttribute("dict");
             var dictPfx = generatorElement.GetAttribute("prefix");
-            var dictObj = resourceManager.GetResource(dictKey);
+            var dictObj = provider(dictKey);
 
 
             var dict = dictObj as Dictionary.Dictionary;

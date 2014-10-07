@@ -30,10 +30,10 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
         /// </summary>
         /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="resourceManager">The resource manager which could be used to access referenced resources.</param>
+        /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
         public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
-            IFeatureGeneratorResourceProvider resourceManager) {
+            FeatureGeneratorResourceProvider provider) {
             XmlElement cachedGeneratorElement = null;
             foreach (var childNode in generatorElement.ChildNodes) {
                 var element = childNode as XmlElement;
@@ -46,7 +46,7 @@ namespace SharpNL.Utility.FeatureGen.Factories {
             if (cachedGeneratorElement == null)
                 throw new InvalidFormatException("Could not find containing generator element!");
 
-            return new CachedFeatureGenerator(GeneratorFactory.CreateGenerator(cachedGeneratorElement, resourceManager));
+            return new CachedFeatureGenerator(GeneratorFactory.CreateGenerator(cachedGeneratorElement, provider));
         }
     }
 }
