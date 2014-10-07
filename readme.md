@@ -6,10 +6,11 @@
 
 ## Warning
 
-> At the moment, there is no published version, the port seems to be going well but I don't 
-have any ETA for the first release. So be patient =)
+> At the moment, there is no published version, the port seems to be going well but I don't have any ETA for the first release. 
 
-So far the project has ~14,199 lines of code and counting...
+> I'm making changes that can break your code... Wait a stable version to avoid problems!
+
+So far the project has ~14,199 lines of code and counting!
 
 ## Goals
 
