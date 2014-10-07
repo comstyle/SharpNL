@@ -35,7 +35,7 @@ world while also sharing my little knowledge as a human being.
 
 Please, consider donating as a thank you.
 
-[![donate](resources/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7SWNPAPJNSARC)
+[![donate](resources/donate.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7SWNPAPJNSARC)
 
 [![bean](resources/bean.gif)](#)
 
