@@ -85,6 +85,7 @@
     <Compile Include="ML\PrepAttachDataUtility.cs" />
     <Compile Include="ML\TrainerFactoryTest.cs" />
     <Compile Include="NameFind\DictionaryNameFinderEvaluatorTest.cs" />
+    <Compile Include="NameFind\DictionaryNameFinderTest.cs" />
     <Compile Include="NameFind\NameFinderEventStreamTest.cs" />
     <Compile Include="NameFind\NameSampleTest.cs" />
     <Compile Include="Parser\Chunking\ParserTest.cs" />

@@ -33,10 +33,20 @@ namespace SharpNL.Dictionary {
     /// </summary>
     public class Dictionary : IEnumerable<Entry> {
         
-        private readonly List<Entry> list;
+        protected readonly List<Entry> list;
 
+        #region + Constructors .
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Dictionary"/> class.
+        /// </summary>
         public Dictionary() : this(false) {}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Dictionary"/> indicating 
+        /// if the dictionary is case sensitive.
+        /// </summary>
+        /// <param name="caseSensitive">if set to <c>true</c> if the dictionary should be case sensitive.</param>
         public Dictionary(bool caseSensitive) {
             list = new List<Entry>();
 
@@ -110,6 +120,8 @@ namespace SharpNL.Dictionary {
             }
         }
 
+        #endregion
+
         #region + Add .
         /// <summary>
         /// Adds the specified entry.
@@ -145,6 +157,15 @@ namespace SharpNL.Dictionary {
         /// </summary>
         /// <param name="tokens">The string tokens.</param>
         /// <returns>The new entry.</returns>
+        /// <remarks>
+        /// Be careful to use this method as a object initializer, it may create an unexpected result!
+        /// <para>
+        ///  This method is the same as:
+        ///  <code>
+        ///  Add(new Entry(new string[] { ... }));
+        ///  </code>
+        /// </para>
+        /// </remarks>
         public Entry Add(params string[] tokens) {
             return Add(new Entry(tokens));
         }
@@ -395,7 +416,6 @@ namespace SharpNL.Dictionary {
             }
         }
 
-
         /// <summary>
         /// Serializes the the artifact into the specified stream.
         /// </summary>
@@ -421,7 +441,10 @@ namespace SharpNL.Dictionary {
         #endregion
 
         #region . ToHashSet .
-
+        /// <summary>
+        /// Converts the dictionary to a <see cref="HashSet{T}"/> object.
+        /// </summary>
+        /// <returns>The HashSet&lt;string&gt; object.</returns>
         public virtual HashSet<string> ToHashSet() {
             var set = new HashSet<string>();
             var e = GetEnumerator();
@@ -436,6 +459,10 @@ namespace SharpNL.Dictionary {
         #endregion
 
         #region . ToList .
+        /// <summary>
+        /// Converts the dictionary to a <see cref="List{T}"/>.
+        /// </summary>
+        /// <returns>A string list object.</returns>
         public virtual List<string> ToList() {
             var toList = new List<string>();
             var e = GetEnumerator();
@@ -447,7 +474,6 @@ namespace SharpNL.Dictionary {
             return toList;
         }
         #endregion
-
 
         #region . ToString .
 
