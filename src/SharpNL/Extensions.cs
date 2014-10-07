@@ -44,6 +44,42 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . AddRange .
+
+        /// <summary>
+        /// Copies the contents of another <see cref="IDictionary{K, V}" /> object to the end of the collection.
+        /// </summary>
+        /// <typeparam name="K">The dictionary key type.</typeparam>
+        /// <typeparam name="V">The dictionary value type.</typeparam>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="values">A <see cref="IDictionary{K, V}" /> that contains the objects to add to the collection.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="dictionary" />
+        /// or
+        /// <paramref name="values" /></exception>
+        /// <exception cref="System.ArgumentException">The dictionary is read-only.</exception>
+        public static void AddRange<K, V>(this IDictionary<K, V> dictionary, IDictionary<K, V> values) {
+            if (dictionary == null)
+                throw new ArgumentNullException("dictionary");
+
+            if (dictionary.IsReadOnly)
+                throw new ArgumentException("The dictionary is read-only.");
+
+            if (values == null)
+                throw new ArgumentNullException("values");
+
+            if (values.Count == 0)
+                return;
+
+            
+
+            foreach (var pair in values) {
+                dictionary.Add(pair.Key, pair.Value);
+            }
+        }
+
+        #endregion
+
         #region . AreEqual .
 
         /// <summary>
