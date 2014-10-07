@@ -150,6 +150,9 @@ namespace SharpNL {
         /// <returns><c>true</c> if the two source sequences are of equal length and their corresponding elements are equal according to the default equality comparer for their type, <c>false</c> otherwise.</returns>
         /// <exception cref="System.ArgumentNullException">first or second.</exception>
         internal static bool SequenceEqual<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null) {
+            if (first == null && second == null)
+                return true;
+
             if (first == null) {
                 throw new ArgumentNullException("first");
             }
