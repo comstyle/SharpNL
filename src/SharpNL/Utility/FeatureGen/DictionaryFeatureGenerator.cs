@@ -1,0 +1,80 @@
+﻿// 
+//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+// 
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+// 
+//       http://www.apache.org/licenses/LICENSE-2.0
+// 
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+// 
+//   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//   - May you do good and not evil.                                         -
+//   - May you find forgiveness for yourself and forgive others.             -
+//   - May you share freely, never taking more than you give.                -
+//   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//  
+
+using System.Collections.Generic;
+using SharpNL.NameFind;
+
+namespace SharpNL.Utility.FeatureGen {
+    /// <summary>
+    /// The <see cref="DictionaryFeatureGenerator"/> uses the <see cref="DictionaryNameFinder"/>
+    /// to generated features for detected names based on the <see cref="InSpanGenerator"/>.
+    /// </summary>
+    public class DictionaryFeatureGenerator : FeatureGeneratorAdapter {
+        private InSpanGenerator isg;
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryFeatureGenerator"/> with the given dictionary.
+        /// </summary>
+        /// <param name="dict">The dictionary.</param>
+        public DictionaryFeatureGenerator(Dictionary.Dictionary dict) : this("", dict) {}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryFeatureGenerator"/> with the given prefix and dictionary.
+        /// </summary>
+        /// <param name="prefix">The prefix/name used to distinguish the generated features.</param>
+        /// <param name="dict">The dictionary.</param>
+        public DictionaryFeatureGenerator(string prefix, Dictionary.Dictionary dict) {
+            SetDictionary(prefix, dict);
+        }
+
+        /// <summary>
+        /// Sets the dictionary.
+        /// </summary>
+        /// <param name="dict">The dictionary.</param>
+        public void SetDictionary(Dictionary.Dictionary dict) {
+            SetDictionary(string.Empty, dict);
+        }
+
+        /// <summary>
+        /// Sets the dictionary.
+        /// </summary>
+        /// <param name="name">The name used to distinguish the generated features.</param>
+        /// <param name="dict">The dictionary.</param>
+        public void SetDictionary(string name, Dictionary.Dictionary dict) {
+            isg = new InSpanGenerator(name, new DictionaryNameFinder(dict));
+        }
+
+
+        /// <summary>
+        /// Adds the appropriate features for the token at the specified index with the
+        /// specified array of previous outcomes to the specified list of features.
+        /// </summary>
+        /// <param name="features">The list of features to be added to.</param>
+        /// <param name="tokens">The tokens of the sentence or other text unit being processed.</param>
+        /// <param name="index">The index of the token which is currently being processed.</param>
+        /// <param name="previousOutcomes">The outcomes for the tokens prior to the specified index.</param>
+        public override void CreateFeatures(List<string> features, string[] tokens, int index, string[] previousOutcomes) {
+            isg.CreateFeatures(features, tokens, index, previousOutcomes);
+        }
+    }
+}

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{36851EC8-C240-4C34-83C9-1B4C29C71CA9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpNL.Tests</RootNamespace>
+    <AssemblyName>SharpNL.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.core">
+      <HintPath>..\packages\NUnitTestAdapter.1.1\lib\nunit.core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\packages\NUnitTestAdapter.1.1\lib\nunit.core.interfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>..\packages\NUnitTestAdapter.1.1\lib\nunit.util.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NUnit.VisualStudio.TestAdapter">
+      <HintPath>..\packages\NUnitTestAdapter.1.1\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Chunker\ChunkerDetailedFMeasureListenerTest.cs" />
+    <Compile Include="Chunker\ChunkerEvaluatorTest.cs" />
+    <Compile Include="Chunker\ChunkerFactoryTest.cs" />
+    <Compile Include="Chunker\ChunkerMETest.cs" />
+    <Compile Include="Chunker\ChunkerSampleTests.cs" />
+    <Compile Include="Chunker\ChunkSampleStreamTest.cs" />
+    <Compile Include="Chunker\DummyChunker.cs" />
+    <Compile Include="Chunker\DummyChunkerFactory.cs" />
+    <Compile Include="Chunker\DummyChunkSampleStream.cs" />
+    <Compile Include="Dictionary\DictionaryTest.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="ExtensionsTest.cs" />
+    <Compile Include="Formats\Ad\AdSentenceSampleStreamTest.cs" />
+    <Compile Include="Formats\Muc\DocumentSplitterStreamTest.cs" />
+    <Compile Include="Formats\Muc\SgmlParserTest.cs" />
+    <Compile Include="ML\MaxEnt\MaxentPrepAttachTest.cs" />
+    <Compile Include="ML\MaxEnt\RealValueModelTest.cs" />
+    <Compile Include="ML\MaxEnt\ScaleDoesntMatterTest.cs" />
+    <Compile Include="ML\Model\IndexHashTableTest.cs" />
+    <Compile Include="ML\Perceptron\PerceptronPrepAttachTest.cs" />
+    <Compile Include="ML\PrepAttachDataUtility.cs" />
+    <Compile Include="ML\TrainerFactoryTest.cs" />
+    <Compile Include="Parser\Chunking\ParserTest.cs" />
+    <Compile Include="Parser\ChunkSampleStreamTest.cs" />
+    <Compile Include="Parser\Lang\en\HeadRulesTest.cs" />
+    <Compile Include="Parser\ParserEvaluatorTest.cs" />
+    <Compile Include="Parser\ParserTestUtil.cs" />
+    <Compile Include="Parser\ParseSampleStreamTest.cs" />
+    <Compile Include="Parser\ParseTest.cs" />
+    <Compile Include="Parser\PosSampleStreamTest.cs" />
+    <Compile Include="Parser\TreeInsert\ParserTest.cs" />
+    <Compile Include="POSTag\DummyPOSTaggerFactory.cs" />
+    <Compile Include="POSTag\POSModelTest.cs" />
+    <Compile Include="POSTag\POSSampleEventStreamTest.cs" />
+    <Compile Include="POSTag\POSSampleTest.cs" />
+    <Compile Include="POSTag\POSTaggerMETest.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sentence\DefaultEndOfSentenceScannerTest.cs" />
+    <Compile Include="Sentence\SentenceDetectorEvaluatorTest.cs" />
+    <Compile Include="Sentence\SentenceDetectorFactoryTest.cs" />
+    <Compile Include="Sentence\SentenceDetectorMETest.cs" />
+    <Compile Include="Sentence\SentenceSampleStreamTest.cs" />
+    <Compile Include="Sentence\SentenceSampleTest.cs" />
+    <Compile Include="Tests.cs" />
+    <Compile Include="Tokenize\DetokenizationDictionaryTest.cs" />
+    <Compile Include="Tokenize\DictionaryDetokenizerTest.cs" />
+    <Compile Include="Tokenize\DummyTokenizerFactory.cs" />
+    <Compile Include="Tokenize\SimpleTokenizerTest.cs" />
+    <Compile Include="Tokenize\TokenizerFactoryTest.cs" />
+    <Compile Include="Tokenize\TokenizerMETest.cs" />
+    <Compile Include="Tokenize\TokenizerTestUtil.cs" />
+    <Compile Include="Tokenize\TokenSampleTest.cs" />
+    <Compile Include="Tokenize\WhitespaceTokenizerTest.cs" />
+    <Compile Include="Utility\BeamSearchTest.cs" />
+    <Compile Include="Utility\Evaluation\CrossValidationPartitionerTest.cs" />
+    <Compile Include="Utility\Evaluation\FMeasureTest.cs" />
+    <Compile Include="Utility\Evaluation\Mean.cs" />
+    <Compile Include="Utility\FeatureGen\CachedFeatureGeneratorTest.cs" />
+    <Compile Include="Utility\FeatureGen\GeneratorFactoryTest.cs" />
+    <Compile Include="Utility\FeatureGen\PreviousMapFeatureGeneratorTest.cs" />
+    <Compile Include="Utility\FeatureGen\StringPatternTest.cs" />
+    <Compile Include="Utility\FeatureGen\WindowFeatureGeneratorTest.cs" />
+    <Compile Include="Utility\PlainTextByLineStreamTest.cs" />
+    <Compile Include="Utility\ListHeapTest.cs" />
+    <Compile Include="Utility\PropertiesSeriealizerTest.cs" />
+    <Compile Include="Utility\SequenceTest.cs" />
+    <Compile Include="Utility\SpanTest.cs" />
+    <Compile Include="Utility\StringListTest.cs" />
+    <Compile Include="Utility\ToolFactoryManagerTest.cs" />
+    <Compile Include="Utility\VersionTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpNL\SharpNL.csproj">
+      <Project>{0fb2de8a-7754-425b-8b8f-2ead2dfd8192}</Project>
+      <Name>SharpNL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -9,6 +9,8 @@
 > At the moment, there is no published version, the port seems to be going well but I don't 
 have any ETA for the first release. So be patient =)
 
+So far the project has ~14,199 lines of code and counting...
+
 ## Goals
 
 > Implement the best library of natural language processing in C#, which means:
