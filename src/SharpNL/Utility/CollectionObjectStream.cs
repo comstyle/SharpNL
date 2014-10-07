@@ -22,13 +22,26 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SharpNL.Utility {
+    /// <summary>
+    /// Represents a collection of objects as a <see cref="IObjectStream{I}"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class CollectionObjectStream<T> : IObjectStream<T> {
         private IEnumerator<T> enumerator;
         private IEnumerable<T> items;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollectionObjectStream{T}"/> with only one object.
+        /// </summary>
+        /// <param name="single">A single object.</param>
+        public CollectionObjectStream(T single) : this(new [] {single}) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollectionObjectStream{T}"/> with the specified objects.
+        /// </summary>
+        /// <param name="enumerable">The enumerable.</param>
         public CollectionObjectStream(IEnumerable<T> enumerable) {
             items = enumerable as T[] ?? enumerable.ToArray();
             Reset();
