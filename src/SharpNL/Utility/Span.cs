@@ -16,6 +16,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -58,7 +59,7 @@ namespace SharpNL.Utility {
         /// <summary>
         /// Gets the probability of the span.
         /// </summary>
-        public double Probability { get; private set; }
+        public double Probability { get; internal set; }
         #endregion
 
         #region . Type .
@@ -181,6 +182,37 @@ namespace SharpNL.Utility {
                 (Start <= span.Start && span.Start < End || span.Start <= Start && Start < span.End);
         }
 
+        #endregion
+
+        #region . DropOverlappingSpans .
+        /// <summary>
+        /// Removes spans with are intersecting or crossing in anyway.
+        /// </summary>
+        /// <param name="spans">The spans.</param>
+        /// <returns>A array of non-overlapping spans.</returns>
+        /// <remarks>
+        /// The following rules are used to remove the spans: <br />
+        /// Identical spans: The first span in the array after sorting it remains<br />
+        /// Intersecting spans: The first span after sorting remains<br />
+        /// Contained spans: All spans which are contained by another are removed<br />
+        /// </remarks>
+        public static Span[] DropOverlappingSpans(Span[] spans) {
+            var list = new List<Span>(spans);
+            list.Sort();
+
+            var index = 0;
+            Span lastSpan = null;
+
+            while (index < list.Count) {
+                if (lastSpan != null && lastSpan.Intersects(list[index])) {
+                    list.RemoveAt(index);
+                } else {
+                    lastSpan = list[index];
+                    index++;
+                }
+            }
+            return list.ToArray();
+        }
         #endregion
 
         #region . Equals .

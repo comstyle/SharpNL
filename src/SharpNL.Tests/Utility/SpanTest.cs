@@ -139,6 +139,15 @@ namespace SharpNL.Tests.Utility {
         }
 
         [Test]
+        public void DropOverlappingSpans() {
+            var spans = new [] {new Span(1, 10), new Span(1,11), new Span(1,11), new Span(5, 15)};
+            var remainingSpan = Span.DropOverlappingSpans(spans);
+
+            Assert.AreEqual(1, remainingSpan.Length);
+            Assert.AreEqual(new Span(1, 11), remainingSpan[0]);
+        }
+
+        [Test]
         public void testEquals() {
             var a1 = new Span(100, 1000, "test");
             var a2 = new Span(100, 1000, "test");
