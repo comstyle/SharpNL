@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using SharpNL.Utility;
 using SharpNL.Utility.Evaluation;
 
 namespace SharpNL.Chunker {
@@ -29,7 +30,7 @@ namespace SharpNL.Chunker {
     /// The ChunkerEvaluator measures the performance of the given <see cref="IChunker"/> with
     /// the provided reference <see cref="ChunkSample"/>s.
     /// </summary>
-    public class ChunkerEvaluator : Evaluator<ChunkSample> {
+    public class ChunkerEvaluator : Evaluator<ChunkSample, Span> {
 
         private readonly IChunker chunker;
 
@@ -37,7 +38,7 @@ namespace SharpNL.Chunker {
 
             this.chunker = chunker;
 
-            FMeasure = new FMeasure();
+            FMeasure = new FMeasure<Span>();
         }
 
         /// <summary>
@@ -50,9 +51,7 @@ namespace SharpNL.Chunker {
             var preds = chunker.Chunk(reference.Sentence.ToArray(), reference.Tags.ToArray());
             var result = new ChunkSample(reference.Sentence.ToArray(), reference.Tags.ToArray(), preds);
 
-            FMeasure.UpdateScores(
-                Array.ConvertAll(reference.GetPhrasesAsSpanList(), input => (object)input),
-                Array.ConvertAll(result.GetPhrasesAsSpanList(), input => (object)input));
+            FMeasure.UpdateScores(reference.GetPhrasesAsSpanList(), result.GetPhrasesAsSpanList());
 
             return result;
         }

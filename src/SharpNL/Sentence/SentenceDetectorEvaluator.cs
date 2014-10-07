@@ -29,10 +29,10 @@ namespace SharpNL.Sentence {
     /// The SentenceDetectorEvaluator measures the performance of the given <see cref="ISentenceDetector"/>
     /// with the provided reference <see cref="SentenceSample"/>s.
     /// </summary>
-    /// <seealso cref="Evaluator{T}"/>
+    /// <seealso cref="Evaluator{T, K}"/>
     /// <seealso cref="ISentenceDetector"/>
     /// <seealso cref="SentenceSample"/>
-    public class SentenceDetectorEvaluator : Evaluator<SentenceSample> {
+    public class SentenceDetectorEvaluator : Evaluator<SentenceSample, Span> {
         private readonly ISentenceDetector sentenceDetector;
 
         #region . Constructor .
@@ -46,7 +46,7 @@ namespace SharpNL.Sentence {
             params IEvaluationMonitor<SentenceSample>[] listeners) : base(listeners) {
 
             this.sentenceDetector = sentenceDetector;
-            FMeasure = new FMeasure();
+            FMeasure = new FMeasure<Span>();
         }
         #endregion
 
@@ -67,8 +67,8 @@ namespace SharpNL.Sentence {
             return new SentenceSample(reference.Document, Array.ConvertAll(predictions, input => (Span)input));
         }
 
-        private static object[] TrimSpans(string document, Span[] spans) {
-            var trimmedSpans = new object[spans.Length];
+        private static Span[] TrimSpans(string document, Span[] spans) {
+            var trimmedSpans = new Span[spans.Length];
             for (int i = 0; i < spans.Length; i++) {
                 trimmedSpans[i] = spans[i].Trim(document);
             }

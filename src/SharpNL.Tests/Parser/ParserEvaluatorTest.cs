@@ -22,6 +22,7 @@
 
 using NUnit.Framework;
 using SharpNL.Parser;
+using SharpNL.Utility;
 using SharpNL.Utility.Evaluation;
 
 namespace SharpNL.Tests.Parser {
@@ -38,7 +39,7 @@ namespace SharpNL.Tests.Parser {
             var gold = ParserEvaluator.GetConstituencySpans(Parse.ParseParse(goldParseString));
             var test = ParserEvaluator.GetConstituencySpans(Parse.ParseParse(testParseString));
 
-            var measure = new FMeasure();
+            var measure = new FMeasure<Span>();
 
             measure.UpdateScores(gold, test);
 

@@ -75,33 +75,33 @@ namespace SharpNL.Tests.Utility.Evaluation {
 
         [Test]
         public void TestCountTruePositives() {
-            Assert.AreEqual(0, FMeasure.CountTruePositives(new object[] {}, new object[] {}));
-            Assert.AreEqual(gold.Length, FMeasure.CountTruePositives(gold, gold));
-            Assert.AreEqual(0, FMeasure.CountTruePositives(gold, predictedCompletelyDistinct));
-            Assert.AreEqual(2, FMeasure.CountTruePositives(gold, predicted));
+            Assert.AreEqual(0, FMeasure<object>.CountTruePositives(new object[] {}, new object[] {}));
+            Assert.AreEqual(gold.Length, FMeasure<object>.CountTruePositives(gold, gold));
+            Assert.AreEqual(0, FMeasure<object>.CountTruePositives(gold, predictedCompletelyDistinct));
+            Assert.AreEqual(2, FMeasure<object>.CountTruePositives(gold, predicted));
         }
 
         [Test]
         public void TestPrecision() {
-            Assert.AreEqual(1.0d, FMeasure.Precision(gold, gold), DELTA);
-            Assert.AreEqual(0, FMeasure.Precision(gold, predictedCompletelyDistinct), DELTA);
-            Assert.AreEqual(Double.NaN, FMeasure.Precision(gold, new object[] {}), DELTA);
-            Assert.AreEqual(0, FMeasure.Precision(new object[] {}, gold), DELTA);
-            Assert.AreEqual(2d/predicted.Length, FMeasure.Precision(gold, predicted), DELTA);
+            Assert.AreEqual(1.0d, FMeasure<object>.Precision(gold, gold), DELTA);
+            Assert.AreEqual(0, FMeasure<object>.Precision(gold, predictedCompletelyDistinct), DELTA);
+            Assert.AreEqual(Double.NaN, FMeasure<object>.Precision(gold, new object[] { }), DELTA);
+            Assert.AreEqual(0, FMeasure<object>.Precision(new object[] { }, gold), DELTA);
+            Assert.AreEqual(2d / predicted.Length, FMeasure<object>.Precision(gold, predicted), DELTA);
         }
 
         [Test]
         public void TestRecall() {
-            Assert.AreEqual(1.0d, FMeasure.Recall(gold, gold), DELTA);
-            Assert.AreEqual(0, FMeasure.Recall(gold, predictedCompletelyDistinct), DELTA);
-            Assert.AreEqual(0, FMeasure.Recall(gold, new object[] {}), DELTA);
-            Assert.AreEqual(Double.NaN, FMeasure.Recall(new object[] {}, gold), DELTA);
-            Assert.AreEqual(2d/gold.Length, FMeasure.Recall(gold, predicted), DELTA);
+            Assert.AreEqual(1.0d, FMeasure<object>.Recall(gold, gold), DELTA);
+            Assert.AreEqual(0, FMeasure<object>.Recall(gold, predictedCompletelyDistinct), DELTA);
+            Assert.AreEqual(0, FMeasure<object>.Recall(gold, new object[] { }), DELTA);
+            Assert.AreEqual(Double.NaN, FMeasure<object>.Recall(new object[] { }, gold), DELTA);
+            Assert.AreEqual(2d / gold.Length, FMeasure<object>.Recall(gold, predicted), DELTA);
         }
 
         [Test]
         public void TestEmpty() {
-            var fm = new FMeasure();
+            var fm = new FMeasure<object>();
             Assert.AreEqual(-1, fm.Value, DELTA);
             Assert.AreEqual(0, fm.RecallScore, DELTA);
             Assert.AreEqual(0, fm.PrecisionScore, DELTA);
@@ -109,7 +109,7 @@ namespace SharpNL.Tests.Utility.Evaluation {
 
         [Test]
         public void TestPerfect() {
-            var fm = new FMeasure();
+            var fm = new FMeasure<object>();
             fm.UpdateScores(gold, gold);
             Assert.AreEqual(1, fm.Value, DELTA);
             Assert.AreEqual(1, fm.RecallScore, DELTA);
@@ -118,23 +118,23 @@ namespace SharpNL.Tests.Utility.Evaluation {
 
         [Test]
         public void TestMerge() {
-            var fm = new FMeasure();
+            var fm = new FMeasure<object>();
             fm.UpdateScores(gold, predicted);
             fm.UpdateScores(goldToMerge, predictedToMerge);
 
-            var fmMerge = new FMeasure();
+            var fmMerge = new FMeasure<object>();
             fmMerge.UpdateScores(gold, predicted);
-            var toMerge = new FMeasure();
+            var toMerge = new FMeasure<object>();
             toMerge.UpdateScores(goldToMerge, predictedToMerge);
             fmMerge.MergeInto(toMerge);
 
             double selected1 = predicted.Length;
             double target1 = gold.Length;
-            double tp1 = FMeasure.CountTruePositives(gold, predicted);
+            double tp1 = FMeasure<object>.CountTruePositives(gold, predicted);
 
             double selected2 = predictedToMerge.Length;
             double target2 = goldToMerge.Length;
-            double tp2 = FMeasure.CountTruePositives(goldToMerge, predictedToMerge);
+            double tp2 = FMeasure<object>.CountTruePositives(goldToMerge, predictedToMerge);
 
 
             Assert.AreEqual((tp1 + tp2)/(target1 + target2), fm.RecallScore, DELTA);

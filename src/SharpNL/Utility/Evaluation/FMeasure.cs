@@ -24,15 +24,14 @@ using System.Collections.Generic;
 
 namespace SharpNL.Utility.Evaluation {
     /// <summary>
-    /// The FMeasure is an utility class for evaluators which measure precision, 
+    /// The FMeasure is an utility class for evaluators which measure precision,
     /// recall and the resulting f-measure.
     /// </summary>
-    /// <remarks>
-    /// Evaluation results are the arithmetic mean of the precision scores calculated 
-    /// for each reference sample and the arithmetic mean of the recall scores 
-    /// calculated for each reference sample.
-    /// </remarks>
-    public sealed class FMeasure {
+    /// <typeparam name="T">The type of the objects to be evaluated.</typeparam>
+    /// <remarks>Evaluation results are the arithmetic mean of the precision scores calculated
+    /// for each reference sample and the arithmetic mean of the recall scores
+    /// calculated for each reference sample.</remarks>
+    public sealed class FMeasure<T> where T : class {
         private long selected;
         private long target;
         private long truePositive;
@@ -96,11 +95,11 @@ namespace SharpNL.Utility.Evaluation {
         /// <param name="references">The references.</param>
         /// <param name="predictions">The predictions.</param>
         /// <returns>The number of true positives.</returns>
-        public static int CountTruePositives(object[] references, object[] predictions) {
+        public static int CountTruePositives(T[] references, T[] predictions) {
 
-            var predListSpans = new List<object>(predictions);
+            var predListSpans = new List<T>(predictions);
             int truePositives = 0;
-            object matchedItem = null;
+            T matchedItem = null;
 
             for (int referenceIndex = 0; referenceIndex < references.Length; referenceIndex++) {
                 object referenceName = references[referenceIndex];
@@ -122,13 +121,12 @@ namespace SharpNL.Utility.Evaluation {
         #endregion
 
         #region . UpdateScores .
-
         /// <summary>
         /// Updates the score based on the number of true positives and the number of predictions and references.
         /// </summary>
         /// <param name="references">The references.</param>
         /// <param name="predictions">The predictions.</param>
-        public void UpdateScores(object[] references, object[] predictions) {
+        public void UpdateScores(T[] references, T[] predictions) {
             truePositive += CountTruePositives(references, predictions);
             selected += predictions.Length;
             target += references.Length;
@@ -141,7 +139,7 @@ namespace SharpNL.Utility.Evaluation {
         /// Merge results into FMeasure metric.
         /// </summary>
         /// <param name="measure">The measure.</param>
-        public void MergeInto(FMeasure measure) {
+        public void MergeInto(FMeasure<T> measure) {
             selected += measure.selected;
             target += measure.target;
             truePositive += measure.truePositive;
@@ -156,7 +154,7 @@ namespace SharpNL.Utility.Evaluation {
         /// <param name="references">The references.</param>
         /// <param name="predictions">The predictions.</param>
         /// <returns>The precision score or NaN if there are no predicted spans.</returns>
-        public static double Precision(object[] references, object[] predictions) {
+        public static double Precision(T[] references, T[] predictions) {
             if (predictions.Length > 0) {
                 return CountTruePositives(references, predictions)/(double) predictions.Length;
             }
@@ -172,7 +170,7 @@ namespace SharpNL.Utility.Evaluation {
         /// <param name="references">The references.</param>
         /// <param name="predictions">The predictions.</param>
         /// <returns>The recall score or NaN if there are no reference spans.</returns>
-        public static double Recall(object[] references, object[] predictions) {
+        public static double Recall(T[] references, T[] predictions) {
             if (references.Length > 0) {
                 return CountTruePositives(references, predictions) / (double)references.Length;
             }

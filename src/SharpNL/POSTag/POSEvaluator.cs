@@ -28,11 +28,10 @@ namespace SharpNL.POSTag {
     /// The <see cref="POSEvaluator"/> measures the performance of the given <see cref="IPOSTagger"/> 
     /// with the provided reference <see cref="POSSample"/>s.
     /// </summary>
-    public class POSEvaluator : Evaluator<POSSample> {
+    public class POSEvaluator : Evaluator<POSSample, string> {
         private readonly IPOSTagger tagger;
 
         private readonly Mean wordAccuracy = new Mean();
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="POSEvaluator"/>.

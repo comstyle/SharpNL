@@ -49,7 +49,7 @@ namespace SharpNL.Chunker {
             params IEvaluationMonitor<ChunkSample>[] listeners) {
 
             chunkerFactory = factory;
-            FMeasure = new FMeasure();
+            FMeasure = new FMeasure<Span>();
             
             this.languageCode = languageCode;
             this.parameters = parameters;
@@ -61,7 +61,7 @@ namespace SharpNL.Chunker {
         /// Gets the f-measure.
         /// </summary>
         /// <value>The f-measure.</value>
-        public FMeasure FMeasure { get; private set; }
+        public FMeasure<Span> FMeasure { get; private set; }
         #endregion
 
         #region . Evaluate .

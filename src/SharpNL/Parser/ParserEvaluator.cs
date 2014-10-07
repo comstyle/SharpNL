@@ -29,13 +29,13 @@ namespace SharpNL.Parser {
     /// <summary>
     /// Parser Evaluator.
     /// </summary>
-    public class ParserEvaluator : Evaluator<Parse> {
+    public class ParserEvaluator : Evaluator<Parse, Span> {
         private readonly Chunking.Parser parser;
 
         public ParserEvaluator(Chunking.Parser parser, params IEvaluationMonitor<Parse>[] listeners)
             : base(listeners) {
             this.parser = parser;
-            FMeasure = new FMeasure();
+            FMeasure = new FMeasure<Span>();
         }
 
         #region . GetConstituencySpans .
@@ -89,9 +89,7 @@ namespace SharpNL.Parser {
                 prediction = predictions[0];
             }
 
-            FMeasure.UpdateScores(
-                Array.ConvertAll(GetConstituencySpans(reference), input => (object) input),
-                Array.ConvertAll(GetConstituencySpans(prediction), input => (object) input));
+            FMeasure.UpdateScores(GetConstituencySpans(reference), GetConstituencySpans(prediction));
 
             return prediction;
         }
