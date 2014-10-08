@@ -54,6 +54,14 @@ namespace SharpNL.NameFind {
         /// </summary>
         /// <param name="featureGeneratorBytes">The feature generator bytes.</param>
         /// <param name="resources">The resources dictionary.</param>
+        public TokenNameFinderFactory(byte[] featureGeneratorBytes, Dictionary<string, object> resources)
+            : this(featureGeneratorBytes, resources, new BioCodec()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenNameFinderFactory"/> with the given parameters.
+        /// </summary>
+        /// <param name="featureGeneratorBytes">The feature generator bytes.</param>
+        /// <param name="resources">The resources dictionary.</param>
         /// <param name="seqCodec">The sequence codec.</param>
         public TokenNameFinderFactory(byte[] featureGeneratorBytes, Dictionary<string, object> resources,
             ISequenceCodec<string> seqCodec) {
@@ -72,7 +80,7 @@ namespace SharpNL.NameFind {
         /// Gets the resources dictionary.
         /// </summary>
         /// <value>The resources dictionary.</value>
-        protected Dictionary<string, object> Resources { get; private set; }
+        public Dictionary<string, object> Resources { get; protected set; }
 
         #endregion
 
@@ -82,7 +90,7 @@ namespace SharpNL.NameFind {
         /// Gets the sequence codec.
         /// </summary>
         /// <value>The sequence codec.</value>
-        protected ISequenceCodec<string> SequenceCodec { get; private set; }
+        public ISequenceCodec<string> SequenceCodec { get; protected set; }
 
         #endregion
 
@@ -145,7 +153,7 @@ namespace SharpNL.NameFind {
                         // If the re-creation of the feature generation fails it is assumed
                         // that this can only be caused by a programming mistake and therefore
                         // throwing a Runtime Exception is reasonable
-                        "An error during the creation or re-creation of a feature generator has occured.", ex);
+                        "An error during the creation or re-creation of a feature generator has occurred.", ex);
                 }
             }
             return null;
@@ -177,6 +185,6 @@ namespace SharpNL.NameFind {
         }
 
         #endregion
-
+        
     }
 }

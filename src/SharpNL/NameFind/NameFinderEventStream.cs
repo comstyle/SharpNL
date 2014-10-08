@@ -13,12 +13,12 @@ namespace SharpNL.NameFind {
         private readonly ISequenceCodec<string> codec;
         private readonly INameContextGenerator contextGenerator;
         private readonly AdditionalContextFeatureGenerator additionalContextFeatureGenerator;
+        private readonly string Type;
 
         private static readonly CachedFeatureGenerator defaultGenerators;
 
         #region + Constructors .
         static NameFinderEventStream() {
-            // TODO: check if these are the defaults and run properly
             defaultGenerators = new CachedFeatureGenerator(
                 new WindowFeatureGenerator(new TokenFeatureGenerator(), 2, 2),
                 new WindowFeatureGenerator(new TokenClassFeatureGenerator(true), 2, 2),
@@ -29,19 +29,10 @@ namespace SharpNL.NameFind {
         }
 
         public NameFinderEventStream(IObjectStream<NameSample> dataStream)
-            : this(dataStream, new DefaultNameContextGenerator(defaultGenerators), null) {
+            : this(dataStream, null, new DefaultNameContextGenerator(defaultGenerators), null) {
         }
 
-#if DEBUG
-        [Obsolete("The argument type is deprecated and useless in the newest implementations.")]
-        // ReSharper disable once UnusedParameter.Local
-        public NameFinderEventStream(IObjectStream<NameSample> dataStream, string type, INameContextGenerator contextGenerator,
-            ISequenceCodec<string> codec) : this(dataStream, contextGenerator, codec) {
-            
-        }
-#endif
-
-        public NameFinderEventStream(IObjectStream<NameSample> dataStream, INameContextGenerator contextGenerator, ISequenceCodec<string> codec) : base(dataStream) {
+        public NameFinderEventStream(IObjectStream<NameSample> dataStream, string type, INameContextGenerator contextGenerator, ISequenceCodec<string> codec) : base(dataStream) {
             this.codec = codec ?? new BioCodec();
 
             additionalContextFeatureGenerator = new AdditionalContextFeatureGenerator();
@@ -49,7 +40,13 @@ namespace SharpNL.NameFind {
             this.contextGenerator = contextGenerator;
             this.contextGenerator.AddFeatureGenerator(new WindowFeatureGenerator(additionalContextFeatureGenerator, 8, 8));
 
+            // TODO: How to make the type really do something?!
+
+            Type = type ?? "default";
+
+
         }
+
         #endregion
 
         #region . AdditionalContext .

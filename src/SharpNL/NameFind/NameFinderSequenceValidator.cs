@@ -20,11 +20,14 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using SharpNL.Utility;
 
 namespace SharpNL.NameFind {
+    /// <summary>
+    /// Validates the sequences from the name finder.
+    /// </summary>
     public class NameFinderSequenceValidator : ISequenceValidator<string> {
+
         /// <summary>
         /// Determines whether a particular continuation of a sequence is valid.
         /// This is used to restrict invalid sequences such as those used in start/continue tag-based chunking or could be used to implement tag dictionary restrictions.
@@ -35,7 +38,31 @@ namespace SharpNL.NameFind {
         /// <param name="outcome">The next proposed outcome for the outcomes sequence.</param>
         /// <returns><c>true</c> if the sequence would still be valid with the new outcome, <c>false</c> otherwise.</returns>
         public bool ValidSequence(int index, string[] inputSequence, string[] outcomesSequence, string outcome) {
-            throw new NotImplementedException();
+
+            // outcome is formatted like "cont" or "sometype-cont", so we
+            // can check if it ends with "cont".
+
+            if (!outcome.EndsWith(NameFinderME.Continue)) 
+                return true;
+
+            var li = outcomesSequence.Length - 1;
+
+            if (li == -1) 
+                return false;
+                
+            if (outcomesSequence[li].EndsWith(NameFinderME.Other))
+                return false;
+                
+            if (!outcomesSequence[li].EndsWith(NameFinderME.Continue)) 
+                return true;
+
+            var nameType = NameFinderME.ExtractNameType(outcome);
+            var previousNameType = NameFinderME.ExtractNameType(outcomesSequence[li]);
+                
+            if (previousNameType == null && nameType == null) 
+                return true;
+
+            return nameType != null && nameType.Equals(previousNameType);
         }
     }
 }

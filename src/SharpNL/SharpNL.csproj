@@ -112,6 +112,7 @@
     <Compile Include="Java\IIterator.cs" />
     <Compile Include="Java\IteratorAdapter.cs" />
     <Compile Include="Java\JavaClassAttribute.cs" />
+    <Compile Include="NameFind\RegexNameFinder.cs" />
     <Compile Include="Utility\TypeResolver.cs" />
     <Compile Include="Java\StringTokenizer.cs" />
     <Compile Include="Library.cs" />

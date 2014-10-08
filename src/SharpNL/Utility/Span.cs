@@ -75,7 +75,6 @@ namespace SharpNL.Utility {
 
         #region + Constructors .
 
-
         public Span(Span span, double probability) : this (span.Start, span.End, probability) { }
 
         public Span(Span span, int offset) : this(span.Start + offset, span.End + offset, span.Type, span.Probability) { }
@@ -432,7 +431,6 @@ namespace SharpNL.Utility {
 
 
         #endregion
-
 
     }
 }

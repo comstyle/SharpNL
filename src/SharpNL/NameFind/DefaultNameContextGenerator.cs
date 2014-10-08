@@ -83,8 +83,8 @@ namespace SharpNL.NameFind {
             }
 
             //previous outcome features
-            var po = NameFinderME.OTHER;
-            var ppo = NameFinderME.OTHER;
+            var po = NameFinderME.Other;
+            var ppo = NameFinderME.Other;
 
             // TODO: These should be moved out here in its own feature generator!
             if (preds != null) {

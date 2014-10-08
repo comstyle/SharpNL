@@ -87,7 +87,10 @@
     <Compile Include="NameFind\DictionaryNameFinderEvaluatorTest.cs" />
     <Compile Include="NameFind\DictionaryNameFinderTest.cs" />
     <Compile Include="NameFind\NameFinderEventStreamTest.cs" />
+    <Compile Include="NameFind\NameFinderMETest.cs" />
+    <Compile Include="NameFind\NameSampleDataStreamTest.cs" />
     <Compile Include="NameFind\NameSampleTest.cs" />
+    <Compile Include="NameFind\RegexNameFinderTest.cs" />
     <Compile Include="Parser\Chunking\ParserTest.cs" />
     <Compile Include="Parser\ChunkSampleStreamTest.cs" />
     <Compile Include="Parser\Lang\en\HeadRulesTest.cs" />

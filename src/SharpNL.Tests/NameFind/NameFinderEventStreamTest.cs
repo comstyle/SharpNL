@@ -56,10 +56,10 @@ namespace SharpNL.Tests.NameFind {
             var eventStream = new NameFinderEventStream(new CollectionObjectStream<NameSample>(nameSample));
 
             Assert.AreEqual("person-" + NameFinderME.START, eventStream.Read().Outcome);
-            Assert.AreEqual("person-" + NameFinderME.CONTINUE, eventStream.Read().Outcome);
+            Assert.AreEqual("person-" + NameFinderME.Continue, eventStream.Read().Outcome);
 
             for (int i = 0; i < 10; i++) {
-                Assert.AreEqual(NameFinderME.OTHER, eventStream.Read().Outcome);
+                Assert.AreEqual(NameFinderME.Other, eventStream.Read().Outcome);
             }
 
             Assert.Null(eventStream.Read());
