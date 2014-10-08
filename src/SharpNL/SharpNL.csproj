@@ -111,6 +111,7 @@
     <Compile Include="Formats\Muc\SgmlParser.cs" />
     <Compile Include="Java\IIterator.cs" />
     <Compile Include="Java\IteratorAdapter.cs" />
+    <Compile Include="Java\JavaClassAttribute.cs" />
     <Compile Include="Java\StringTokenizer.cs" />
     <Compile Include="Library.cs" />
     <Compile Include="ML\AbstractEventModelSequenceTrainer.cs" />

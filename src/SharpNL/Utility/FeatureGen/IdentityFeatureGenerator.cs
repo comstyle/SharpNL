@@ -21,8 +21,10 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
+    [JavaClass("opennlp.tools.util.featuregen.IdentityFeatureGenerator")]
     public class IdentityFeatureGenerator : FeatureGeneratorAdapter {
         /// <summary>
         /// Adds the appropriate features for the token at the specified index with the

@@ -21,6 +21,7 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
@@ -28,6 +29,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// <see cref="AdditionalContextFeatureGenerator"/> to make implementing feature generators
     /// easier.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.FeatureGeneratorAdapter")]
     public abstract class FeatureGeneratorAdapter : IAdaptiveFeatureGenerator {
         /// <summary>
         /// Adds the appropriate features for the token at the specified index with the

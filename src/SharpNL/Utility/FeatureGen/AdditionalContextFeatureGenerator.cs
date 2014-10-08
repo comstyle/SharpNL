@@ -21,12 +21,14 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// The <see cref="AdditionalContextFeatureGenerator"/> generates the context from the passed 
     /// in additional context.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.AdditionalContextFeatureGenerator")]
     public class AdditionalContextFeatureGenerator : FeatureGeneratorAdapter {
 
         private string[][] additionalContext;

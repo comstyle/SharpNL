@@ -21,6 +21,7 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
@@ -33,6 +34,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// Previous tokens are prefixed with p distance
     /// Next tokens are prefix with n distance
     /// </remarks>
+    [JavaClass("opennlp.tools.util.featuregen.WindowFeatureGenerator")]
     public class WindowFeatureGenerator : IAdaptiveFeatureGenerator {
         public const string PREV_PREFIX = "p";
         public const string NEXT_PREFIX = "n";

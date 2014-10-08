@@ -20,9 +20,12 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System.Linq;
 using System.Xml;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
+    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.WindowFeatureGeneratorFactory")]
     internal class WindowFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public WindowFeatureGeneratorFactory() : base("window") {}
 
@@ -34,14 +37,8 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
         public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
             FeatureGeneratorResourceProvider provider) {
-            XmlElement nestedGeneratorElement = null;
-            foreach (var childNode in generatorElement.ChildNodes) {
-                if (childNode is XmlElement) {
-                    nestedGeneratorElement = childNode as XmlElement;
-                    break;
-                }
-            }
 
+            var nestedGeneratorElement = generatorElement.ChildNodes.OfType<XmlElement>().Select(childNode => childNode).FirstOrDefault();
             if (nestedGeneratorElement == null)
                 throw new InvalidFormatException("window feature generator must contain an aggregator element");
 

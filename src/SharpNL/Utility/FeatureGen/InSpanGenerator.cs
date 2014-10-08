@@ -22,12 +22,14 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Java;
 using SharpNL.NameFind;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// Generates features if the tokens are recognized by the provided <see cref="ITokenNameFinder"/>.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.InSpanGenerator")]
     public class InSpanGenerator : FeatureGeneratorAdapter {
 
         private readonly string prefix;

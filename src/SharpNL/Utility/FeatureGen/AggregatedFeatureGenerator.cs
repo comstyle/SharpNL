@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
@@ -30,6 +31,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// and calls them to generate the features.
     /// </summary>
     /// <seealso cref="IAdaptiveFeatureGenerator"/>
+    [JavaClass("opennlp.tools.util.featuregen.AggregatedFeatureGenerator")]
     internal class AggregatedFeatureGenerator : IAdaptiveFeatureGenerator {
 
 

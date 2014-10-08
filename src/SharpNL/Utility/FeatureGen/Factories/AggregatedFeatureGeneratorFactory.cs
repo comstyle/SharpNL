@@ -22,8 +22,10 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
+    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.AggregatedFeatureGeneratorFactory")]
     internal class AggregatedFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public AggregatedFeatureGeneratorFactory() : base("generators") {}
 

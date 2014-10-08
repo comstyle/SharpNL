@@ -22,8 +22,10 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
+    [JavaClass("opennlp.tools.util.featuregen.SuffixFeatureGenerator")]
     public class SuffixFeatureGenerator : FeatureGeneratorAdapter {
 
           private const int SUFFIX_LENGTH = 4;

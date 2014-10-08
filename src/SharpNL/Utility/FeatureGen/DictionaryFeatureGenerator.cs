@@ -21,6 +21,7 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 using SharpNL.NameFind;
 
 namespace SharpNL.Utility.FeatureGen {
@@ -28,6 +29,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// The <see cref="DictionaryFeatureGenerator"/> uses the <see cref="DictionaryNameFinder"/>
     /// to generated features for detected names based on the <see cref="InSpanGenerator"/>.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.DictionaryFeatureGenerator")]
     public class DictionaryFeatureGenerator : FeatureGeneratorAdapter {
         private InSpanGenerator isg;
 

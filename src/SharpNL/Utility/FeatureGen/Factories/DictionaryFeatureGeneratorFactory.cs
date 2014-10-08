@@ -23,6 +23,7 @@
 using System.Xml;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
+
     internal class DictionaryFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public DictionaryFeatureGeneratorFactory() : base("dict") {}
 

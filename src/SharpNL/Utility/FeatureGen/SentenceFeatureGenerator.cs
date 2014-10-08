@@ -21,11 +21,13 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// This feature generator creates sentence begin and end features.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.SentenceFeatureGenerator")]
     public class SentenceFeatureGenerator : FeatureGeneratorAdapter {
         private readonly bool isGenerateFirstWordFeature;
         private readonly bool isGenerateLastWordFeature;

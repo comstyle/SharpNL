@@ -20,24 +20,24 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Xml;
-using SharpNL.Java;
+using System;
 
-namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.TokenClassFeatureGeneratorFactory")]
-    internal class TokenClassFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
-        public TokenClassFeatureGeneratorFactory() : base("tokenclass") {}
+namespace SharpNL.Java {
+    /// <summary>
+    /// Represents type string of a java class.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    internal class JavaClassAttribute : Attribute {
+
+        public JavaClassAttribute(string name) {
+            Name = name;
+        }
 
         /// <summary>
-        /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
+        /// Gets the type name.
         /// </summary>
-        /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
-        /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
-        public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
-            FeatureGeneratorResourceProvider provider) {
-            // TODO: Make it configurable ...
-            return new TokenClassFeatureGenerator(true);
-        }
+        /// <value>The type name.</value>
+        public string Name { get; private set; }
+
     }
 }

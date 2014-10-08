@@ -21,11 +21,13 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// The definition feature maps the underlying distribution of outcomes.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.OutcomePriorFeatureGenerator")]
     public class OutcomePriorFeatureGenerator : FeatureGeneratorAdapter {
         private const string OutcomePriorFeature = "def";
 

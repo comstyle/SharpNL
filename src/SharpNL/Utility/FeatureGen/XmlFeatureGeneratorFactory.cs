@@ -47,9 +47,8 @@ namespace SharpNL.Utility.FeatureGen {
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
         /// </summary>
         /// <param name="generatorElement">The element which contains the configuration.</param>
-        /// <param name="resourceManager">The resource manager which could be used to access referenced resources.</param>
+        /// <param name="provider">The resource provider which is used to resolve resources referenced by a key in the descriptor.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
-        public abstract IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
-            IFeatureGeneratorResourceProvider resourceManager);
+        public abstract IAdaptiveFeatureGenerator Create(XmlElement generatorElement, FeatureGeneratorResourceProvider provider);
     }
 }

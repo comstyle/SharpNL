@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
     // TODO: We have to support custom resources here. How does it work ?!
@@ -33,7 +34,7 @@ namespace SharpNL.Utility.FeatureGen.Factories {
     // resources by name.
     // When training, the descriptor could be consulted first to register the serializers, and afterwards
     // they are stored in the model.
-
+    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.CustomFeatureGeneratorFactory")]
     public class CustomFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         
         public CustomFeatureGeneratorFactory() : base("custom") { }

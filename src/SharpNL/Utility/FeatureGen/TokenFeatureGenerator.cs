@@ -21,11 +21,13 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// Generates a feature which contains the token itself.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.TokenFeatureGenerator")]
     public class TokenFeatureGenerator : FeatureGeneratorAdapter {
 
         private const string WordPrefix = "w";

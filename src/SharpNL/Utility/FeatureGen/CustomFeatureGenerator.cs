@@ -21,12 +21,14 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// Represents a base class for custom feature generators.
     /// </summary>
     /// <seealso cref="GeneratorFactory"/>
+    [JavaClass("opennlp.tools.util.featuregen.CustomFeatureGenerator")]
     public abstract class CustomFeatureGenerator : IAdaptiveFeatureGenerator {
         /// <summary>
         /// Adds the appropriate features for the token at the specified index with the

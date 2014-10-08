@@ -24,6 +24,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SharpNL.Java;
 using SharpNL.Tokenize;
 
 namespace SharpNL.Utility.FeatureGen {
@@ -31,6 +32,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// Partitions tokens into sub-tokens based on character classes and generates
     /// class features for each of the sub-tokens and combinations of those sub-tokens.
     /// </summary>
+    [JavaClass("opennlp.tools.util.featuregen.TokenPatternFeatureGenerator")]
     public class TokenPatternFeatureGenerator : FeatureGeneratorAdapter {
 
         private static readonly Regex noLetters;

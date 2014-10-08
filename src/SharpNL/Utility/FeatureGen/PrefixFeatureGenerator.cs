@@ -22,8 +22,10 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
+    [JavaClass("opennlp.tools.util.featuregen.PrefixFeatureGenerator")]
     public class PrefixFeatureGenerator : FeatureGeneratorAdapter {
 
         private const int PREFIX_LENGTH = 4;

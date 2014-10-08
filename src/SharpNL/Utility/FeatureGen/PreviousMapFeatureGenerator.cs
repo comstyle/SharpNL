@@ -57,7 +57,7 @@ namespace SharpNL.Utility.FeatureGen {
         /// <param name="outcomes">The outcomes associated with the specified tokens.</param>
         public void UpdateAdaptiveData(string[] tokens, string[] outcomes) {
             for (var i = 0; i < tokens.Length; i++) {
-                previousMap.Add(tokens[i], outcomes[i]);
+                previousMap[tokens[i]] = outcomes[i];
             }
         }
 

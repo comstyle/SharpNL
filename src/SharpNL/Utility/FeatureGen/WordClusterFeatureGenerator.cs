@@ -21,8 +21,10 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
+    [JavaClass("opennlp.tools.util.featuregen.WordClusterFeatureGenerator")]
     public class WordClusterFeatureGenerator : FeatureGeneratorAdapter {
         private readonly W2VClassesDictionary dictionary;
 

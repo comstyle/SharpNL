@@ -21,8 +21,10 @@
 //  
 
 using System.Xml;
+using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
+    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.BigramNameFeatureGeneratorFactory")]
     internal class BigramNameFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public BigramNameFeatureGeneratorFactory() : base("bigram") {}
 
