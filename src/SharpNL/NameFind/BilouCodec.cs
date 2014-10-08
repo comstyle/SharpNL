@@ -23,12 +23,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.NameFind {
     /// <summary>
     /// Represents a BILOU (Begin, Inside, Last, Outside, Unit) sequence codec.
     /// </summary>
+    [JavaClass("opennlp.tools.namefind.BilouCodec")]
     public class BilouCodec : ISequenceCodec<string> {
 
         internal const string START = "start";

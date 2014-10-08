@@ -227,11 +227,9 @@ namespace SharpNL.Utility {
             if (other == null) {
                 return false;
             }
-
             return Start == other.Start &&
                    End == other.End &&
-                   (Type == null || Type == other.Type) &&
-                   (other.Type == null || other.Type == Type);
+                   Type == other.Type;
         }
 
         /// <summary>

@@ -23,10 +23,11 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
+using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.NameFind {
+    [JavaClass("opennlp.tools.namefind.BioCodec")]
     internal class BioCodec : ISequenceCodec<string> {
         public const string Start = "start";
         public const string Continue = "cont";
@@ -58,9 +59,9 @@ namespace SharpNL.NameFind {
 
                 if (outcome.EndsWith(NameFinderME.START)) {
                     start.Add(outcome.Substring(0, outcome.Length - NameFinderME.START.Length));
-                } else if (outcome.EndsWith(NameFinderME.CONTINUE)) {
-                    cont.Add(outcome.Substring(0, outcome.Length - NameFinderME.CONTINUE.Length));
-                } else if (outcome.Equals(NameFinderME.OTHER)) {
+                } else if (outcome.EndsWith(NameFinderME.Continue)) {
+                    cont.Add(outcome.Substring(0, outcome.Length - NameFinderME.Continue.Length));
+                } else if (outcome.Equals(NameFinderME.Other)) {
                     // don't fail anymore if couldn't find outcome named OTHER
                 } else {
                     // got unexpected outcome

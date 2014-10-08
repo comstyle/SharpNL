@@ -21,33 +21,39 @@
 //  
 
 using System;
-
+using System.Reflection;
+using System.Security.Permissions;
+using SharpNL.Java;
+using SharpNL.Utility;
 using Ver = SharpNL.Utility.Version;
+using Version = System.Version;
+
 namespace SharpNL {
     /// <summary>
     /// Represents the SharpNL library.
     /// </summary>
     public static class Library {
 
+        /// <summary>
+        /// Initializes static members of the SharpNL library.
+        /// </summary>
+        static Library() {
+            Version = typeof(Library).Assembly.GetName().Version;
+
+            OpenNLPVersion = new Ver(1, 5, 3, false);
+
+            RegistersAllTheThings();
+        }
+
         #region + Properties .
 
-        #region . IsInitialized .
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is initialized.
-        /// </summary>
-        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
-        public static bool IsInitialized { get; private set; }
-
-        #endregion
-
-        #region . OpenNlpVersion .
+        #region . OpenNLPVersion .
 
         /// <summary>
         /// Gets the supported OpenNLP version.
         /// </summary>
         /// <value>The supported OpenNLP version.</value>
-        public static Ver OpenNlpVersion { get; private set; }
+        public static Ver OpenNLPVersion { get; private set; }
 
         #endregion
 
@@ -61,34 +67,60 @@ namespace SharpNL {
 
         #endregion
 
+        #region . TypeResolver .
+        /// <summary>
+        /// Gets type resolver loaded for this library instance.
+        /// </summary>
+        /// <value>The type resolver.</value>
+        public static TypeResolver TypeResolver { get; private set; }
         #endregion
 
-        static Library() {
-            Version = typeof (Library).Assembly.GetName().Version;
+        #endregion
 
-            OpenNlpVersion = new Ver(1, 5, 3, false);
-        }
-
+        #region . RegistersAllTheThings .
         /// <summary>
-        /// Initializes the SharpNL library.
+        /// Registers all the things \o/ \o/ \o/
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">The library is already initialized.</exception>
-        public static void Initialize() {
-            if (IsInitialized) {
-                throw new InvalidOperationException("The library is already initialized.");
-            }
+        private static void RegistersAllTheThings() {
+            // have you smiled today? No? :/
+            // Life is too short, then smile (=
 
-            IsInitialized = true;
+            // lets come back to the "serious" stuff! maybe... #lol
+
+            TypeResolver = new TypeResolver();
+
+            RegisterTheTypes();
         }
+        #endregion
+
+        #region . RegisterTheTypes .
+
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+        private static void RegisterTheTypes() {
+            // TODO: Make this loader be faster
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies) {
+                var modules = assembly.GetModules();
+                foreach (var module in modules) {
+                    var types = module.GetTypes();
+                    foreach (var type in types) {
+                        var attr = type.GetCustomAttribute<JavaClassAttribute>(false);
+                        if (attr != null) {
+                            TypeResolver.Register(attr.Name, type);                           
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion
 
         #region . Millis .
-
         private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         internal static long CurrentTimeMillis() {
             return (long) (DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }
-
         #endregion
     }
 }

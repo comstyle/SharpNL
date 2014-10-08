@@ -45,23 +45,23 @@ namespace SharpNL.Utility {
     /// The type resolver is responsible to translate a string representation of a type into a <see cref="Type"/> 
     /// object and vice versa.
     /// </summary>
-    public static class TypeResolver {
+    public class TypeResolver {
 
-        private static readonly Dictionary<string, Type> types;
-        private static readonly ReaderWriterLockSlim lockSlim;
+        private readonly Dictionary<string, Type> types;
+        private readonly ReaderWriterLockSlim lockSlim;
 
-        static TypeResolver() {
+        public TypeResolver() {
             types = new Dictionary<string, Type>();
             lockSlim = new ReaderWriterLockSlim();
         }
 
-        #region . IsRegistered .
+        #region + IsRegistered .
         /// <summary>
         /// Determines whether the specified type name is registered.
         /// </summary>
         /// <param name="name">The type name.</param>
         /// <returns><c>true</c> if the specified name is registered; otherwise, <c>false</c>.</returns>
-        public static bool IsRegistered(string name) {
+        public bool IsRegistered(string name) {
             lockSlim.EnterReadLock();
             try {
                 return types.ContainsKey(name);
@@ -69,6 +69,21 @@ namespace SharpNL.Utility {
                 lockSlim.ExitReadLock();
             }           
         }
+
+        /// <summary>
+        /// Determines whether the specified type is registered.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns><c>true</c> if the specified type is registered; otherwise, <c>false</c>.</returns>
+        public bool IsRegistered(Type type) {
+            lockSlim.EnterReadLock();
+            try {
+                return types.ContainsValue(type);
+            } finally {
+                lockSlim.ExitReadLock();
+            }            
+        }
+
         #endregion
 
         #region . Overwrite .
@@ -84,7 +99,7 @@ namespace SharpNL.Utility {
         /// </exception>
         /// <exception cref="System.ArgumentException">The specified name is not registered.</exception>
         /// <remarks>This method locks this entire instance! Use it wisely.</remarks>
-        public static void Overwrite(string name, Type type) {
+        public void Overwrite(string name, Type type) {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -110,7 +125,7 @@ namespace SharpNL.Utility {
         /// </summary>
         /// <param name="name">A string representation of the given type.</param>
         /// <param name="type">The type.</param>
-        public static void Register(string name, Type type) {
+        public void Register(string name, Type type) {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -136,7 +151,7 @@ namespace SharpNL.Utility {
         /// <param name="name">The type name.</param>
         /// <returns>The <see cref="Type" /> object or a <c>null</c> value if not recognized.</returns>
         /// <exception cref="System.ArgumentNullException">name</exception>
-        public static Type ResolveType(string name) {
+        public Type ResolveType(string name) {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -158,7 +173,7 @@ namespace SharpNL.Utility {
         /// <param name="type">The type name.</param>
         /// <returns>The resolved type name, or a <c>null</c> value if it can not be resolved.</returns>
         /// <exception cref="System.ArgumentNullException">type</exception>
-        public static string ResolveName(Type type) {
+        public string ResolveName(Type type) {
             if (type == null)
                 throw new ArgumentNullException("type");
 

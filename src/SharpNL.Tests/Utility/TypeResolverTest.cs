@@ -22,6 +22,7 @@
 
 using NUnit.Framework;
 using SharpNL.Utility;
+using SharpNL.Utility.FeatureGen;
 
 namespace SharpNL.Tests.Utility {
     /// <summary>
@@ -34,20 +35,31 @@ namespace SharpNL.Tests.Utility {
         class DummyObjectTwo { }
 
         [Test]
+        public void TestResolverFromLibrary() {
+            Assert.False(Library.TypeResolver.IsRegistered("Wot!"));
+
+            Assert.AreEqual(
+                typeof(FeatureGeneratorAdapter), Library.TypeResolver.ResolveType("opennlp.tools.util.featuregen.FeatureGeneratorAdapter")
+            );
+        }
+
+        [Test]
         public void TestResolver() {
-            TypeResolver.Register("DummyType", typeof(DummyObjectOne));
+            var typeResolver = new TypeResolver();
 
-            Assert.False(TypeResolver.IsRegistered("DummyUnknown"));
-            Assert.IsNull(TypeResolver.ResolveType("DummyUnknown"));
+            typeResolver.Register("DummyType", typeof(DummyObjectOne));
 
-            Assert.True(TypeResolver.IsRegistered("DummyType"));           
-            Assert.AreEqual("DummyType", TypeResolver.ResolveName(typeof(DummyObjectOne)));
-            Assert.AreEqual(typeof(DummyObjectOne), TypeResolver.ResolveType("DummyType"));
+            Assert.False(typeResolver.IsRegistered("DummyUnknown"));
+            Assert.IsNull(typeResolver.ResolveType("DummyUnknown"));
 
-            TypeResolver.Overwrite("DummyType", typeof(DummyObjectTwo));
-            Assert.True(TypeResolver.IsRegistered("DummyType"));
-            Assert.AreEqual("DummyType", TypeResolver.ResolveName(typeof(DummyObjectTwo)));
-            Assert.AreEqual(typeof(DummyObjectTwo), TypeResolver.ResolveType("DummyType"));
+            Assert.True(typeResolver.IsRegistered("DummyType"));
+            Assert.AreEqual("DummyType", typeResolver.ResolveName(typeof(DummyObjectOne)));
+            Assert.AreEqual(typeof(DummyObjectOne), typeResolver.ResolveType("DummyType"));
+
+            typeResolver.Overwrite("DummyType", typeof(DummyObjectTwo));
+            Assert.True(typeResolver.IsRegistered("DummyType"));
+            Assert.AreEqual("DummyType", typeResolver.ResolveName(typeof(DummyObjectTwo)));
+            Assert.AreEqual(typeof(DummyObjectTwo), typeResolver.ResolveType("DummyType"));
         }
     }
 }

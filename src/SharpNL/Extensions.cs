@@ -127,6 +127,21 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . GetKey .
+        /// <summary>
+        /// Gets the element key by the first element that are equals to the specified <paramref name="value"/>,
+        /// of a <c>default(K)</c> value if no element is found.
+        /// </summary>
+        /// <typeparam name="K">The type of the key of the <paramref name="dictionary"/>.</typeparam>
+        /// <typeparam name="V">The type of the values in the <paramref name="dictionary"/>.</typeparam>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="value">The value.</param>
+        /// <returns><c>default(k)</c> if no element is found; otherwise the first element key found in the <paramref name="dictionary"/>.</returns>
+        public static K GetKey<K, V>(this IDictionary<K, V> dictionary, V value) {
+            return dictionary.FirstOrDefault(pair => Equals(pair.Value, value)).Key;
+        }
+        #endregion
+
         #region . Each .
         /// <example>
         /// var values = new string[] { "a", "b", "c" };
