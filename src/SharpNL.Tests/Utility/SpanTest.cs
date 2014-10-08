@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Utility {
@@ -148,7 +149,7 @@ namespace SharpNL.Tests.Utility {
         }
 
         [Test]
-        public void testEquals() {
+        public void TestEquals() {
             var a1 = new Span(100, 1000, "test");
             var a2 = new Span(100, 1000, "test");
 
@@ -169,19 +170,19 @@ namespace SharpNL.Tests.Utility {
         }
 
         [Test]
-        public void testEqualsWithNull() {
+        public void TestEqualsWithNull() {
             var a = new Span(0, 0);
 
             Assert.AreEqual(a.Equals(null), false);
         }
 
         [Test]
-        public void testGetStart() {
+        public void TestGetStart() {
             Assert.AreEqual(5, new Span(5, 6).Start);
         }
 
         [Test]
-        public void testIntersects() {
+        public void TestIntersects() {
             var a = new Span(10, 50);
             var b = new Span(40, 100);
 
@@ -198,12 +199,12 @@ namespace SharpNL.Tests.Utility {
         }
 
         [Test]
-        public void testLength() {
+        public void TestLength() {
             Assert.AreEqual(11, new Span(10, 21).Length);
         }
 
         [Test]
-        public void testStartsWith() {
+        public void TestStartsWith() {
             var a = new Span(10, 50);
             var b = new Span(10, 12);
 
@@ -215,26 +216,42 @@ namespace SharpNL.Tests.Utility {
         }
 
         [Test]
-        public void testToString() {
+        public void TestToString() {
             Assert.IsNotEmpty(new Span(50, 100).ToString());
         }
 
         [Test]
-        public void testTrim() {
+        public void TestTrim() {
             const string value = "  12 34  ";
             var span1 = new Span(0, value.Length);
             Assert.AreEqual("12 34", span1.Trim(value).GetCoveredText(value));
         }
 
         [Test]
-        public void testTrimWhitespaceSpan() {
+        public void TestCoveredTextUsingTokens() {
+            var tokens = new[] {"Why", "do", "they", "call", "it", "rush", "hour", "when", "nothing", "moves", "?"};
+
+            Assert.AreEqual("rush hour", new Span(5, 6).GetCoveredText(tokens));
+            Assert.AreEqual("nothing moves ?", new Span(8, 10).GetCoveredText(tokens));
+        }
+
+        [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestCoveredTextUsingTokens2() {
+            var tokens = new[] {"one", "two"};
+
+            new Span(0, 2).GetCoveredText(tokens);
+        }
+
+
+        [Test]
+        public void TestTrimWhitespaceSpan() {
             const string value = "              ";
             var span1 = new Span(0, value.Length);
             Assert.AreEqual("", span1.Trim(value).GetCoveredText(value));
         }
 
         [Test]
-        public void testhHashCode() {
+        public void TestHashCode() {
             Assert.AreEqual(new Span(10, 11), new Span(10, 11));
         }
     }

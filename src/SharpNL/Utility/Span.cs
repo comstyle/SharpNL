@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -256,7 +257,7 @@ namespace SharpNL.Utility {
 
         #endregion
 
-        #region . GetCoveredText .
+        #region + GetCoveredText .
         /// <summary>
         /// Gets the text covered by the current span.
         /// </summary>
@@ -271,6 +272,33 @@ namespace SharpNL.Utility {
 
             return text.Substring(Start, Length);
         }
+
+        /// <summary>
+        /// Gets the covered text by the given tokens using the <see cref="Start" /> and <see cref="End" /> positions.
+        /// </summary>
+        /// <param name="tokens">The tokens.</param>
+        /// <returns>The substring covered by the current span.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="tokens"/>
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">tokens
+        /// <paramref name="tokens"/>
+        /// </exception>
+        public string GetCoveredText(string[] tokens) {
+            if (tokens == null)
+                throw new ArgumentNullException("tokens");
+
+            if (End > tokens.Length - 1)
+                throw new ArgumentOutOfRangeException("tokens", tokens.Length, string.Format("The token array must have {0} or more elements.", End));
+
+            var sb = new StringBuilder();
+            for (var i = Start; i < End; i++) {
+                sb.Append(tokens[i]).Append(" ");
+            }
+
+            return sb.ToString(0, sb.Length - 1);
+        }
+
         #endregion
 
         #region . Intersects .
