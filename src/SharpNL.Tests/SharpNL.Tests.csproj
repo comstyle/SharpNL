@@ -136,6 +136,7 @@
     <Compile Include="Utility\SpanTest.cs" />
     <Compile Include="Utility\StringListTest.cs" />
     <Compile Include="Utility\ToolFactoryManagerTest.cs" />
+    <Compile Include="Utility\TypeResolverTest.cs" />
     <Compile Include="Utility\VersionTest.cs" />
   </ItemGroup>
   <ItemGroup>
