@@ -29,28 +29,28 @@ using SharpNL.Utility.Model;
 
 namespace SharpNL.Doccat {
     /// <summary>
-    /// Represents a Doccat model.
+    /// Represents a document categorizer model.
     /// </summary>
-    public class DoccatModel : BaseModel {
+    public class DocumentCategorizerModel : BaseModel {
 
         private const string ComponentName = "DocumentCategorizerME";
         private const string DoccatEntry = "doccat.model";
 
         #region + Language .
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoccatModel"/> with a input stream.
+        /// Initializes a new instance of the <see cref="DocumentCategorizerModel"/> with a input stream.
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
-        public DoccatModel(Stream inputStream) : base(ComponentName, inputStream) { }
+        public DocumentCategorizerModel(Stream inputStream) : base(ComponentName, inputStream) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoccatModel"/> with the default parameters.
+        /// Initializes a new instance of the <see cref="DocumentCategorizerModel"/> with the default parameters.
         /// </summary>
         /// <param name="languageCode">The language code.</param>
         /// <param name="doccatModel">The doccat model.</param>
         /// <param name="manifestInfoEntries">The manifest information entries.</param>
         /// <param name="factory">The factory.</param>
-        public DoccatModel(string languageCode, IMaxentModel doccatModel, Dictionary<string, string> manifestInfoEntries, DoccatFactory factory)
+        public DocumentCategorizerModel(string languageCode, IMaxentModel doccatModel, Dictionary<string, string> manifestInfoEntries, DocumentCategorizerFactory factory)
             : base(ComponentName, languageCode, manifestInfoEntries, factory) {
 
             artifactMap.Add(DoccatEntry, doccatModel);
@@ -64,7 +64,7 @@ namespace SharpNL.Doccat {
         /// </summary>
         /// <returns>The default tool factory.</returns>
         protected override Type DefaultFactory {
-            get { return typeof(DoccatFactory); }
+            get { return typeof(DocumentCategorizerFactory); }
         }
         #endregion
 

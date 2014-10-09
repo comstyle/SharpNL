@@ -28,9 +28,9 @@ using SharpNL.Utility;
 
 namespace SharpNL.Doccat {
     /// <summary>
-    /// The factory that provides Doccat default implementations and resources.
+    /// The factory that provides the document categorizer default implementations and resources.
     /// </summary>
-    public class DoccatFactory : BaseToolFactory {
+    public class DocumentCategorizerFactory : BaseToolFactory {
 
         private const string GeneratorsEntry = "doccat.featureGenerators";
         private const string TokenizerEntry = "doccat.tokenizer";
@@ -41,13 +41,13 @@ namespace SharpNL.Doccat {
         #region + Constructors .
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoccatFactory"/> that provides 
+        /// Initializes a new instance of the <see cref="DocumentCategorizerFactory"/> that provides 
         /// the default implementation of the resources.
         /// </summary>
-        public DoccatFactory() { }
+        public DocumentCategorizerFactory() { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DoccatFactory"/> with the specified tokenizer and the feature generatos.
+        /// Initializes a new instance of the <see cref="DocumentCategorizerFactory"/> with the specified tokenizer and the feature generatos.
         /// </summary>
         /// <param name="tokenizer">The tokenizer.</param>
         /// <param name="featureGenerators">The feature generators.</param>
@@ -57,7 +57,7 @@ namespace SharpNL.Doccat {
         /// <paramref name="featureGenerators"/>
         /// </exception>
         /// <exception cref="System.ArgumentException">The specified tokenizer is not registered in the type resolver.</exception>
-        public DoccatFactory(ITokenizer tokenizer, IFeatureGenerator[] featureGenerators) {
+        public DocumentCategorizerFactory(ITokenizer tokenizer, IFeatureGenerator[] featureGenerators) {
             if (tokenizer == null)
                 throw new ArgumentNullException("tokenizer");
 
