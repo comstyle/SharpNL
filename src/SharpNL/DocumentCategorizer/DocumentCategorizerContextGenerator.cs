@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SharpNL.Doccat {
+namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Represents the document categorizer context generator.
     /// </summary>

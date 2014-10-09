@@ -26,7 +26,7 @@ using System.Text;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 
-namespace SharpNL.Doccat {
+namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// The factory that provides the document categorizer default implementations and resources.
     /// </summary>
@@ -129,7 +129,7 @@ namespace SharpNL.Doccat {
 
                         try {
                             var type = Library.TypeResolver.ResolveType(className);
-                            tokenizer = (ITokenizer) Activator.CreateInstance(type);
+                            tokenizer = Library.CreateInstance<ITokenizer>(type);
                         } catch (Exception ex) {
                             throw new InvalidOperationException("Unable to create the tokenizer instance.", ex);
                         }
@@ -195,7 +195,7 @@ namespace SharpNL.Doccat {
                     throw new NotSupportedException(
                         string.Format("Unable to resolve the type {0} with the SharpNL type resolver.", classes[i]));
 
-                fgs[i] = (IFeatureGenerator)Activator.CreateInstance(type);
+                fgs[i] = Library.CreateInstance<IFeatureGenerator>(type);
             }
             return fgs;
         }

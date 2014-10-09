@@ -20,21 +20,31 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
+using NUnit.Framework;
+using SharpNL.DocumentCategorizer;
 
-namespace SharpNL.Doccat {
-    /// <summary>
-    /// Interface for generating features for document categorization.
-    /// </summary>
-    public interface IFeatureGenerator {
+namespace SharpNL.Tests.DocumentCategorizer {
+    [TestFixture]
+    public class DocumentSampleTest {
 
-        /// <summary>
-        /// Extracts the features from the given words.
-        /// </summary>
-        /// <param name="words">The words array.</param>
-        /// <param name="extraInformation">The extra information.</param>
-        /// <returns>The list of features.</returns>
-        List<string> ExtractFeatures(string[] words, Dictionary<string, object> extraInformation);
+        [Test]
+        public void TestEquals() {
 
+            // ReSharper disable once PossibleUnintendedReferenceComparison
+            // ReSharper disable once EqualExpressionComparison
+            Assert.False(CreateGoldSample() == CreateGoldSample());
+            Assert.True(CreateGoldSample().Equals(CreateGoldSample()));
+            Assert.False(CreatePredSample().Equals(CreateGoldSample()));
+            Assert.False(CreatePredSample().Equals(new object()));
+
+        }
+
+        internal static DocumentSample CreateGoldSample() {
+            return new DocumentSample("aCategory", "a small text");
+        }
+
+        internal static DocumentSample CreatePredSample() {
+            return new DocumentSample("anotherCategory", "a small text");
+        }
     }
 }

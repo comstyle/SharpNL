@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using SharpNL.Java;
 using SharpNL.Utility.FeatureGen;
 
-namespace SharpNL.Doccat {
+namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Generates a feature for each word in a document.
     /// </summary>

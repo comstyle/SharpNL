@@ -72,6 +72,9 @@
     <Compile Include="Chunker\DummyChunkerFactory.cs" />
     <Compile Include="Chunker\DummyChunkSampleStream.cs" />
     <Compile Include="Dictionary\DictionaryTest.cs" />
+    <Compile Include="DocumentCategorizer\DocumentCategorizerFactoryTest.cs" />
+    <Compile Include="DocumentCategorizer\DocumentCategorizerMETest.cs" />
+    <Compile Include="DocumentCategorizer\DocumentSampleTest.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ExtensionsTest.cs" />
     <Compile Include="Formats\Ad\AdSentenceSampleStreamTest.cs" />

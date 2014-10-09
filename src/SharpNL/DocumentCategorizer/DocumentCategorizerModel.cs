@@ -27,7 +27,7 @@ using SharpNL.ML.Model;
 using SharpNL.Utility;
 using SharpNL.Utility.Model;
 
-namespace SharpNL.Doccat {
+namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Represents a document categorizer model.
     /// </summary>
