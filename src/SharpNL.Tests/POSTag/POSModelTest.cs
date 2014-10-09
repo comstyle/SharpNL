@@ -42,7 +42,7 @@ namespace SharpNL.Tests.POSTag {
 
                 Assert.AreEqual(posModel.Language, recreated.Language);
                 Assert.AreEqual(posModel.Manifest, recreated.Manifest);
-                Assert.AreEqual(posModel.GetPosSequenceModel().GetType(), recreated.GetPosSequenceModel().GetType());
+                Assert.AreEqual(posModel.PosSequenceModel.GetType(), recreated.PosSequenceModel.GetType());
                 Assert.AreEqual(posModel.Factory.GetType(), recreated.Factory.GetType());
             }
         }
@@ -60,7 +60,7 @@ namespace SharpNL.Tests.POSTag {
 
                 Assert.AreEqual(posModel.Language, recreated.Language);
                 Assert.AreEqual(posModel.Manifest, recreated.Manifest);
-                Assert.AreEqual(posModel.GetPosSequenceModel().GetType(), recreated.GetPosSequenceModel().GetType());
+                Assert.AreEqual(posModel.PosSequenceModel.GetType(), recreated.PosSequenceModel.GetType());
                 Assert.AreEqual(posModel.Factory.GetType(), recreated.Factory.GetType());
 
             }

@@ -29,7 +29,7 @@ namespace SharpNL.Tests.Utility {
 
         [Test]
         public void TestParse() {
-            var version = Library.OpenNlpVersion;
+            var version = Library.OpenNLPVersion;
 
             Assert.AreEqual(version, Version.Parse(version.ToString()));
             Assert.AreEqual(new Version(1, 5, 2, false), Version.Parse("1.5.2-incubating"));
