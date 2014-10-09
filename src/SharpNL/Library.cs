@@ -77,6 +77,22 @@ namespace SharpNL {
 
         #endregion
 
+        #region . CreateInstance .
+        internal static object CreateInstance(Type type) {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            var instance = type.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
+            if (instance != null)
+                return instance.GetValue(null);
+
+            return Activator.CreateInstance(type);
+        }
+        internal static T CreateInstance<T>(Type type) {
+            return (T)CreateInstance(type);
+        }
+        #endregion
+
         #region . RegistersAllTheThings .
         /// <summary>
         /// Registers all the things \o/ \o/ \o/
