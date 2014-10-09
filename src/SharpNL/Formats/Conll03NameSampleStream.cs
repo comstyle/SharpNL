@@ -27,10 +27,11 @@ using SharpNL.NameFind;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats {
-    public class Conll02NameSampleStream : IObjectStream<NameSample> {
+    public class Conll03NameSampleStream : IObjectStream<NameSample> {
+
         public enum Language {
-            ES,
-            NL
+            En,
+            De
         }
 
         [Flags]
@@ -38,33 +39,31 @@ namespace SharpNL.Formats {
             PersonEntities = 1 << 0,
             OrganizationEntities = 1 << 1,
             LocationEntities = 1 << 2,
-            MiscEntities = 1 << 3           
+            MiscEntities = 1 << 3
         }
 
-        internal const string DocStart = "-DOCSTART-";
+        private readonly Language language;
+        private readonly IObjectStream<string> lineStream;
+        private readonly Types types;
 
-        internal readonly Language lang;
-        internal readonly IObjectStream<string> lineStream;
-
-        internal readonly Types types;
+        private const string DocStart = "-DOCSTART-";
 
         #region + Constructors .
-
-        public Conll02NameSampleStream(Language lang, IObjectStream<string> lineStream, Types types) {
-            if (!Enum.IsDefined(typeof (Language), lang))
-                throw new ArgumentOutOfRangeException("lang");
+        public Conll03NameSampleStream(Language language, IObjectStream<string> lineStream, Types types) {
+            if (!Enum.IsDefined(typeof(Language), language))
+                throw new ArgumentOutOfRangeException("language");
 
             if (lineStream == null)
                 throw new ArgumentNullException("lineStream");
 
-            this.lang = lang;
+            this.language = language;
             this.lineStream = lineStream;
             this.types = types;
         }
 
-        public Conll02NameSampleStream(Language lang, Stream inputStream, Types types) {
-            if (!Enum.IsDefined(typeof(Language), lang))
-                throw new ArgumentOutOfRangeException("lang");
+        public Conll03NameSampleStream(Language language, Stream inputStream, Types types) {
+            if (!Enum.IsDefined(typeof(Language), language))
+                throw new ArgumentOutOfRangeException("language");
 
             if (!Enum.IsDefined(typeof(Types), types))
                 throw new ArgumentOutOfRangeException("types");
@@ -72,34 +71,22 @@ namespace SharpNL.Formats {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
 
-            this.lang = lang;
+            this.language = language;
             lineStream = new PlainTextByLineStream(inputStream);
             this.types = types;
         }
 
-        public Conll02NameSampleStream(Language lang, IInputStreamFactory streamFactory, Types types) {
-            if (!Enum.IsDefined(typeof (Language), lang))
-                throw new ArgumentOutOfRangeException("lang");
+        public Conll03NameSampleStream(Language language, IInputStreamFactory streamFactory, Types types) {
+            if (!Enum.IsDefined(typeof(Language), language))
+                throw new ArgumentOutOfRangeException("language");
 
             if (streamFactory == null)
                 throw new ArgumentNullException("streamFactory");
 
-            this.lang = lang;
+            this.language = language;
             lineStream = new PlainTextByLineStream(streamFactory);
             this.types = types;
         }
-
-        #endregion
-
-        #region . Dispose .
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose() {
-            lineStream.Dispose();
-        }
-
         #endregion
 
         #region . Extract .
@@ -128,7 +115,15 @@ namespace SharpNL.Formats {
 
         #endregion
 
-        #region . Read .
+        #region . Dispose .
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, 
+        /// releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose() {
+            lineStream.Dispose();
+        }
+        #endregion
 
         /// <summary>
         /// Returns the next object. Calling this method repeatedly until it returns,
@@ -147,26 +142,32 @@ namespace SharpNL.Formats {
 
             string line;
             while ((line = lineStream.Read()) != null && !string.IsNullOrWhiteSpace(line)) {
-                if (lang == Language.NL && line.StartsWith(DocStart)) {
+                if (line.StartsWith(DocStart)) {
                     isClearAdaptiveData = true;
+
+                    line = lineStream.Read();
+                    if (!string.IsNullOrEmpty(line))
+                        throw new InvalidFormatException("Empty line after -DOCSTART- not empty: '" + line + "'!");
+
                     continue;
                 }
 
                 var fields = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (fields.Length == 3) {
+                
+                if (language == Language.En && fields.Length == 4) {
+                    // For English: WORD  POS-TAG SC-TAG NE-TAG
                     sentence.Add(fields[0]);
-                    tags.Add(fields[2]);
+                    tags.Add(fields[3]);
+                } else if (language == Language.De && fields.Length == 5) {
+                    // For German: WORD  LEMA-TAG POS-TAG SC-TAG NE-TAG
+                    sentence.Add(fields[0]);
+                    tags.Add(fields[4]);
                 } else {
                     throw new InvalidFormatException(
-                        string.Format("Expected three fields per line in training data, got {0} for line '{1}'!",
-                            fields.Length, line));
+                        string.Format("Incorrect number of fields per line for language: '{0}'!", line));
                 }
             }
-
-            // Always clear adaptive data for spanish
-            if (lang == Language.ES)
-                isClearAdaptiveData = true;
 
             if (sentence.Count > 0) {
                 // convert name tags into spans
@@ -189,22 +190,34 @@ namespace SharpNL.Formats {
                     if (tag.EndsWith("MISC") && (types & Types.MiscEntities) == 0)
                         tag = "O";
 
-                    if (tag.StartsWith("B-")) {
+                    if (tag == "O") {
+                        if (beginIndex == -1) 
+                            continue;
+
+                        names.Add(Extract(beginIndex, endIndex, tags[beginIndex]));
+                        beginIndex = -1;
+                        endIndex = -1;
+                    } else if (tag.StartsWith("B-")) {
+                        // B- prefix means we have two same entities next to each other
                         if (beginIndex != -1) {
                             names.Add(Extract(beginIndex, endIndex, tags[beginIndex]));
-                            //beginIndex = -1;
-                            //endIndex = -1;
                         }
-
                         beginIndex = i;
                         endIndex = i + 1;
+
                     } else if (tag.StartsWith("I-")) {
-                        endIndex++;
-                    } else if (tag.Equals("O")) {
-                        if (beginIndex != -1) {
+                        // I- starts or continues a current name entity
+                        if (beginIndex == -1) {
+                            beginIndex = i;
+                            endIndex = i + 1;
+                        } else if (!tag.EndsWith(tags[beginIndex].Substring(1))) {
+                            // we have a new tag type following a tagged word series
+                            // also may not have the same I- starting the previous!
                             names.Add(Extract(beginIndex, endIndex, tags[beginIndex]));
-                            beginIndex = -1;
-                            endIndex = -1;
+                            beginIndex = i;
+                            endIndex = i + 1;
+                        } else {
+                            endIndex++;
                         }
                     } else {
                         throw new InvalidFormatException("Invalid tag: " + tag);
@@ -225,10 +238,7 @@ namespace SharpNL.Formats {
             return null;
         }
 
-        #endregion
-
         #region . Reset .
-
         /// <summary>
         /// Repositions the stream at the beginning and the previously seen object 
         /// sequence will be repeated exactly. This method can be used to re-read the
@@ -237,7 +247,6 @@ namespace SharpNL.Formats {
         public void Reset() {
             lineStream.Reset();
         }
-
         #endregion
 
     }

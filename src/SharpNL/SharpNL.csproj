@@ -107,6 +107,7 @@
     <Compile Include="Formats\Brat\RelationAnnotation.cs" />
     <Compile Include="Formats\Brat\SpanAnnotation.cs" />
     <Compile Include="Formats\Conll02NameSampleStream.cs" />
+    <Compile Include="Formats\Conll03NameSampleStream.cs" />
     <Compile Include="Formats\ConllXPOSSampleStream.cs" />
     <Compile Include="Formats\Convert\AbstractToSentenceSampleStream.cs" />
     <Compile Include="Formats\Convert\FileToByteArraySampleStream.cs" />

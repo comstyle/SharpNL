@@ -79,6 +79,7 @@
     <Compile Include="ExtensionsTest.cs" />
     <Compile Include="Formats\Ad\AdSentenceSampleStreamTest.cs" />
     <Compile Include="Formats\Conll02NameSampleStreamTest.cs" />
+    <Compile Include="Formats\Conll03NameSampleStreamTest.cs" />
     <Compile Include="Formats\Muc\DocumentSplitterStreamTest.cs" />
     <Compile Include="Formats\Muc\SgmlParserTest.cs" />
     <Compile Include="ML\MaxEnt\MaxentPrepAttachTest.cs" />
