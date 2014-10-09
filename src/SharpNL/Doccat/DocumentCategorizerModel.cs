@@ -68,6 +68,16 @@ namespace SharpNL.Doccat {
         }
         #endregion
 
+        #region . Factory .
+        /// <summary>
+        /// Gets the factory.
+        /// </summary>
+        /// <value>The factory.</value>
+        public DocumentCategorizerFactory Factory {
+            get { return (DocumentCategorizerFactory) ToolFactory; }
+        }
+        #endregion
+
         #region . MaxentModel .
         /// <summary>
         /// Gets the maxent model.
