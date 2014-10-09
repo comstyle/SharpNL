@@ -25,7 +25,7 @@ using System.Collections.Generic;
 namespace SharpNL.Utility.Evaluation {
     /// <summary>
     /// The FMeasure is an utility class for evaluators which measure precision,
-    /// recall and the resulting f-measure.
+    /// recall and the resulting f-measure (weighted harmonic mean).
     /// </summary>
     /// <typeparam name="T">The type of the objects to be evaluated.</typeparam>
     /// <remarks>Evaluation results are the arithmetic mean of the precision scores calculated
@@ -41,9 +41,10 @@ namespace SharpNL.Utility.Evaluation {
         #region . PrecisionScore .
 
         /// <summary>
-        /// Retrieves the arithmetic mean of the precision scores calculated for each evaluated sample.
+        /// Retrieves the arithmetic mean of the precision scores calculated for each evaluated sample. 
         /// </summary>
         /// <value>The arithmetic mean of all precision scores</value>
+        /// <remarks>In other words the precision score means the percent of selected items that are correct.</remarks>
         public double PrecisionScore {
             get { return selected > 0 ? truePositive/(double) selected : 0; }
         }
@@ -56,6 +57,10 @@ namespace SharpNL.Utility.Evaluation {
         /// Retrieves the arithmetic mean of the recall score calculated for each evaluated sample.
         /// </summary>
         /// <value>The arithmetic mean of all recall scores</value>
+        /// <remarks>
+        /// In other words is the opposite measure of <see cref="PrecisionScore"/>, means the percent
+        /// of correct items that are selected. 
+        /// </remarks>
         public double RecallScore {
             get { return target > 0 ? truePositive/(double) target : 0; }
         }
