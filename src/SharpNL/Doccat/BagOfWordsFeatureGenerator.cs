@@ -51,13 +51,13 @@ namespace SharpNL.Doccat {
         /// <summary>
         /// Extracts the features from the given words.
         /// </summary>
-        /// <param name="words">The words array.</param>
+        /// <param name="text">The words array.</param>
         /// <param name="extraInformation">The extra information.</param>
         /// <returns>The list of features.</returns>
-        public List<string> ExtractFeatures(string[] words, Dictionary<string, object> extraInformation) {
-            var bag = new List<string>(words.Length);
+        public List<string> ExtractFeatures(string[] text, Dictionary<string, object> extraInformation) {
+            var bag = new List<string>(text.Length);
 
-            foreach (var word in words) {
+            foreach (var word in text) {
                 if (useOnlyAllLetterTokens) {
                     if (StringPattern.Recognize(word).AllLetter)
                         bag.Add("bow=" + word);
