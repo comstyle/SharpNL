@@ -307,7 +307,7 @@ namespace SharpNL.NameFind {
                 return new TokenNameFinderModel(
                     languageCode,
                     scModel,
-                    null,
+                    factory.FeatureGenerator,
                     factory.Resources,
                     manifestInfoEntries,
                     factory.SequenceCodec);
@@ -317,7 +317,7 @@ namespace SharpNL.NameFind {
                 languageCode,
                 meModel,
                 beamSize,
-                null,
+                factory.FeatureGenerator,
                 factory.Resources,
                 manifestInfoEntries,
                 factory.SequenceCodec);

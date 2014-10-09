@@ -34,10 +34,6 @@ namespace SharpNL.NameFind {
     /// The implementations of this class will work only if they are used during the training.
     /// </remarks>
     public class TokenNameFinderFactory : BaseToolFactory {
-        /// <summary>
-        /// The feature generator bytes specified specified on the constructor.
-        /// </summary>
-        private readonly byte[] featureGeneratorBytes;
 
         #region + Constructors .
 
@@ -65,7 +61,7 @@ namespace SharpNL.NameFind {
         /// <param name="seqCodec">The sequence codec.</param>
         public TokenNameFinderFactory(byte[] featureGeneratorBytes, Dictionary<string, object> resources,
             ISequenceCodec<string> seqCodec) {
-            this.featureGeneratorBytes = featureGeneratorBytes;
+            FeatureGenerator = featureGeneratorBytes;
             Resources = resources;
             SequenceCodec = seqCodec;
         }
@@ -94,6 +90,14 @@ namespace SharpNL.NameFind {
 
         #endregion
 
+        #region . FeatureGenerator .
+        /// <summary>
+        /// Gets feature generator bytes.
+        /// </summary>
+        /// <value>The feature generator bytes.</value>
+        public byte[] FeatureGenerator { get; protected set; }
+        #endregion
+
         #endregion
 
         #region . CreateContextGenerator .
@@ -117,10 +121,10 @@ namespace SharpNL.NameFind {
         /// <returns>The feature generator or null if there is no descriptor in the model.</returns>
         public virtual IAdaptiveFeatureGenerator CreateFeatureGenerators() {
             byte[] descriptorBytes;
-            if (featureGeneratorBytes == null && ArtifactProvider != null) {
+            if (FeatureGenerator == null && ArtifactProvider != null) {
                 descriptorBytes = ArtifactProvider.GetArtifact<byte[]>(TokenNameFinderModel.GeneratorDescriptorEntry);
             } else {
-                descriptorBytes = featureGeneratorBytes;
+                descriptorBytes = FeatureGenerator;
             }
 
             if (descriptorBytes != null) {
