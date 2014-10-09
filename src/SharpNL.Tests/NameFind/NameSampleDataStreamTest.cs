@@ -142,9 +142,12 @@ namespace SharpNL.Tests.NameFind {
                 NameSample ns;
                 while ((ns = sampleStream.Read()) != null) {
                     foreach (var nameSpan in ns.Names) {
+
                         if (!names.ContainsKey(nameSpan.Type)) {
+
                             names.Add(nameSpan.Type, new List<string>());
                             spans.Add(nameSpan.Type, new List<Span>());
+
                         }
                         names[nameSpan.Type].Add(nameSpan.GetCoveredText(ns.Sentence));
                         spans[nameSpan.Type].Add(nameSpan);

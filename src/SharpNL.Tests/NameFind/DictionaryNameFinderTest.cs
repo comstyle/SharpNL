@@ -75,7 +75,7 @@ namespace SharpNL.Tests.NameFind {
         }
 
         [Test]
-        public void TestLastMatchingTokenNameIsChoosen() {
+        public void TestLastMatchingTokenNameIsChosen() {
 
             var sentence = new[] {"a", "b", "c", "Vanessa"};
             var names = nameFinder.Find(sentence);

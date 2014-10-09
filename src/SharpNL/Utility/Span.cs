@@ -287,7 +287,7 @@ namespace SharpNL.Utility {
             if (tokens == null)
                 throw new ArgumentNullException("tokens");
 
-            if (End > tokens.Length - 1)
+            if (End > tokens.Length)
                 throw new ArgumentOutOfRangeException("tokens", tokens.Length, string.Format("The token array must have {0} or more elements.", End));
 
             var sb = new StringBuilder();

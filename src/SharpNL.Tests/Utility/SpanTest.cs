@@ -231,17 +231,16 @@ namespace SharpNL.Tests.Utility {
         public void TestCoveredTextUsingTokens() {
             var tokens = new[] {"Why", "do", "they", "call", "it", "rush", "hour", "when", "nothing", "moves", "?"};
 
-            Assert.AreEqual("rush hour", new Span(5, 6).GetCoveredText(tokens));
-            Assert.AreEqual("nothing moves ?", new Span(8, 10).GetCoveredText(tokens));
+            Assert.AreEqual("rush hour", new Span(5, 7).GetCoveredText(tokens));
+            Assert.AreEqual("nothing moves ?", new Span(8, 11).GetCoveredText(tokens));
         }
 
         [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestCoveredTextUsingTokens2() {
             var tokens = new[] {"one", "two"};
 
-            new Span(0, 2).GetCoveredText(tokens);
+            new Span(0, 3).GetCoveredText(tokens);
         }
-
 
         [Test]
         public void TestTrimWhitespaceSpan() {

@@ -20,35 +20,18 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
-using System.IO;
+using System.Diagnostics;
+using SharpNL.NameFind;
+using SharpNL.Utility.Evaluation;
 
-namespace SharpNL.Utility {
-    /// <summary>
-    /// Class MockInputStreamFactory.
-    /// </summary>
-    public class MockInputStreamFactory : IInputStreamFactory {
-
-        private readonly Stream inputStream;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MockInputStreamFactory"/> class.
-        /// </summary>
-        /// <param name="inputStream">The input stream.</param>
-        /// <exception cref="System.ArgumentNullException">inputStream</exception>
-        public MockInputStreamFactory(Stream inputStream) {
-            if (inputStream == null)
-                throw new ArgumentNullException("inputStream");
-
-            this.inputStream = inputStream;
+namespace SharpNL.Tests.NameFind.Support {
+    internal class NameEvaluationErrorListener : IEvaluationMonitor<NameSample> {
+        public void CorrectlyClassified(NameSample reference, NameSample prediction) {
+            // Woot !
         }
 
-        /// <summary>
-        /// Creates the input stream.
-        /// </summary>
-        /// <returns>Stream.</returns>
-        public virtual Stream CreateInputStream() {
-            return inputStream;
+        public void Misclassified(NameSample reference, NameSample prediction) {
+            Debug.Print("Misclassified:" + reference + ", Prediction: " + prediction);
         }
     }
 }

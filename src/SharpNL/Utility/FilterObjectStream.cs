@@ -47,7 +47,7 @@ namespace SharpNL.Utility {
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public void Dispose() {
+        public virtual void Dispose() {
             Samples.Dispose();
         }
 
@@ -65,7 +65,7 @@ namespace SharpNL.Utility {
         /// sequence will be repeated exactly. This method can be used to re-read the
         /// stream if multiple passes over the objects are required.
         /// </summary>
-        public void Reset() {
+        public virtual void Reset() {
             Samples.Reset();
         }
     }

@@ -71,7 +71,7 @@ namespace SharpNL.Utility.Evaluation {
         /// Implementations should override <see cref="M:ProcessSample"/> instead.
         /// If this method is override, the implementation has to update the score after every invocation.
         /// </remarks>
-        private void EvaluateSample(T sample) {
+        internal void EvaluateSample(T sample) {
             var predicted = ProcessSample(sample);
             foreach (var listener in listeners) {
                 if (sample.Equals(predicted)) {
