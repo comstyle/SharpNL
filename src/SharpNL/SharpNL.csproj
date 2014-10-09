@@ -114,6 +114,7 @@
     <Compile Include="Java\JavaClassAttribute.cs" />
     <Compile Include="NameFind\RegexNameFinder.cs" />
     <Compile Include="NameFind\TokenNameFinderCrossValidator.cs" />
+    <Compile Include="NGram\NGramGenerator.cs" />
     <Compile Include="Utility\TypeResolver.cs" />
     <Compile Include="Java\StringTokenizer.cs" />
     <Compile Include="Library.cs" />
