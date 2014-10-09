@@ -25,6 +25,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+
 using System.Collections.Generic;
 using System.Security.Permissions;
 
@@ -300,6 +301,31 @@ namespace SharpNL {
             while (iterator.MoveNext()) {
                 yield return (T)iterator.Current;
             }
+        }
+        #endregion
+
+        #region . In .
+        /// <summary>
+        /// Determines if the instance is equal to any of the specified values
+        /// </summary>
+        /// <typeparam name="T">The object type</typeparam>
+        /// <param name="input">The input object.</param>
+        /// <param name="values">The values to be compared.</param>
+        /// <returns><c>true</c> if the instance is equal to any of the specified values, <c>false</c> otherwise.</returns>
+        public static bool In<T>(this T input, params T[] values) {
+            return values.Contains(input);
+
+        }
+
+        /// <summary>
+        /// Determines if the instance is equal to any of the specified values
+        /// </summary>
+        /// <typeparam name="T">The object type</typeparam>
+        /// <param name="input">The input object.</param>
+        /// <param name="values">The values to be compared.</param>
+        /// <returns><c>true</c> if the instance is equal to any of the specified values, <c>false</c> otherwise.</returns>
+        public static bool In<T>(this T input, IEnumerable<T> values) {
+            return values.Any(arg => input.Equals(arg));
         }
         #endregion
 
