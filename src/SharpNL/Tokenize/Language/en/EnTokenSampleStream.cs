@@ -34,7 +34,7 @@ namespace SharpNL.Tokenize.Language.en {
     /// This class uses a number of English-specific heuristics to un-separate tokens which
     /// are typically found together in text.
     /// </summary>
-    public class TokenSampleStream : IEnumerator<TokenSample> {
+    public class EnTokenSampleStream : IEnumerator<TokenSample> {
         private static readonly Regex alphaNumeric;
         private readonly StreamReader reader;
         private readonly long startPos;
@@ -42,11 +42,11 @@ namespace SharpNL.Tokenize.Language.en {
         private string line;
 
 
-        static TokenSampleStream() {
+        static EnTokenSampleStream() {
             alphaNumeric = new Regex("[A-Za-z0-9]", RegexOptions.Compiled);
         }
 
-        public TokenSampleStream(Stream inputStream) {
+        public EnTokenSampleStream(Stream inputStream) {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
 
@@ -65,10 +65,10 @@ namespace SharpNL.Tokenize.Language.en {
         #region . Current .
 
         /// <summary>
-        /// Gets the <see cref="TokenSample"/> in the collection at the current position of the <see cref="TokenSampleStream"/>.
+        /// Gets the <see cref="TokenSample"/> in the collection at the current position of the <see cref="EnTokenSampleStream"/>.
         /// </summary>
         /// <returns>
-        /// The <see cref="TokenSample"/> in the collection at the current position of the <see cref="TokenSampleStream"/>.
+        /// The <see cref="TokenSample"/> in the collection at the current position of the <see cref="EnTokenSampleStream"/>.
         /// </returns>
         public TokenSample Current { get; private set; }
 

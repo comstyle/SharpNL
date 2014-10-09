@@ -47,7 +47,7 @@ namespace SharpNL.Tokenize.Language {
         public static ITokenContextGenerator CreateTokenContextGenerator(string languageCode, List<string> abbreviations) {
             switch (languageCode) {
                 case "pt":
-                    return new pt.TokenContextGenerator(abbreviations);
+                    return new pt.PtTokenContextGenerator(abbreviations);
                 default:
                     return new DefaultTokenContextGenerator(abbreviations);
             }

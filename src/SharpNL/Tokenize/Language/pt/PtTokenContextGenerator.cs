@@ -31,16 +31,16 @@ namespace SharpNL.Tokenize.Language.pt {
     /// <summary>
     /// Represents a portuguese token context generator.
     /// </summary>
-    public class TokenContextGenerator : DefaultTokenContextGenerator {
+    public class PtTokenContextGenerator : DefaultTokenContextGenerator {
 
         private static readonly Regex itemRegex;
 
-        static TokenContextGenerator() {
+        static PtTokenContextGenerator() {
             itemRegex = new Regex("^\\p{Nd}[\\.)]$", RegexOptions.Compiled);
         }
 
-        public TokenContextGenerator() : base(new List<string>()) {}
-        public TokenContextGenerator(List<string> inducedAbbreviations) : base(inducedAbbreviations) { }
+        public PtTokenContextGenerator() : base(new List<string>()) {}
+        public PtTokenContextGenerator(List<string> inducedAbbreviations) : base(inducedAbbreviations) { }
 
 
         /// <summary>

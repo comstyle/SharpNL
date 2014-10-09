@@ -33,17 +33,17 @@ namespace SharpNL.Sentence.Language.pt {
     /// <summary>
     /// Generate event contexts for maxent decisions for sentence detection.
     /// </summary>
-    public class SentenceContextGenerator : ISentenceContextGenerator {
+    public class PtSentenceContextGenerator : ISentenceContextGenerator {
         protected readonly List<string> collectFeats;
 
         private readonly char[] eosCharacters;
         private readonly List<string> inducedAbbreviations;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SentenceContextGenerator"/> with no induced abbreviations.
+        /// Initializes a new instance of the <see cref="PtSentenceContextGenerator"/> with no induced abbreviations.
         /// </summary>
         /// <param name="eosCharacters">The eos characters.</param>
-        public SentenceContextGenerator(char[] eosCharacters) : this(new List<string>(), eosCharacters) {}
+        public PtSentenceContextGenerator(char[] eosCharacters) : this(new List<string>(), eosCharacters) {}
 
         /// <summary>
         /// Creates a new <see cref="T:SentenceContextGenerator"/> instance which uses the set of induced abbreviations.
@@ -55,7 +55,7 @@ namespace SharpNL.Sentence.Language.pt {
         /// or
         /// <paramref name="eosCharacters"/>
         /// </exception>
-        public SentenceContextGenerator(List<string> inducedAbbreviations, char[] eosCharacters) {
+        public PtSentenceContextGenerator(List<string> inducedAbbreviations, char[] eosCharacters) {
             if (inducedAbbreviations == null)
                 throw new ArgumentNullException("inducedAbbreviations");
 

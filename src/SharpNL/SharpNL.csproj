@@ -272,10 +272,10 @@
     <Compile Include="Sentence\ISentenceContextGenerator.cs" />
     <Compile Include="Sentence\ISentenceDetector.cs" />
     <Compile Include="Sentence\Language\Factory.cs" />
-    <Compile Include="Sentence\Language\pt\SentenceContextGenerator.cs" />
-    <Compile Include="Sentence\Language\pt\SentenceDetectorFactory.cs" />
+    <Compile Include="Sentence\Language\pt\PtSentenceContextGenerator.cs" />
+    <Compile Include="Sentence\Language\pt\PtSentenceDetectorFactory.cs" />
     <Compile Include="Sentence\NewlineSentenceDetector.cs" />
-    <Compile Include="Sentence\Language\th\SentenceContextGenerator.cs" />
+    <Compile Include="Sentence\Language\th\ThSentenceContextGenerator.cs" />
     <Compile Include="Sentence\SentenceDetectorEvaluator.cs" />
     <Compile Include="Sentence\SentenceDetectorFactory.cs" />
     <Compile Include="Sentence\SentenceDetectorME.cs" />
@@ -350,10 +350,10 @@
     <Compile Include="Tokenize\IDetokenizer.cs" />
     <Compile Include="Tokenize\ITokenContextGenerator.cs" />
     <Compile Include="Tokenize\ITokenizer.cs" />
-    <Compile Include="Tokenize\Language\en\TokenSampleStream.cs" />
+    <Compile Include="Tokenize\Language\en\EnTokenSampleStream.cs" />
     <Compile Include="Tokenize\Language\Factory.cs" />
-    <Compile Include="Tokenize\Language\pt\TokenizerFactory.cs" />
-    <Compile Include="Tokenize\Language\pt\TokenContextGenerator.cs" />
+    <Compile Include="Tokenize\Language\pt\PtTokenizerFactory.cs" />
+    <Compile Include="Tokenize\Language\pt\PtTokenContextGenerator.cs" />
     <Compile Include="Tokenize\SimpleTokenizer.cs" />
     <Compile Include="Tokenize\TokenizerFactory.cs" />
     <Compile Include="Tokenize\TokenizerME.cs" />

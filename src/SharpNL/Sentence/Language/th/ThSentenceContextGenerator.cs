@@ -27,20 +27,20 @@ namespace SharpNL.Sentence.Language.th {
     /// <summary>
     /// Creates contexts/features for end-of-sentence detection in Thai text.
     /// </summary>
-    public class SentenceContextGenerator : DefaultSentenceContextGenerator {
+    public class ThSentenceContextGenerator : DefaultSentenceContextGenerator {
         
         public readonly static char[] eosCharacters = {' ', '\n'};
 
 
-        public SentenceContextGenerator() : base(eosCharacters) {
+        public ThSentenceContextGenerator() : base(eosCharacters) {
             
         }
 
-        public SentenceContextGenerator(char[] eosCharacters) : base(eosCharacters) {
+        public ThSentenceContextGenerator(char[] eosCharacters) : base(eosCharacters) {
             
         }
 
-        public SentenceContextGenerator(List<string> inducedAbbreviations, char[] eosCharacters)
+        public ThSentenceContextGenerator(List<string> inducedAbbreviations, char[] eosCharacters)
             : base(inducedAbbreviations, eosCharacters) {
             
         }

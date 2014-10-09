@@ -24,23 +24,24 @@
 //   under Apache V2 license.
 //
 
-namespace SharpNL.Sentence.Language.pt {
+namespace SharpNL.Tokenize.Language.pt {
+
     /// <summary>
-    /// Represents a portuguese sentence detection factory.
+    /// Represents a portugues tokenizer factory.
     /// </summary>
-    public class SentenceDetectorFactory : Sentence.SentenceDetectorFactory {
-
+    public class PtTokenizerFactory : Tokenize.TokenizerFactory {
         /// <summary>
-        /// Gets the portuguese context generator.
+        /// Gets the context generator.
         /// </summary>
-        /// <returns>The portuguese context generator.</returns>
-        public override ISentenceContextGenerator GetContextGenerator() {
+        /// <value>The context generator.</value>
+        public override ITokenContextGenerator ContextGenerator {
+            get {
+                
+                if (AbbreviationDictionary != null)
+                    return new PtTokenContextGenerator(AbbreviationDictionary.ToList());
 
-            if (AbbreviationDictionary != null)
-                return new SentenceContextGenerator(AbbreviationDictionary.ToList(), EOSCharacters);
-
-
-            return new SentenceContextGenerator(EOSCharacters);
+                return new PtTokenContextGenerator();
+            }
         }
     }
 }
