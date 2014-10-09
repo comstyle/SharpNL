@@ -267,6 +267,10 @@ namespace SharpNL.Utility.Model {
         /// </summary>
         /// <exception cref="InvalidFormatException">Unable to find the manifest entry.</exception>
         /// <remarks>Subclasses should generally invoke base.ValidateArtifactMap at the beginning of this method.</remarks>
+        /// <exception cref="InvalidFormatException">The artifact map is invalid.</exception>
+        /// <remarks>
+        /// The exception <see cref="InvalidFormatException"/> should be thrown if a problem is found during the validation.
+        /// </remarks>
         protected override void ValidateArtifactMap() {
             base.ValidateArtifactMap();
 
