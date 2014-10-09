@@ -201,6 +201,7 @@ namespace SharpNL.Utility {
 
             if (reader != null && reader.BaseStream.CanSeek) {
                 reader.BaseStream.Seek(0, SeekOrigin.Begin);
+                reader.DiscardBufferedData();
                 return;
             }
 
