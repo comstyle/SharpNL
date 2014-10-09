@@ -20,14 +20,15 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
+using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.Tokenize {
     /// <summary>
     /// This tokenizer uses white spaces to tokenize the input text.
     /// </summary>
+    [JavaClass("opennlp.tools.tokenize.WhitespaceTokenizer")]
     public class WhitespaceTokenizer : AbstractTokenizer {
         static WhitespaceTokenizer() {
             Instance = new WhitespaceTokenizer();

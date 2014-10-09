@@ -21,9 +21,11 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.Tokenize {
+    [JavaClass("opennlp.tools.tokenize.SimpleTokenizer")]
     public class SimpleTokenizer : AbstractTokenizer {
 
         /// <summary>
