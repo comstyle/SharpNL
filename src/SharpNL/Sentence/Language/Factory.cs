@@ -95,9 +95,9 @@ namespace SharpNL.Sentence.Language {
             switch (languageCode) {
                 case "pt":
                     //return new DefaultSentenceContextGenerator(abbreviations, ptEosCharacters);
-                    return new pt.SentenceContextGenerator(abbreviations, ptEosCharacters);
+                    return new pt.PtSentenceContextGenerator(abbreviations, ptEosCharacters);
                 case "th":
-                    return new th.SentenceContextGenerator();
+                    return new th.ThSentenceContextGenerator();
                 default:
                     return new DefaultSentenceContextGenerator(abbreviations, defaultEosCharacters);
             }
