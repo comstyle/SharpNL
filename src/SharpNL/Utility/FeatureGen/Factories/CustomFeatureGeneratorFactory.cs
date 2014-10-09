@@ -21,7 +21,7 @@
 //  
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using SharpNL.Java;
 
@@ -36,41 +36,8 @@ namespace SharpNL.Utility.FeatureGen.Factories {
     // they are stored in the model.
     [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.CustomFeatureGeneratorFactory")]
     public class CustomFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
-        
-        public CustomFeatureGeneratorFactory() : base("custom") { }
 
-        /// <summary>
-        /// Normalizes the class name from java.
-        /// </summary>
-        /// <param name="className">Name of the class.</param>
-        /// <returns>The normalized </returns>
-        private static string NormalizeClassName(string className) {
-
-            //opennlp.tools.util.featuregen.TokenFeatureGenerator
-
-            var token = className.Split('.');
-
-            if (token.Length > 1) {
-
-                if (token[0] == "SharpNL")
-                    return className;
-
-                var last = token[token.Length - 2];
-                switch (last) {
-                    case "featuregen":
-                        return "SharpNL.Utility.FeatureGen." + token[token.Length - 1];
-                    case "GeneratorFactory":
-                        return "SharpNL.Utility.FeatureGen.Factories." + token[token.Length - 1];
-                }
-            }
-
-            // worst case we return the original value and try to get the class
-
-            return className;
-
-            //throw new InvalidFormatException("Unable to normalize the class name!");
-        }
-
+        public CustomFeatureGeneratorFactory() : base("custom") {}
 
         /// <summary>
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
@@ -79,36 +46,32 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
         public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement, FeatureGeneratorResourceProvider provider) {
-
-            //opennlp.tools.util.featuregen.TokenFeatureGenerator
             var className = generatorElement.GetAttribute("class");
-            var normalize = NormalizeClassName(className);
 
-            var type = Type.GetType(normalize, false);
-            if (type != null) {
+            if (!Library.TypeResolver.IsRegistered(className))
+                throw new NotSupportedException("The class " + className + " is not registered on the TypeResolver.");
+
+            var type = Library.TypeResolver.ResolveType(className);
+
+            try {
                 var generator = (IAdaptiveFeatureGenerator) Activator.CreateInstance(type);
-
                 var customGenerator = generator as CustomFeatureGenerator;
-                if (customGenerator != null) {
 
-                    var properties = new Dictionary<string, string>();
+                if (customGenerator == null) 
+                    return generator;
 
-                    foreach (XmlAttribute attribute in generatorElement.Attributes) {
-                        if (attribute.Name != "class") {
-                            properties.Add(attribute.Name, attribute.Value);
-                        }                       
-                    }
+                var properties = generatorElement.Attributes.Cast<XmlAttribute>()
+                    .Where(attribute => attribute.Name != "class")
+                    .ToDictionary(attribute => attribute.Name, attribute => attribute.Value);
 
-                    // TODO: why this condition ?!
-                    if (provider != null) {
-                        customGenerator.Init(properties, provider);
-                    }
+                if (provider != null) {
+                    customGenerator.Init(properties, provider);
                 }
 
                 return generator;
+            } catch (Exception ex) {
+                throw new InvalidOperationException("Unable to create the feature generator.", ex);               
             }
-
-            throw new InvalidOperationException("Unable to create the class object.");
         }
     }
 }
