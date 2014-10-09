@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using SharpNL.NameFind;
 using SharpNL.Utility;
 
@@ -32,21 +33,24 @@ namespace SharpNL.Formats {
             NL
         }
 
-        internal const int GENERATE_PERSON_ENTITIES = 0x01;
-        internal const int GENERATE_ORGANIZATION_ENTITIES = 0x01 << 1;
-        internal const int GENERATE_LOCATION_ENTITIES = 0x01 << 2;
-        internal const int GENERATE_MISC_ENTITIES = 0x01 << 3;
+        [Flags]
+        public enum Types {
+            PersonEntities = 1,
+            OrganizationEntities = 1 << 1,
+            LocationEntities = 1 << 2,
+            MiscEntities = 1 << 3           
+        }
 
-        internal const String DOCSTART = "-DOCSTART-";
+        internal const String DocStart = "-DOCSTART-";
 
         internal readonly Language lang;
         internal readonly IObjectStream<String> lineStream;
 
-        internal readonly int types;
+        internal readonly Types types;
 
         #region + Constructors .
 
-        public Conll02NameSampleStream(Language lang, IObjectStream<string> lineStream, int types) {
+        public Conll02NameSampleStream(Language lang, IObjectStream<string> lineStream, Types types) {
             if (!Enum.IsDefined(typeof (Language), lang))
                 throw new ArgumentOutOfRangeException("lang");
 
@@ -58,13 +62,29 @@ namespace SharpNL.Formats {
             this.types = types;
         }
 
-        public Conll02NameSampleStream(Language lang, IInputStreamFactory streamFactory, int types) {
+        public Conll02NameSampleStream(Language lang, Stream inputStream, Types types) {
+            if (!Enum.IsDefined(typeof(Language), lang))
+                throw new ArgumentOutOfRangeException("lang");
+
+            if (!Enum.IsDefined(typeof(Types), types))
+                throw new ArgumentOutOfRangeException("types");
+
+            if (inputStream == null)
+                throw new ArgumentNullException("inputStream");
+
+            this.lang = lang;
+            lineStream = new PlainTextByLineStream(inputStream);
+            this.types = types;
+        }
+
+        public Conll02NameSampleStream(Language lang, IInputStreamFactory streamFactory, Types types) {
             if (!Enum.IsDefined(typeof (Language), lang))
                 throw new ArgumentOutOfRangeException("lang");
 
             if (streamFactory == null)
                 throw new ArgumentNullException("streamFactory");
 
+            this.lang = lang;
             lineStream = new PlainTextByLineStream(streamFactory);
             this.types = types;
         }
@@ -127,19 +147,20 @@ namespace SharpNL.Formats {
 
             string line;
             while ((line = lineStream.Read()) != null && !string.IsNullOrWhiteSpace(line)) {
-                if (lang == Language.NL && line.StartsWith(DOCSTART)) {
+                if (lang == Language.NL && line.StartsWith(DocStart)) {
                     isClearAdaptiveData = true;
                     continue;
                 }
 
-                var fields = line.Split(' ');
+                var fields = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (fields.Length == 3) {
                     sentence.Add(fields[0]);
                     tags.Add(fields[2]);
                 } else {
-                    throw new InvalidFormatException("Expected three fields per line in training data, got " +
-                                                     fields.Length + " for line '" + line + "'!");
+                    throw new InvalidFormatException(
+                        string.Format("Expected three fields per line in training data, got {0} for line '{1}'!",
+                            fields.Length, line));
                 }
             }
 
@@ -156,16 +177,16 @@ namespace SharpNL.Formats {
                 for (var i = 0; i < tags.Count; i++) {
                     var tag = tags[i];
 
-                    if (tag.EndsWith("PER") && (types & GENERATE_PERSON_ENTITIES) == 0)
+                    if (tag.EndsWith("PER") && (types & Types.PersonEntities) == 0)
                         tag = "O";
 
-                    if (tag.EndsWith("ORG") && (types & GENERATE_ORGANIZATION_ENTITIES) == 0)
+                    if (tag.EndsWith("ORG") && (types & Types.OrganizationEntities) == 0)
                         tag = "O";
 
-                    if (tag.EndsWith("LOC") && (types & GENERATE_LOCATION_ENTITIES) == 0)
+                    if (tag.EndsWith("LOC") && (types & Types.LocationEntities) == 0)
                         tag = "O";
 
-                    if (tag.EndsWith("MISC") && (types & GENERATE_MISC_ENTITIES) == 0)
+                    if (tag.EndsWith("MISC") && (types & Types.MiscEntities) == 0)
                         tag = "O";
 
                     if (tag.StartsWith("B-")) {
