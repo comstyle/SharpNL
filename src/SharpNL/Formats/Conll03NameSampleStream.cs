@@ -84,7 +84,7 @@ namespace SharpNL.Formats {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
 
-            if (inputStream.CanRead)
+            if (!inputStream.CanRead)
                 throw new ArgumentException("The stream is not readable.");
 
             if (!language.In(Language.En, Language.De))
