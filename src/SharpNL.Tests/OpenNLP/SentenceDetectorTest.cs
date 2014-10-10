@@ -33,7 +33,7 @@ using JavaSDME = opennlp.tools.sentdetect.SentenceDetectorME;
 using SharpSDME = SharpNL.Sentence.SentenceDetectorME;
 
 namespace SharpNL.Tests.OpenNLP {
-    [TestFixture(Category = "Compatiblity")]
+    [TestFixture(Category = "Compatibility")]
     internal class SentenceDetectorTest {
         private static JavaModel OpenJavaModel() {
             return new JavaModel(OpenNLP.OpenInputStream("opennlp/models/en-sent.bin"));
