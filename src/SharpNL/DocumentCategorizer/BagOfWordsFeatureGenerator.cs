@@ -22,13 +22,14 @@
 
 using System.Collections.Generic;
 using SharpNL.Java;
+using SharpNL.Utility;
 using SharpNL.Utility.FeatureGen;
 
 namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Generates a feature for each word in a document.
     /// </summary>
-    [JavaClass("opennlp.tools.doccat.BagOfWordsFeatureGenerator")]
+    [TypeClass("opennlp.tools.doccat.BagOfWordsFeatureGenerator")]
     public class BagOfWordsFeatureGenerator : IFeatureGenerator {
 
         private readonly bool useOnlyAllLetterTokens;

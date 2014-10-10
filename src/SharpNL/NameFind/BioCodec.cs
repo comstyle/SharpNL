@@ -27,7 +27,7 @@ using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.NameFind {
-    [JavaClass("opennlp.tools.namefind.BioCodec")]
+    [TypeClass("opennlp.tools.namefind.BioCodec")]
     internal class BioCodec : ISequenceCodec<string> {
         public const string Start = "start";
         public const string Continue = "cont";

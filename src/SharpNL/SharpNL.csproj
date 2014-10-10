@@ -129,7 +129,6 @@
     <Compile Include="Formats\OntoNotes\OntoNotesParseSampleStream.cs" />
     <Compile Include="Java\IIterator.cs" />
     <Compile Include="Java\IteratorAdapter.cs" />
-    <Compile Include="Java\JavaClassAttribute.cs" />
     <Compile Include="NameFind\RegexNameFinder.cs" />
     <Compile Include="NameFind\TokenNameFinderCrossValidator.cs" />
     <Compile Include="NGram\NGramGenerator.cs" />
@@ -152,6 +151,7 @@
     <Compile Include="Stemmer\Snowball\RussianStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SpanishStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SwedishStemmer.cs" />
+    <Compile Include="Utility\TypeClassAttribute.cs" />
     <Compile Include="Utility\SegmenterObjectStream.cs" />
     <Compile Include="Utility\TypeResolver.cs" />
     <Compile Include="Java\StringTokenizer.cs" />

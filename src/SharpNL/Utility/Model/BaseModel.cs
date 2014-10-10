@@ -85,7 +85,10 @@ namespace SharpNL.Utility.Model {
             if (toolFactory != null) {
                 ToolFactory = toolFactory;
 
-                Manifest[FACTORY_NAME] = toolFactory.Name;
+                if (!Library.TypeResolver.IsRegistered(toolFactory.GetType()))
+                    throw new InvalidOperationException("The tool factory type " + toolFactory.GetType().Name + " is not registered in the type resolver.");
+
+                Manifest[FACTORY_NAME] = Library.TypeResolver.ResolveName(toolFactory.GetType());
 
                 var map = toolFactory.CreateArtifactMap();
                 foreach (var item in map) {
@@ -235,16 +238,17 @@ namespace SharpNL.Utility.Model {
                     ToolFactory.Initialize(this);
                 }
             } else {
-                if (ToolFactoryManager.IsRegistered(factoryName)) {
-                    ToolFactory = ToolFactoryManager.CreateFactory(factoryName);
+                if (Library.TypeResolver.IsRegistered(factoryName)) {
+                    try {
+                        var type = Library.TypeResolver.ResolveType(factoryName);
 
-                    if (ToolFactory != null) {
+                        ToolFactory = Library.CreateInstance<BaseToolFactory>(type);
                         ToolFactory.Initialize(this);
-                    } else {
-                        throw new InvalidFormatException("The specified factory is invalid or not supported.");
+                    } catch (Exception ex) {
+                        throw new InvalidOperationException("Unable to initialize the tool factory.", ex);
                     }
                 } else {
-                    throw new InvalidOperationException("Unable to initialize the tool factory.");
+                    throw new InvalidOperationException(string.Format("The tool factory '{0}' is not registered in the type resolver.", factoryName));
                 }
             }
         }

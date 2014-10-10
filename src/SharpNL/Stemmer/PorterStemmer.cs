@@ -22,6 +22,7 @@
 
 using System;
 using SharpNL.Java;
+using SharpNL.Utility;
 
 namespace SharpNL.Stemmer {
 
@@ -33,7 +34,7 @@ namespace SharpNL.Stemmer {
     /// by calling one of the various <see cref="Stem(string)"/> methods.
     /// </para>
     /// </summary>
-    [JavaClass("opennlp.tools.stemmer.PorterStemmer")]
+    [TypeClass("opennlp.tools.stemmer.PorterStemmer")]
     public class PorterStemmer : IStemmer {
         private const int INC = 50;
         private bool dirty;

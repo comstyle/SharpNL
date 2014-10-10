@@ -24,7 +24,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.DefinitionFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.DefinitionFeatureGeneratorFactory")]
     internal class DefinitionFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public DefinitionFeatureGeneratorFactory() : base("definition") {}
 

@@ -28,7 +28,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// Caches features of the aggregated <see cref="IAdaptiveFeatureGenerator"/>s.
     /// </summary>
-    [JavaClass("opennlp.tools.util.featuregen.CachedFeatureGenerator")]
+    [TypeClass("opennlp.tools.util.featuregen.CachedFeatureGenerator")]
     public class CachedFeatureGenerator : IAdaptiveFeatureGenerator {
 
         private readonly Cache contextsCache;

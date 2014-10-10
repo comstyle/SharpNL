@@ -22,12 +22,13 @@
 
 using System.Collections.Generic;
 using SharpNL.Java;
+using SharpNL.Utility;
 
 namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Represents a nGram feature generator.
     /// </summary>   
-    [JavaClass("opennlp.tools.doccat.NGramFeatureGenerator")]
+    [TypeClass("opennlp.tools.doccat.NGramFeatureGenerator")]
     public class NGramFeatureGenerator : IFeatureGenerator {
 
         /// <summary>

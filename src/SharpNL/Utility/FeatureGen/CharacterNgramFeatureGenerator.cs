@@ -29,7 +29,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// The <see cref="CharacterNgramFeatureGenerator"/> uses character ngrams to generate features about each token.
     /// The minimum and maximum length can be specified.
     /// </summary>
-    [JavaClass("opennlp.tools.util.featuregen.CharacterNgramFeatureGenerator")]
+    [TypeClass("opennlp.tools.util.featuregen.CharacterNgramFeatureGenerator")]
     public class CharacterNgramFeatureGenerator : FeatureGeneratorAdapter {
         private readonly int max;
         private readonly int min;

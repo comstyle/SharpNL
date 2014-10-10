@@ -24,7 +24,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.CachedFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.CachedFeatureGeneratorFactory")]
     internal class CachedFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public CachedFeatureGeneratorFactory() : base("cache") {}
 

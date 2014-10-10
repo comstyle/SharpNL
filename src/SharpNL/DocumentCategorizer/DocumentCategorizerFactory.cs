@@ -30,6 +30,7 @@ namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// The factory that provides the document categorizer default implementations and resources.
     /// </summary>
+    [TypeClass("opennlp.tools.doccat.DoccatFactory")]
     public class DocumentCategorizerFactory : BaseToolFactory {
 
         private const string GeneratorsEntry = "doccat.featureGenerators";

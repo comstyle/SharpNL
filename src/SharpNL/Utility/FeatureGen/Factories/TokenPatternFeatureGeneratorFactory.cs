@@ -24,7 +24,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.TokenPatternFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.TokenPatternFeatureGeneratorFactory")]
     internal class TokenPatternFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public TokenPatternFeatureGeneratorFactory() : base("tokenpattern") {}
 

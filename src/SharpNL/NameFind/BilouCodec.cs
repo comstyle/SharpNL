@@ -30,7 +30,7 @@ namespace SharpNL.NameFind {
     /// <summary>
     /// Represents a BILOU (Begin, Inside, Last, Outside, Unit) sequence codec.
     /// </summary>
-    [JavaClass("opennlp.tools.namefind.BilouCodec")]
+    [TypeClass("opennlp.tools.namefind.BilouCodec")]
     public class BilouCodec : ISequenceCodec<string> {
 
         internal const string START = "start";

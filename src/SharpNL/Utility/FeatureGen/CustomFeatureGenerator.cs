@@ -28,7 +28,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// Represents a base class for custom feature generators.
     /// </summary>
     /// <seealso cref="GeneratorFactory"/>
-    [JavaClass("opennlp.tools.util.featuregen.CustomFeatureGenerator")]
+    [TypeClass("opennlp.tools.util.featuregen.CustomFeatureGenerator")]
     public abstract class CustomFeatureGenerator : IAdaptiveFeatureGenerator {
         /// <summary>
         /// Adds the appropriate features for the token at the specified index with the

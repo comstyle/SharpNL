@@ -30,6 +30,7 @@ namespace SharpNL.POSTag {
     /// <summary>
     /// The factory that provides POS Tagger default implementations and resources.
     /// </summary>
+    [TypeClass("opennlp.tools.postag.POSTaggerFactory")]
     public class POSTaggerFactory : BaseToolFactory {
         private const string FactoryName = "POSTaggerFactory";
 

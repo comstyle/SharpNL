@@ -23,7 +23,6 @@
 using System;
 using System.Reflection;
 using System.Security.Permissions;
-using SharpNL.Java;
 using SharpNL.Utility;
 using Ver = SharpNL.Utility.Version;
 using Version = System.Version;
@@ -120,7 +119,7 @@ namespace SharpNL {
                 foreach (var module in modules) {
                     var types = module.GetTypes();
                     foreach (var type in types) {
-                        var attr = type.GetCustomAttribute<JavaClassAttribute>(false);
+                        var attr = type.GetCustomAttribute<TypeClassAttribute>(false);
                         if (attr != null) {
                             TypeResolver.Register(attr.Name, type);                           
                         }

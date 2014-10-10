@@ -26,7 +26,7 @@ using System.Text;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
-    [JavaClass("opennlp.tools.util.featuregen.W2VClassesDictionary")]
+    [TypeClass("opennlp.tools.util.featuregen.W2VClassesDictionary")]
     public class W2VClassesDictionary {
 
         private readonly Dictionary<string, string> tokenToClusterMap;

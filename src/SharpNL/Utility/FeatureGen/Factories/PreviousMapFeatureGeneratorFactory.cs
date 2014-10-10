@@ -24,7 +24,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.PreviousMapFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.PreviousMapFeatureGeneratorFactory")]
     internal class PreviousMapFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public PreviousMapFeatureGeneratorFactory() : base("prevmap") {}
 

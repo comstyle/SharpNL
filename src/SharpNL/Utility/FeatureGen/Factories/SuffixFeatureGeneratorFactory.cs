@@ -24,7 +24,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.SuffixFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.SuffixFeatureGeneratorFactory")]
     internal class SuffixFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public SuffixFeatureGeneratorFactory() : base("suffix") {}
 

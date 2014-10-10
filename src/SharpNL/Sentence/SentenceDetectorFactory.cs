@@ -21,6 +21,7 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Java;
 using SharpNL.Sentence.Language;
 using SharpNL.Utility;
 using SharpNL.Utility.Serialization;
@@ -31,6 +32,7 @@ namespace SharpNL.Sentence {
     /// <summary>
     /// The factory that provides SentenceDetector default implementations and resources.
     /// </summary>
+    [TypeClass("opennlp.tools.sentdetect.SentenceDetectorFactory")]
     public class SentenceDetectorFactory : BaseToolFactory {
         private const string ABBREVIATIONS_ENTRY_NAME = "abbreviations.dictionary";
         private const string EOS_CHARACTERS_PROPERTY = "eosCharacters";

@@ -27,7 +27,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// <summary>
     /// Represents errors that occur with feature generators.
     /// </summary>
-    [JavaClass("opennlp.tools.util.featuregen.FeatureGeneratorException")]
+    [TypeClass("opennlp.tools.util.featuregen.FeatureGeneratorException")]
     public class FeatureGeneratorException : Exception {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:FeatureGeneratorException"/> class with a specified error message.

@@ -31,6 +31,7 @@ using SharpNL.Utility.Serialization;
 using Dict = SharpNL.Dictionary.Dictionary;
 
 namespace SharpNL.Tests.Tokenize {
+    [TypeClass("this.is.aWeSoMe.DummyTokenizerFactory")]
     internal class DummyTokenizerFactory : TokenizerFactory {
 
         private const string DummyDict = "dict.dummy";

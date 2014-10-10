@@ -31,6 +31,7 @@ namespace SharpNL.Tokenize {
     /// resources. Users can extend this class if their application requires
     /// overriding the <see cref="ITokenContextGenerator"/>, <see cref="Dictionary.Dictionary"/> etc.
     /// </summary>
+    [TypeClass("opennlp.tools.tokenize.TokenizerFactory")]
     public class TokenizerFactory : BaseToolFactory {
 
         private string languageCode;

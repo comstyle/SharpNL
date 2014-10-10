@@ -25,7 +25,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.WindowFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.WindowFeatureGeneratorFactory")]
     internal class WindowFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public WindowFeatureGeneratorFactory() : base("window") {}
 

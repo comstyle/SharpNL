@@ -34,7 +34,7 @@ namespace SharpNL.Utility.FeatureGen.Factories {
     // resources by name.
     // When training, the descriptor could be consulted first to register the serializers, and afterwards
     // they are stored in the model.
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.CustomFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.CustomFeatureGeneratorFactory")]
     public class CustomFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
 
         public CustomFeatureGeneratorFactory() : base("custom") {}

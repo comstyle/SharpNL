@@ -31,7 +31,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// and calls them to generate the features.
     /// </summary>
     /// <seealso cref="IAdaptiveFeatureGenerator"/>
-    [JavaClass("opennlp.tools.util.featuregen.AggregatedFeatureGenerator")]
+    [TypeClass("opennlp.tools.util.featuregen.AggregatedFeatureGenerator")]
     internal class AggregatedFeatureGenerator : IAdaptiveFeatureGenerator {
 
 

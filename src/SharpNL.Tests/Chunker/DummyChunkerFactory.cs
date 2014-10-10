@@ -24,6 +24,8 @@ using SharpNL.Chunker;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Chunker {
+
+    [TypeClass("external.application.DummyChunkerFactory")]
     public class DummyChunkerFactory : ChunkerFactory {
         /// <summary>
         /// Gets the context generator.

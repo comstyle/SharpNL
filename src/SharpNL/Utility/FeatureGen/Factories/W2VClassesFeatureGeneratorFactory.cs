@@ -24,7 +24,7 @@ using System.Xml;
 using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
-    [JavaClass("opennlp.tools.util.featuregen.GeneratorFactory.W2VClassesFeatureGeneratorFactory")]
+    [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.W2VClassesFeatureGeneratorFactory")]
     internal class W2VClassesFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
         public W2VClassesFeatureGeneratorFactory() : base("w2vwordcluster") {}
 

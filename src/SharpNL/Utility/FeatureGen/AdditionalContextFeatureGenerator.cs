@@ -28,7 +28,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// The <see cref="AdditionalContextFeatureGenerator"/> generates the context from the passed 
     /// in additional context.
     /// </summary>
-    [JavaClass("opennlp.tools.util.featuregen.AdditionalContextFeatureGenerator")]
+    [TypeClass("opennlp.tools.util.featuregen.AdditionalContextFeatureGenerator")]
     public class AdditionalContextFeatureGenerator : FeatureGeneratorAdapter {
 
         private string[][] additionalContext;

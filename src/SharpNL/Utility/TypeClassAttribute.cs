@@ -22,14 +22,14 @@
 
 using System;
 
-namespace SharpNL.Java {
+namespace SharpNL.Utility {
     /// <summary>
-    /// Represents type string of a java class.
+    /// Represents type string of a class.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    internal class JavaClassAttribute : Attribute {
+    internal class TypeClassAttribute : Attribute {
 
-        public JavaClassAttribute(string name) {
+        public TypeClassAttribute(string name) {
             Name = name;
         }
 
