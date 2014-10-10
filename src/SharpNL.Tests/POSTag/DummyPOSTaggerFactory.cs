@@ -26,7 +26,6 @@ using SharpNL.POSTag;
 using SharpNL.Utility.Serialization;
 
 namespace SharpNL.Tests.POSTag {
-    [TestFixture]
     public class DummyPOSTaggerFactory : POSTaggerFactory {
 
         private const string DummyPostDic = "DUMMY_POSDICT";

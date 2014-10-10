@@ -58,7 +58,7 @@ namespace SharpNL.Tests.Sentence {
             }
         }
 
-        private void EvalSentences(SentenceDetectorME sentDetect) {
+        internal static void EvalSentences(SentenceDetectorME sentDetect) {
             const string sampleSentences1 = "This is a test. There are many tests, this is the second.";
             var sents = sentDetect.SentDetect(sampleSentences1);
             Assert.AreEqual(sents.Length, 2);

@@ -5,7 +5,7 @@ namespace SharpNL.Tests {
 
     internal static class Tests {
 
-        private static string resourcesPath = @"../../../../resources/";
+        internal static string resourcesPath = @"../../../../resources/";
 
         public static FileStream OpenSample(string fileName) {
 
