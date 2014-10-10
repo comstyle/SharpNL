@@ -114,6 +114,19 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . Each .
+        /// <example>
+        /// var values = new string[] { "a", "b", "c" };
+        /// strings.Each( ( value, index ) => {
+        ///     // nice hack ;)
+        /// });
+        /// </example>
+        internal static void Each<T>(this IEnumerable<T> ie, Action<T, int> action) {
+            var i = 0;
+            foreach (var e in ie) action(e, i++);
+        }
+        #endregion
+
         #region . Fill .
 
         /// <summary>
@@ -251,16 +264,28 @@ namespace SharpNL {
         }
         #endregion
 
-        #region . Each .
-        /// <example>
-        /// var values = new string[] { "a", "b", "c" };
-        /// strings.Each( ( value, index ) => {
-        ///     // nice hack ;)
-        /// });
-        /// </example>
-        internal static void Each<T>(this IEnumerable<T> ie, Action<T, int> action) {
-            var i = 0;
-            foreach (var e in ie) action(e, i++);
+        #region . Pop .
+        /// <summary>
+        /// Removes the object at the top of the <see cref="IList{T}" />, and returns it.
+        /// </summary>
+        /// <typeparam name="T">The object type.</typeparam>
+        /// <param name="list">The list.</param>
+        /// <returns>The object removed from the top of the <see cref="IList{T}" />.</returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// The <paramref name="list"/> is empty.
+        /// or
+        /// The <paramref name="list"/> is read-only.
+        /// </exception>
+        internal static T Pop<T>(this IList<T> list) {   
+            if (list.Count == 0)
+                throw new InvalidOperationException("The list is empty.");
+
+            if (list.IsReadOnly)
+                throw new InvalidOperationException("The list is read-only.");
+
+            T item = list[0];
+            list.RemoveAt(0);
+            return item;
         }
         #endregion
 
