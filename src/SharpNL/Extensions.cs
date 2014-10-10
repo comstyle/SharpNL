@@ -28,6 +28,7 @@ using System.Linq;
 
 using System.Collections.Generic;
 using System.Security.Permissions;
+using System.Text;
 
 namespace SharpNL {
     /// <summary>
@@ -140,6 +141,113 @@ namespace SharpNL {
         /// <returns><c>default(k)</c> if no element is found; otherwise the first element key found in the <paramref name="dictionary"/>.</returns>
         public static K GetKey<K, V>(this IDictionary<K, V> dictionary, V value) {
             return dictionary.FirstOrDefault(pair => Equals(pair.Value, value)).Key;
+        }
+        #endregion
+
+        #region . IndexOf .
+        /// <summary>
+        /// Reports the index number, or character position, of the first occurrence of a specified Unicode character in the current <see cref="StringBuilder"/> object.
+        /// </summary>
+        /// <param name="sb">The string builder.</param>
+        /// <param name="value">The Unicode character you want to find.</param>
+        /// <returns>The character position of the value parameter if the specified character is found, or -1 if it is not found.</returns>
+        /// <remarks>
+        /// The search for the value parameter is both case-sensitive and culture-sensitive.
+        /// </remarks>
+        internal static int IndexOf(this StringBuilder sb, char value) {
+            return IndexOf(sb, value, 0);
+        }
+
+        /// <summary>
+        /// Reports the index number, or character position, of the first occurrence of a specified Unicode character in the current <see cref="StringBuilder"/> object.
+        /// The search starts at a specified character position.
+        /// </summary>
+        /// <param name="sb">The string builder.</param>
+        /// <param name="value">The Unicode character you want to find.</param>
+        /// <param name="startIndex">The starting index number for the search.</param>
+        /// <returns>The character position of the value parameter if the specified character is found, or -1 if it is not found.</returns>
+        /// <remarks>
+        /// <para>Index numbering starts at 0 (zero). The search ranges from <paramref name="startIndex"/> to the end of the string.</para>
+        /// <para>The search for the value parameter is both case-sensitive and culture-sensitive.</para>
+        /// </remarks>
+        /// <exception cref="System.ArgumentOutOfRangeException">startIndex</exception>
+        internal static int IndexOf(this StringBuilder sb, char value, int startIndex) {           
+            if (startIndex < 0 || startIndex > sb.Length)
+                throw new ArgumentOutOfRangeException("startIndex");
+
+            for (var i = startIndex; i < sb.Length; i++) {
+                if (sb[i] == value)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Reports the index number, or character position, of the first occurrence of the specified String object in the current <see cref="StringBuilder" /> object.
+        /// The search starts at a specified character position.
+        /// </summary>
+        /// <param name="sb">The string builder.</param>
+        /// <param name="value">The <see cref="string" /> object you want to find.</param>
+        /// <returns>The character position of the <paramref name="value" /> parameter if the specified string is found, or -1 if it is not found. If value is empty, the return value is 0 (zero).</returns>
+        internal static int IndexOf(this StringBuilder sb, string value) {
+            if (string.IsNullOrEmpty(value))
+                return 0;
+
+            return IndexOf(sb, value, 0, false);
+        }
+
+        /// <summary>
+        /// Reports the index number, or character position, of the first occurrence of the specified String object in the current <see cref="StringBuilder" /> object.
+        /// The search starts at a specified character position.
+        /// </summary>
+        /// <param name="sb">The string builder.</param>
+        /// <param name="value">The <see cref="string" /> object you want to find.</param>
+        /// <param name="startIndex">The starting index number for the search.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> the case will be ignored during the comparison.</param>
+        /// <returns>The character position of the <paramref name="value" /> parameter if the specified string is found, or -1 if it is not found. If value is empty, the return value is <paramref name="startIndex" />.</returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">startIndex</exception>
+        internal static int IndexOf(this StringBuilder sb, string value, int startIndex, bool ignoreCase) {
+            if (startIndex > sb.Length)
+                throw new ArgumentOutOfRangeException("startIndex");
+
+            if (sb.Length == 0 || value == null)
+                return -1;
+
+            if (value == string.Empty)
+                return startIndex;
+
+            int index;
+            var length = value.Length;
+            var count = (sb.Length - length) + 1;
+            if (!ignoreCase) {
+                for (var i = startIndex; i < count; i++) {
+                    if (sb[i] != value[0]) 
+                        continue;
+
+                    index = 1;
+                    while ((index < length) && (sb[i + index] == value[index])) {
+                        index++;
+                    }
+                    if (index == length) {
+                        return i;
+                    }
+                }
+            } else {
+                for (var i = startIndex; i < count; i++) {
+                    if (char.ToLower(sb[i]) != char.ToLower(value[0])) 
+                        continue;
+
+                    index = 1;
+                    while ((index < length) && (char.ToLower(sb[i + index]) == char.ToLower(value[index]))) {
+                        index++;
+                    }
+                    if (index == length) {
+                        return i;
+                    }
+                }
+            }
+            return -1;
         }
         #endregion
 

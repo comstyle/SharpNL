@@ -21,6 +21,7 @@
 //  
 
 using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
 
 namespace SharpNL.Tests {
@@ -41,7 +42,6 @@ namespace SharpNL.Tests {
             
         }
 
-
         [Test]
         public void TestArrayAdd() {
 
@@ -54,6 +54,16 @@ namespace SharpNL.Tests {
             Assert.AreEqual(2, array[1]);
             Assert.AreEqual(3, array[2]);
             Assert.AreEqual(4, array[3]);           
+        }
+
+        [Test]
+        public void StringBuilderIndexOf() {
+            // name of the song that I was listening when I create the function :)
+            var sb = new StringBuilder("Blue Pilots Project - Million Clouds");
+
+            Assert.AreEqual(5, sb.IndexOf("Pilots"));
+            Assert.AreEqual(20, sb.IndexOf('-'));
+            Assert.AreEqual(22, sb.IndexOf("m", 0, true));
         }
 
     }
