@@ -113,13 +113,13 @@ namespace SharpNL.Sentence {
 
         #endregion
 
-        #region . IsUseTokenEnd .
+        #region . UseTokenEnd .
 
         /// <summary>
         /// Gets a value indicating whether this instance is use token end.
         /// </summary>
         /// <value><c>true</c> if this instance is use token end; otherwise, <c>false</c>.</value>
-        public bool? IsUseTokenEnd {
+        public bool? UseTokenEnd {
             get {
                 if (useTokenEnd == null && ArtifactProvider != null) {
                     useTokenEnd = ArtifactProvider.Manifest[TOKEN_END_PROPERTY] == "true";
@@ -163,7 +163,7 @@ namespace SharpNL.Sentence {
         public override Dictionary<string, string> CreateManifestEntries() {
             var entries = base.CreateManifestEntries();
 
-            entries.Add(TOKEN_END_PROPERTY, IsUseTokenEnd.HasValue && IsUseTokenEnd.Value ? "true" : "false");
+            entries.Add(TOKEN_END_PROPERTY, UseTokenEnd.HasValue && UseTokenEnd.Value ? "true" : "false");
 
             // EOS characters are optional
             if (EOSCharacters != null) {

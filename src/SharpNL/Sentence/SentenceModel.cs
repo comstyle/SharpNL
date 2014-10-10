@@ -148,8 +148,8 @@ namespace SharpNL.Sentence {
         /// <remarks>Default value is <c>true</c>.</remarks>
         public bool UseTokenEnd {
             get {
-                if (Factory != null && Factory.IsUseTokenEnd.HasValue) {
-                    return Factory.IsUseTokenEnd.Value;
+                if (Factory != null && Factory.UseTokenEnd.HasValue) {
+                    return Factory.UseTokenEnd.Value;
                 }
                 return true;
             }
