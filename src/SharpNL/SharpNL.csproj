@@ -106,9 +106,10 @@
     <Compile Include="Formats\Brat\BratParser.cs" />
     <Compile Include="Formats\Brat\RelationAnnotation.cs" />
     <Compile Include="Formats\Brat\SpanAnnotation.cs" />
-    <Compile Include="Formats\Conll02NameSampleStream.cs" />
-    <Compile Include="Formats\Conll03NameSampleStream.cs" />
-    <Compile Include="Formats\ConllXPOSSampleStream.cs" />
+    <Compile Include="Formats\CoNLL.cs" />
+    <Compile Include="Formats\CoNLL02NameSampleStream.cs" />
+    <Compile Include="Formats\CoNLL03NameSampleStream.cs" />
+    <Compile Include="Formats\CoNLLXPOSSampleStream.cs" />
     <Compile Include="Formats\Convert\AbstractToSentenceSampleStream.cs" />
     <Compile Include="Formats\Convert\FileToByteArraySampleStream.cs" />
     <Compile Include="Formats\Convert\FileToStringSampleStream.cs" />

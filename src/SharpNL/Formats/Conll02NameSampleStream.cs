@@ -27,44 +27,48 @@ using SharpNL.NameFind;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats {
-    public class Conll02NameSampleStream : IObjectStream<NameSample> {
-        public enum Language {
-            ES,
-            NL
-        }
-
-        [Flags]
-        public enum Types {
-            PersonEntities = 1 << 0,
-            OrganizationEntities = 1 << 1,
-            LocationEntities = 1 << 2,
-            MiscEntities = 1 << 3           
-        }
+    /// <summary>
+    /// Parser for the dutch and spanish ner training files of the CONLL 2002 shared task.
+    /// <para>
+    /// The dutch data has a -DOCSTART- tag to mark article boundaries,
+    /// adaptive data in the feature generators will be cleared before every article.<br />
+    /// The spanish data does not contain article boundaries,
+    /// adaptive data will be cleared for every sentence.
+    /// </para>
+    /// <para>The data contains four named entity types: Person, Organization, Location and Misc.</para>
+    /// </summary>
+    /// <remarks>
+    /// Data can be found on this web site: <see href="http://www.cnts.ua.ac.be/conll2002/ner/" />
+    /// </remarks>
+    public class CoNLL02NameSampleStream : CoNLL, IObjectStream<NameSample> {
 
         internal const string DocStart = "-DOCSTART-";
 
-        internal readonly Language lang;
+        internal readonly Language language;
         internal readonly IObjectStream<string> lineStream;
 
         internal readonly Types types;
 
         #region + Constructors .
 
-        public Conll02NameSampleStream(Language lang, IObjectStream<string> lineStream, Types types) {
-            if (!Enum.IsDefined(typeof (Language), lang))
-                throw new ArgumentOutOfRangeException("lang");
+        public CoNLL02NameSampleStream(Language language, IObjectStream<string> lineStream, Types types) {
+            if (!Enum.IsDefined(typeof(Language), language))
+                throw new ArgumentOutOfRangeException("language");
 
             if (lineStream == null)
                 throw new ArgumentNullException("lineStream");
 
-            this.lang = lang;
+            if (!language.In(Language.En, Language.De))
+                throw new ArgumentException("The specified language is not supported.");
+
+            this.language = language;
             this.lineStream = lineStream;
             this.types = types;
         }
 
-        public Conll02NameSampleStream(Language lang, Stream inputStream, Types types) {
-            if (!Enum.IsDefined(typeof(Language), lang))
-                throw new ArgumentOutOfRangeException("lang");
+        public CoNLL02NameSampleStream(Language language, Stream inputStream, Types types) {
+            if (!Enum.IsDefined(typeof(Language), language))
+                throw new ArgumentOutOfRangeException("language");
 
             if (!Enum.IsDefined(typeof(Types), types))
                 throw new ArgumentOutOfRangeException("types");
@@ -72,19 +76,19 @@ namespace SharpNL.Formats {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
 
-            this.lang = lang;
+            this.language = language;
             lineStream = new PlainTextByLineStream(inputStream);
             this.types = types;
         }
 
-        public Conll02NameSampleStream(Language lang, IInputStreamFactory streamFactory, Types types) {
-            if (!Enum.IsDefined(typeof (Language), lang))
-                throw new ArgumentOutOfRangeException("lang");
+        public CoNLL02NameSampleStream(Language language, IInputStreamFactory streamFactory, Types types) {
+            if (!Enum.IsDefined(typeof(Language), language))
+                throw new ArgumentOutOfRangeException("language");
 
             if (streamFactory == null)
                 throw new ArgumentNullException("streamFactory");
 
-            this.lang = lang;
+            this.language = language;
             lineStream = new PlainTextByLineStream(streamFactory);
             this.types = types;
         }
@@ -102,32 +106,6 @@ namespace SharpNL.Formats {
 
         #endregion
 
-        #region . Extract .
-
-        private static Span Extract(int begin, int end, string beginTag) {
-            var type = beginTag.Substring(2);
-
-            switch (type) {
-                case "PER":
-                    type = "person";
-                    break;
-                case "LOC":
-                    type = "location";
-                    break;
-                case "MISC":
-                    type = "misc";
-                    break;
-                case "ORG":
-                    type = "organization";
-                    break;
-                default:
-                    throw new InvalidFormatException("Unknown type: " + type);
-            }
-            return new Span(begin, end, type);
-        }
-
-        #endregion
-
         #region . Read .
 
         /// <summary>
@@ -141,14 +119,13 @@ namespace SharpNL.Formats {
             var sentence = new List<string>();
             var tags = new List<string>();
 
-            var isClearAdaptiveData = false;
+            var ClearAdaptiveData = false;
 
             // Empty line indicates end of sentence
-
             string line;
             while ((line = lineStream.Read()) != null && !string.IsNullOrWhiteSpace(line)) {
-                if (lang == Language.NL && line.StartsWith(DocStart)) {
-                    isClearAdaptiveData = true;
+                if (language == Language.Nl && line.StartsWith(DocStart)) {
+                    ClearAdaptiveData = true;
                     continue;
                 }
 
@@ -165,8 +142,8 @@ namespace SharpNL.Formats {
             }
 
             // Always clear adaptive data for spanish
-            if (lang == Language.ES)
-                isClearAdaptiveData = true;
+            if (language == Language.Es)
+                ClearAdaptiveData = true;
 
             if (sentence.Count > 0) {
                 // convert name tags into spans
@@ -215,14 +192,10 @@ namespace SharpNL.Formats {
                 if (beginIndex != -1)
                     names.Add(Extract(beginIndex, endIndex, tags[beginIndex]));
 
-                return new NameSample(sentence.ToArray(), names.ToArray(), isClearAdaptiveData);
+                return new NameSample(sentence.ToArray(), names.ToArray(), ClearAdaptiveData);
             }
-            if (line != null) {
-                // Just filter out empty events, if two lines in a row are empty
-                return Read();
-            }
-            // source stream is not returning anymore lines
-            return null;
+
+            return line != null ? Read() : null;
         }
 
         #endregion

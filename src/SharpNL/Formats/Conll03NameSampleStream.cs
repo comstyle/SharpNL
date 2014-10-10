@@ -27,20 +27,10 @@ using SharpNL.NameFind;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats {
-    public class Conll03NameSampleStream : IObjectStream<NameSample> {
-
-        public enum Language {
-            En,
-            De
-        }
-
-        [Flags]
-        public enum Types {
-            PersonEntities = 1 << 0,
-            OrganizationEntities = 1 << 1,
-            LocationEntities = 1 << 2,
-            MiscEntities = 1 << 3
-        }
+    /// <summary>
+    /// An import stream which can parse the CoNLL03 data.
+    /// </summary>
+    public class CoNLL03NameSampleStream : CoNLL, IObjectStream<NameSample> {
 
         private readonly Language language;
         private readonly IObjectStream<string> lineStream;
@@ -49,19 +39,42 @@ namespace SharpNL.Formats {
         private const string DocStart = "-DOCSTART-";
 
         #region + Constructors .
-        public Conll03NameSampleStream(Language language, IObjectStream<string> lineStream, Types types) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CoNLL03NameSampleStream"/> class.
+        /// </summary>
+        /// <param name="language">The language of the data. The valid languages are: En, De</param>
+        /// <param name="lineStream">The line stream.</param>
+        /// <param name="types">The types to be readed.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">language</exception>
+        /// <exception cref="System.ArgumentNullException">lineStream</exception>
+        /// <exception cref="System.ArgumentException">The specified language is not supported.</exception>
+        public CoNLL03NameSampleStream(Language language, IObjectStream<string> lineStream, Types types) {
             if (!Enum.IsDefined(typeof(Language), language))
                 throw new ArgumentOutOfRangeException("language");
 
             if (lineStream == null)
                 throw new ArgumentNullException("lineStream");
 
+            if (!language.In(Language.En, Language.De))
+                throw new ArgumentException("The specified language is not supported.");
+
+
             this.language = language;
             this.lineStream = lineStream;
             this.types = types;
         }
 
-        public Conll03NameSampleStream(Language language, Stream inputStream, Types types) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CoNLL03NameSampleStream" /> class.
+        /// </summary>
+        /// <param name="language">The language of the data. The valid languages are: En, De</param>
+        /// <param name="inputStream">The input stream.</param>
+        /// <param name="types">The types to be readed.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">language</exception>
+        /// <exception cref="System.ArgumentNullException">lineStream</exception>
+        /// <exception cref="ArgumentException">The stream is not readable.</exception>
+        /// <exception cref="System.ArgumentException">The specified language is not supported.</exception>
+        public CoNLL03NameSampleStream(Language language, Stream inputStream, Types types) {
             if (!Enum.IsDefined(typeof(Language), language))
                 throw new ArgumentOutOfRangeException("language");
 
@@ -71,48 +84,30 @@ namespace SharpNL.Formats {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
 
+            if (inputStream.CanRead)
+                throw new ArgumentException("The stream is not readable.");
+
+            if (!language.In(Language.En, Language.De))
+                throw new ArgumentException("The specified language is not supported.");
+
             this.language = language;
             lineStream = new PlainTextByLineStream(inputStream);
             this.types = types;
         }
 
-        public Conll03NameSampleStream(Language language, IInputStreamFactory streamFactory, Types types) {
-            if (!Enum.IsDefined(typeof(Language), language))
-                throw new ArgumentOutOfRangeException("language");
-
-            if (streamFactory == null)
-                throw new ArgumentNullException("streamFactory");
-
-            this.language = language;
-            lineStream = new PlainTextByLineStream(streamFactory);
-            this.types = types;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CoNLL03NameSampleStream" /> class.
+        /// </summary>
+        /// <param name="language">The language of the data. The valid languages are: En, De</param>
+        /// <param name="streamFactory">The stream factory.</param>
+        /// <param name="types">The types to be readed.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">language</exception>
+        /// <exception cref="System.ArgumentNullException">lineStream</exception>
+        /// <exception cref="System.ArgumentException">The specified language is not supported.</exception>
+        public CoNLL03NameSampleStream(Language language, IInputStreamFactory streamFactory, Types types)
+            : this(language, new PlainTextByLineStream(streamFactory), types) {
+            
         }
-        #endregion
-
-        #region . Extract .
-
-        private static Span Extract(int begin, int end, string beginTag) {
-            var type = beginTag.Substring(2);
-
-            switch (type) {
-                case "PER":
-                    type = "person";
-                    break;
-                case "LOC":
-                    type = "location";
-                    break;
-                case "MISC":
-                    type = "misc";
-                    break;
-                case "ORG":
-                    type = "organization";
-                    break;
-                default:
-                    throw new InvalidFormatException("Unknown type: " + type);
-            }
-            return new Span(begin, end, type);
-        }
-
         #endregion
 
         #region . Dispose .
@@ -124,6 +119,8 @@ namespace SharpNL.Formats {
             lineStream.Dispose();
         }
         #endregion
+
+        #region . Read .
 
         /// <summary>
         /// Returns the next object. Calling this method repeatedly until it returns,
@@ -237,6 +234,8 @@ namespace SharpNL.Formats {
             // source stream is not returning anymore lines
             return null;
         }
+
+        #endregion
 
         #region . Reset .
         /// <summary>

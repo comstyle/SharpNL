@@ -28,16 +28,16 @@ using SharpNL.Utility;
 namespace SharpNL.Tests.Formats {
     [TestFixture]
     public class Conll02NameSampleStreamTest {
-        private static IObjectStream<NameSample> OpenData(Conll02NameSampleStream.Language language, string name) {
-            return new Conll02NameSampleStream(
+        private static IObjectStream<NameSample> OpenData(CoNLL02NameSampleStream.Language language, string name) {
+            return new CoNLL02NameSampleStream(
                 language,
                 Tests.OpenSample("opennlp/tools/formats/" + name),
-                Conll02NameSampleStream.Types.PersonEntities);
+                CoNLL02NameSampleStream.Types.PersonEntities);
         }
 
         [Test]
         public void TestParsingSpanishSample() {
-            var sampleStream = OpenData(Conll02NameSampleStream.Language.ES, "conll2002-es.sample");
+            var sampleStream = OpenData(CoNLL02NameSampleStream.Language.ES, "conll2002-es.sample");
 
             var personName = sampleStream.Read();
 
@@ -59,7 +59,7 @@ namespace SharpNL.Tests.Formats {
 
         [Test]
         public void TestParsingDutchSample() {
-            var sampleStream = OpenData(Conll02NameSampleStream.Language.NL, "conll2002-nl.sample");
+            var sampleStream = OpenData(CoNLL02NameSampleStream.Language.NL, "conll2002-nl.sample");
 
             var personName = sampleStream.Read();
 
@@ -74,7 +74,7 @@ namespace SharpNL.Tests.Formats {
 
         [Test]
         public void TestReset() {
-            var sampleStream = OpenData(Conll02NameSampleStream.Language.NL, "conll2002-nl.sample");
+            var sampleStream = OpenData(CoNLL02NameSampleStream.Language.NL, "conll2002-nl.sample");
 
             var sample = sampleStream.Read();
 

@@ -36,12 +36,18 @@ namespace SharpNL.Formats {
     /// More information about the data format can be found here:<br />
     /// <see href="http://www.cnts.ua.ac.be/conll2006/" />
     /// </remarks>
-    public class ConllXPOSSampleStream : FilterObjectStream<string, POSSample> {
-        public ConllXPOSSampleStream(IObjectStream<string> samples) : base(new ParagraphStream(samples)) {}
+    public class CoNLLXPOSSampleStream : FilterObjectStream<string, POSSample> {
+        public CoNLLXPOSSampleStream(IObjectStream<string> samples) : base(new ParagraphStream(samples)) {
+            
+        }
 
-        public ConllXPOSSampleStream(IInputStreamFactory streamFactory, Encoding encoding)
-            : base(new ParagraphStream(new PlainTextByLineStream(streamFactory, encoding))) {}
+        public CoNLLXPOSSampleStream(IInputStreamFactory streamFactory, Encoding encoding)
+            : base(new ParagraphStream(new PlainTextByLineStream(streamFactory, encoding))) {
+            
+        }
 
+
+        #region . Read .
 
         /// <summary>
         /// Returns the next object. Calling this method repeatedly until it returns ,
@@ -93,5 +99,10 @@ namespace SharpNL.Formats {
 
             return sample;
         }
+
+
+        #endregion
+
+
     }
 }
