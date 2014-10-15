@@ -315,6 +315,26 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . Replace .
+        /// <summary>
+        /// Returns a new string in which all occurrences of a specified Unicode characters in this instance are replaced with another specified Unicode character.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="oldChars">The Unicode characters to be replaced.</param>
+        /// <param name="newChar">The Unicode character to replace all occurrences of <paramref name="oldChars"/>.</param>
+        /// <returns>
+        /// A string that is equivalent to this instance except that all instances of <paramref name="oldChars"/> are replaced with <paramref name="newChar"/>. 
+        /// If any <paramref name="oldChars"/> is not found in the current instance, the method returns the current instance unchanged.</returns>
+        public static string Replace(this string value, char[] oldChars, char newChar) {
+            var sb = new StringBuilder(value);
+            for (var i = 0; i < sb.Length; i++) {
+                if (sb[i].In(oldChars))
+                    sb[i] = newChar;
+            }
+            return sb.ToString();
+        }
+        #endregion
+
         #region . SequenceEqual .
         /// <summary>
         /// Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
