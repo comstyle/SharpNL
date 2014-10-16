@@ -100,3 +100,4 @@ UpgradeLog*.htm
 *GhostDoc.xml
 
 Thumbs.db
+*.csproj.DotSettings
