@@ -83,6 +83,16 @@ namespace SharpNL.Utility {
         public bool Contains(string name) {
             return infos.ContainsKey(name);
         }
+
+        /// <summary>
+        /// Determines whether this instance contains the specified <see cref="ModelInfo"/>.
+        /// </summary>
+        /// <param name="modelInfo">The model information.</param>
+        /// <returns><c>true</c> if <see cref="ModelInfo"/> is in this instance; otherwise, <c>false</c>.</returns>
+        public bool Contains(ModelInfo modelInfo) {
+            return infos.ContainsValue(modelInfo);
+        }
+
         #endregion
 
         #region . Dispose .
