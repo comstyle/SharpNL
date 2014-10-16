@@ -147,6 +147,7 @@
     <Compile Include="Stemmer\Snowball\RussianStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SpanishStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SwedishStemmer.cs" />
+    <Compile Include="Utility\ModelManager.cs" />
     <Compile Include="Utility\Model\ModelInfo.cs" />
     <Compile Include="Utility\TypeClassAttribute.cs" />
     <Compile Include="Utility\SegmenterObjectStream.cs" />

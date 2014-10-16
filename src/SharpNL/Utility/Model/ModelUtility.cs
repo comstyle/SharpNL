@@ -22,14 +22,13 @@
 
 using System;
 using System.IO;
-using SharpNL.ML;
 using SharpNL.ML.Model;
 
 namespace SharpNL.Utility.Model {
     /// <summary>
     /// Utility class for handling of <see cref="IMaxentModel"/>.
     /// </summary>
-    public class ModelUtility {
+    public static class ModelUtility {
 
         #region . ValidateOutcomes .
         /// <summary>
