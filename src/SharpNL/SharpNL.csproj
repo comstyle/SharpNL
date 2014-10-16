@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dictionary\DictionaryBase.cs" />
+    <Compile Include="ModelType.cs" />
     <Compile Include="Chunker\ChunkerCrossValidator.cs" />
     <Compile Include="Chunker\ChunkerEvaluator.cs" />
     <Compile Include="Chunker\ChunkerEventStream.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Stemmer\Snowball\RussianStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SpanishStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SwedishStemmer.cs" />
+    <Compile Include="Utility\Model\ModelInfo.cs" />
     <Compile Include="Utility\TypeClassAttribute.cs" />
     <Compile Include="Utility\SegmenterObjectStream.cs" />
     <Compile Include="Utility\TypeResolver.cs" />
