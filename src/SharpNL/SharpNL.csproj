@@ -43,14 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzer\AnalyzerException.cs" />
-    <Compile Include="Analyzer\Chunker.cs" />
-    <Compile Include="Analyzer\EntityFinder.cs" />
-    <Compile Include="Analyzer\IAnalyzer.cs" />
-    <Compile Include="Analyzer\NameFinder.cs" />
-    <Compile Include="Analyzer\Pipe.cs" />
-    <Compile Include="Analyzer\SentenceDetector.cs" />
-    <Compile Include="Analyzer\Tokenizer.cs" />
     <Compile Include="Dictionary\DictionaryBase.cs" />
     <Compile Include="Chunker\ChunkerCrossValidator.cs" />
     <Compile Include="Chunker\ChunkerEvaluator.cs" />
@@ -231,8 +223,6 @@
     <Compile Include="NameFind\BioCodec.cs" />
     <Compile Include="NameFind\DefaultNameContextGenerator.cs" />
     <Compile Include="NameFind\DictionaryNameFinder.cs" />
-    <Compile Include="Analyzer\IEntity.cs" />
-    <Compile Include="Analyzer\IEntityResolver.cs" />
     <Compile Include="NameFind\INameContextGenerator.cs" />
     <Compile Include="NameFind\ITokenNameFinder.cs" />
     <Compile Include="NameFind\NameFinderEventStream.cs" />
@@ -472,7 +462,6 @@
     <Compile Include="Utility\Model\GenericModelSerializer.cs" />
     <Compile Include="Utility\Serialization\IArtifactSerializer.cs" />
     <Compile Include="Utility\Serialization\ISerializableArtifact.cs" />
-    <Compile Include="Utility\Model\ModelManager.cs" />
     <Compile Include="Utility\IObjectStream.cs" />
     <Compile Include="Utility\Model\ModelUtility.cs" />
     <Compile Include="Utility\PlainTextByLineStream.cs" />
