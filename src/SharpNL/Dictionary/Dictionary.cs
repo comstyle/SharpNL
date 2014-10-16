@@ -24,16 +24,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 using SharpNL.Utility;
 
 namespace SharpNL.Dictionary {
     /// <summary>
     /// Represents an universal dictionary.
     /// </summary>
-    public class Dictionary : IEnumerable<Entry> {
-        
-        protected readonly List<Entry> list;
+    public class Dictionary : DictionaryBase, IEnumerable<Entry> {
 
         #region + Constructors .
 
@@ -47,13 +44,9 @@ namespace SharpNL.Dictionary {
         /// if the dictionary is case sensitive.
         /// </summary>
         /// <param name="caseSensitive">if set to <c>true</c> if the dictionary should be case sensitive.</param>
-        public Dictionary(bool caseSensitive) {
-            list = new List<Entry>();
-
+        public Dictionary(bool caseSensitive) : base(caseSensitive) {
             MinTokenCount = 0;
             MaxTokenCount = 99999;
-
-            IsCaseSensitive = caseSensitive;
         }
 
         internal Dictionary(Stream inputStream) {
@@ -64,60 +57,10 @@ namespace SharpNL.Dictionary {
                 throw new ArgumentException(@"Stream was not readable.", "inputStream");
             }
 
-            //list = new HashSet<Entry>();
-            list = new List<Entry>();
-
             MinTokenCount = 0;
             MaxTokenCount = 99999;
 
-            using (
-                var reader = XmlReader.Create(inputStream, new XmlReaderSettings {
-                    IgnoreComments = true,
-                    IgnoreWhitespace = true
-                })) {
-                while (reader.Read()) {
-                    if (reader.NodeType == XmlNodeType.Element) {
-                        switch (reader.Name) {
-                            case "dictionary":
-                                IsCaseSensitive = reader.GetAttribute("case_sensitive") == "true";
-                                break;
-                            case "entry":
-                                /*
-                                <entry tags="NN">
-                                <token>jet</token>
-                                </entry>
-                                */
-
-                                var tokens = new List<string>();
-                                var attributes = new Attributes();
-                                if (reader.HasAttributes) {
-                                    for (int attInd = 0; attInd < reader.AttributeCount; attInd++) {
-                                        reader.MoveToAttribute(attInd);
-
-                                        attributes[reader.Name] = reader.Value;
-                                    }
-                                    reader.MoveToElement();
-                                }
-
-                                while (reader.Read() && reader.Name == "token") {
-                                    if (reader.Read() && reader.NodeType == XmlNodeType.Text) {
-                                        tokens.Add(reader.Value);
-
-                                        // read </entry>
-                                        if (!reader.Read() || reader.NodeType != XmlNodeType.EndElement) {
-                                            throw new InvalidDataException("Unexpected XML dictionary format.");
-                                        }
-                                    } else {
-                                        throw new InvalidDataException("Unexpected XML dictionary format.");
-                                    }
-                                }
-
-                                Add(new Entry(tokens.ToArray(), attributes));
-                                break;
-                        }
-                    }
-                }
-            }
+            base.Deserialize(inputStream);
         }
 
         #endregion
@@ -129,13 +72,9 @@ namespace SharpNL.Dictionary {
         /// <param name="entry">The entry.</param>
         /// <returns>The new entry.</returns>
         /// <exception cref="System.ArgumentNullException">entry</exception>
-        public Entry Add(Entry entry) {
-            if (entry == null)
-                throw new ArgumentNullException("entry");
+        public new Entry Add(Entry entry) {
 
-            entry.CaseSensitive = IsCaseSensitive;
-
-            list.Add(entry);
+            base.Add(entry);
 
             MinTokenCount = Math.Min(MinTokenCount, entry.Tokens.Count);
             MaxTokenCount = Math.Max(MaxTokenCount, entry.Tokens.Count);
@@ -148,7 +87,7 @@ namespace SharpNL.Dictionary {
         /// </summary>
         /// <param name="tokens">The new entry.</param>
         /// <returns>The new entry.</returns>
-        public Entry Add(StringList tokens) {
+        public virtual Entry Add(StringList tokens) {
             return Add(new Entry(tokens));
         }
 
@@ -166,33 +105,13 @@ namespace SharpNL.Dictionary {
         ///  </code>
         /// </para>
         /// </remarks>
-        public Entry Add(params string[] tokens) {
+        public virtual Entry Add(params string[] tokens) {
             return Add(new Entry(tokens));
         }
 
         #endregion
 
         #region + Properties .
-
-        #region . Count .
-
-        /// <summary>
-        /// Gets the number of tokens in the current instance.
-        /// </summary>
-        /// <value>The number of tokens in the current instance.</value>
-        public int Count {
-            get { return list.Count; }
-        }
-
-        #endregion
-
-        #region . IsCaseSensitive .
-        /// <summary>
-        /// Gets a value indicating whether this dictionary is case sensitive.
-        /// </summary>
-        /// <value><c>true</c> if this instance is case sensitive; otherwise, <c>false</c>.</value>
-        public bool IsCaseSensitive { get; private set; }
-        #endregion
 
         #region . MinTokenCount .
 
@@ -220,19 +139,13 @@ namespace SharpNL.Dictionary {
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns>The <see cref="Entry" /> at the specified index.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is less then 0.
-        /// or
-        /// <paramref name="index"/> is equal to or greater than <see cref="Count"/>.
-        /// </exception>
-        public Entry this[int index] {
+        /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+        public new Entry this[int index] {
             get {
-                if (index < 0)
-                    throw new ArgumentOutOfRangeException("index", @"index is less then 0.");
-                if (index > list.Count)
-                    throw new ArgumentOutOfRangeException("index", @"index is equal to or greater than Count.");
+                if (index < 0 || index > Count)
+                    throw new ArgumentOutOfRangeException("index");
 
-                return list[index]; 
+                return base[index]; 
             }
         }
         #endregion
@@ -247,7 +160,7 @@ namespace SharpNL.Dictionary {
         /// <param name="tokens">The tokens.</param>
         /// <returns><c>true</c> if it contains the entry; otherwise, <c>false</c>.</returns>
         public bool Contains(StringList tokens) {
-            return list.Contains(new Entry(tokens));
+            return Contains(new Entry(tokens));
         }
 
         #endregion
@@ -256,8 +169,8 @@ namespace SharpNL.Dictionary {
         /// <summary>
         /// Removes all entries from the <see cref="Dictionary"/>.
         /// </summary>
-        public void Clear() {
-            list.Clear();
+        public new void Clear() {
+            base.Clear();
         }
         #endregion
 
@@ -268,7 +181,7 @@ namespace SharpNL.Dictionary {
         /// <param name="inputStream">The input stream.</param>
         /// <exception cref="ArgumentNullException">inputStream</exception>
         /// <exception cref="ArgumentException">Stream was not readable.</exception>
-        internal static object Deserialize(Stream inputStream) {
+        internal static new object Deserialize(Stream inputStream) {
             if (inputStream == null) {
                 throw new ArgumentNullException("inputStream");
             }
@@ -294,10 +207,10 @@ namespace SharpNL.Dictionary {
             }
             var dic = obj as Dictionary;
             if (dic != null) {
-                if (dic.list.Count != list.Count)
+                if (dic.Count != Count)
                     return false;
 
-                return dic.list.SequenceEqual(list);
+                return dic.SequenceEqual(this);
             }
             return false;
         }
@@ -305,17 +218,13 @@ namespace SharpNL.Dictionary {
         #endregion
 
         #region . GetHashCode .
-
         /// <summary>
-        /// Serves as a hash function for a particular type. 
+        /// Returns a hash code for this instance.
         /// </summary>
-        /// <returns>
-        /// A hash code for the current <see cref="T:System.Object"/>.
-        /// </returns>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode() {
-            return list.ToString().ToLower().GetHashCode();
+            return ToString().ToLower().GetHashCode();
         }
-
         #endregion
 
         #region + GetEnumerator .
@@ -326,8 +235,8 @@ namespace SharpNL.Dictionary {
         /// <returns>
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<Entry> GetEnumerator() {
-            return list.GetEnumerator();
+        public new IEnumerator<Entry> GetEnumerator() {
+            return base.GetEnumerator();
         }
 
         /// <summary>
@@ -337,7 +246,7 @@ namespace SharpNL.Dictionary {
         /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
         /// </returns>
         IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
+            return base.GetEnumerator();
         }
 
         #endregion
@@ -367,7 +276,7 @@ namespace SharpNL.Dictionary {
         /// </summary>
         /// <param name="tokens">The tokens to remove.</param>
         public virtual void Remove(StringList tokens) {
-            list.Remove(new Entry(tokens));
+            Remove(new Entry(tokens));
         }
 
         #endregion
@@ -377,43 +286,11 @@ namespace SharpNL.Dictionary {
         /// <summary>
         /// Serializes the current instance to the given stream.
         /// </summary>
-        /// <param name="stream">The stream.</param>
+        /// <param name="outputStream">The stream.</param>
         /// <exception cref="System.ArgumentNullException">stream</exception>
         /// <exception cref="System.ArgumentException">The stream is not writable.</exception>
-        public virtual void Serialize(Stream stream) {
-            if (stream == null) {
-                throw new ArgumentNullException("stream");
-            }
-            if (!stream.CanWrite) {
-                throw new ArgumentException(@"The stream is not writable.", "stream");
-            }
-
-            /*
-            <entry tags="NN">
-            <token>jet</token>
-            </entry>
-            */
-            using (var writer = XmlWriter.Create(stream)) {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("dictionary");
-                writer.WriteAttributeString("case_sensitive", IsCaseSensitive ? "true" : "false");
-
-                foreach (var item in list) {
-                    writer.WriteStartElement("entry");
-
-                    foreach (var key in item.Attributes) {
-                        writer.WriteAttributeString(key, item.Attributes[key]);
-                    }
-
-                    foreach (var token in item.Tokens) {
-                        writer.WriteElementString("token", token);
-                    }
-
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-            }
+        public new void Serialize(Stream outputStream) {
+            base.Serialize(outputStream);
         }
 
         /// <summary>
@@ -473,20 +350,6 @@ namespace SharpNL.Dictionary {
 
             return toList;
         }
-        #endregion
-
-        #region . ToString .
-
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>
-        /// A string that represents the current object.
-        /// </returns>
-        public override string ToString() {
-            return list.ToString();
-        }
-
         #endregion
 
     }

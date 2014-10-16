@@ -24,15 +24,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using SharpNL.Dictionary;
+
 
 namespace SharpNL.POSTag {
     /// <summary>
     /// Provides a means of determining which tags are valid for a particular 
     /// word based on a tag dictionary read from a file.
     /// </summary>
-    public class POSDictionary : IEnumerable<string>, IMutableTagDictionary {
-        private readonly bool caseSensitive;
-        private readonly Dictionary<string, string[]> dictionary;
+    public class POSDictionary : Dictionary.DictionaryBase, IEnumerable<string>, IMutableTagDictionary, IEquatable<POSDictionary> {
+        private const string Tags = "tags";
+
+        private readonly Dictionary<string, Entry> items;
 
         /// <summary>
         /// Initializes an empty case sensitive <see cref="POSDictionary"/>.
@@ -43,34 +46,72 @@ namespace SharpNL.POSTag {
         /// Initializes an empty <see cref="POSDictionary"/>.
         /// </summary>
         /// <param name="caseSensitive">if set to <c>true</c> the dictionary will be case sensitive.</param>
-        public POSDictionary(bool caseSensitive) {
-            this.caseSensitive = caseSensitive;
-
-            dictionary = caseSensitive
-                ? new Dictionary<string, string[]>()
-                : new Dictionary<string, string[]>(StringComparer.InvariantCultureIgnoreCase);
+        public POSDictionary(bool caseSensitive) : base(caseSensitive) {
+            items = new Dictionary<string, Entry>(caseSensitive 
+                ? StringComparer.Ordinal 
+                : StringComparer.OrdinalIgnoreCase);
         }
 
-        #region . Create .
-        /*
-        public static POSDictionary Create(Stream inputStream) {
-            var dictionary = new POSDictionary();
+        public POSDictionary(Stream inputStream) {
+            if (inputStream == null) {
+                throw new ArgumentNullException("inputStream");
+            }
+            if (!inputStream.CanRead) {
+                throw new ArgumentException(@"Stream was not readable.", "inputStream");
+            }
+
+            base.Deserialize(inputStream);
+
+            items = new Dictionary<string, Entry>(IsCaseSensitive
+                ? StringComparer.Ordinal
+                : StringComparer.OrdinalIgnoreCase);
+
+            for (var e = base.GetEnumerator(); e.MoveNext(); ) {
+                items[e.Current.Tokens[0]] = e.Current;
+            }
+
+        }
 
 
-            return dictionary;
-        }*/
-        #endregion
-
-        #region . IsCaseSensitive .
+        #region + Equals .
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        /// <param name="other">An object to compare with this object.</param>
+        public bool Equals(POSDictionary other) {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(items, other.items);
+        }
 
         /// <summary>
-        /// Gets a value indicating whether this instance is case sensitive.
+        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
         /// </summary>
-        /// <value><c>true</c> if this instance is case sensitive; otherwise, <c>false</c>.</value>
-        public bool IsCaseSensitive {
-            get { return caseSensitive; }
+        /// <returns>
+        /// true if the specified object  is equal to the current object; otherwise, false.
+        /// </returns>
+        /// <param name="obj">The object to compare with the current object. </param>
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((POSDictionary)obj);
         }
+        #endregion
 
+        #region . GetHashCode .
+        /// <summary>
+        /// Serves as a hash function for a particular type. 
+        /// </summary>
+        /// <returns>
+        /// A hash code for the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override int GetHashCode() {
+            return (items != null ? items.GetHashCode() : 0);
+        }
         #endregion
 
         #region . GetTags .
@@ -81,7 +122,7 @@ namespace SharpNL.POSTag {
         /// <param name="word">The word.</param>
         /// <returns>A list of valid tags for the specified word or null if no information is available for that word.</returns>
         public string[] GetTags(string word) {
-            return dictionary[word];
+            return !items.ContainsKey(word) ? null : items[word].Attributes["tags"].Split(' ');
         }
 
         #endregion
@@ -97,20 +138,21 @@ namespace SharpNL.POSTag {
         /// <param name="tags">The tags to be associated with the specified word.</param>
         /// <returns>The previous tags associated with the word, or null if there was no mapping for word.</returns>
         public string[] Put(string word, params string[] tags) {
-            if (dictionary.ContainsKey(word)) {
-                if (tags == null)
-                    dictionary.Remove(word);
-                else
-                    dictionary[word] = tags;
+            if (items.ContainsKey(word)) {
+                var prev = items[word].Attributes[Tags].Split(' ');
 
-                return null;
+                var entry = items[word];
+                entry.Attributes[Tags] = string.Join(" ", tags);
+
+                return prev;
             }
-            var prev = dictionary[word];
 
-            if (tags != null)
-                dictionary[word] = tags;
+            items[word] = new Entry(word);
+            items[word].Attributes[Tags] = string.Join(" ", tags);
 
-            return prev;
+            Add(items[word]);
+            
+            return null;
         }
 
         #endregion
@@ -123,8 +165,8 @@ namespace SharpNL.POSTag {
         /// <returns>
         /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<string> GetEnumerator() {
-            return dictionary.Keys.GetEnumerator();
+        public new IEnumerator<string> GetEnumerator() {
+            return items.Keys.GetEnumerator();
         }
 
         /// <summary>
@@ -139,6 +181,18 @@ namespace SharpNL.POSTag {
 
         #endregion
 
+        #region . Serialize .
+        /// <summary>
+        /// Serializes the current instance to the given stream.
+        /// </summary>
+        /// <param name="outputStream">The stream.</param>
+        /// <exception cref="System.ArgumentNullException">stream</exception>
+        /// <exception cref="System.ArgumentException">The stream is not writable.</exception>
+        public new void Serialize(Stream outputStream) {
+            base.Serialize(outputStream);
+        }
+        #endregion
+
         #region . ToString .
 
         /// <summary>
@@ -148,9 +202,10 @@ namespace SharpNL.POSTag {
         /// A string that represents the current dictionary.
         /// </returns>
         public override string ToString() {
-            return string.Format("POSDictionary{{size={0}, caseSensitive={1}}}", dictionary.Count, caseSensitive);
+            return string.Format("POSDictionary{{size={0}, caseSensitive={1}}}", Count, IsCaseSensitive);
         }
 
         #endregion
+
     }
 }

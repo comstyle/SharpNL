@@ -36,8 +36,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,7 @@
     <Compile Include="Analyzer\Pipe.cs" />
     <Compile Include="Analyzer\SentenceDetector.cs" />
     <Compile Include="Analyzer\Tokenizer.cs" />
+    <Compile Include="Dictionary\DictionaryBase.cs" />
     <Compile Include="Chunker\ChunkerCrossValidator.cs" />
     <Compile Include="Chunker\ChunkerEvaluator.cs" />
     <Compile Include="Chunker\ChunkerEventStream.cs" />
@@ -287,7 +290,6 @@
     <Compile Include="POSTag\Language\pt\POSContextGenerator.cs" />
     <Compile Include="POSTag\Language\pt\POSSequenceValidator.cs" />
     <Compile Include="POSTag\POSDictionary.cs" />
-    <Compile Include="POSTag\POSDictionarySerializer.cs" />
     <Compile Include="POSTag\POSEvaluator.cs" />
     <Compile Include="POSTag\POSModel.cs" />
     <Compile Include="POSTag\POSSample.cs" />

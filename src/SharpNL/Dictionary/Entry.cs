@@ -28,7 +28,7 @@ namespace SharpNL.Dictionary {
     /// Represents an dictionary entry.
     /// </summary>
     /// <seealso cref="Attributes"/>
-    public class Entry : IEquatable<Entry> {
+    public class Entry : IEquatable<Entry>, ICloneable {
 
         #region + Constructors .
 
@@ -86,6 +86,20 @@ namespace SharpNL.Dictionary {
         /// </summary>
         /// <value><c>true</c> if this entry is case sensitive; otherwise, <c>false</c>.</value>
         internal bool CaseSensitive { get; set; }
+        #endregion
+
+        #region . Clone .
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
+        public object Clone() {
+            return new Entry(Tokens, Attributes) {
+                CaseSensitive = CaseSensitive
+            };
+        }
         #endregion
 
         #region . Tokens .
@@ -147,6 +161,9 @@ namespace SharpNL.Dictionary {
         public override int GetHashCode() {
             return Tokens.ToString().ToLowerInvariant().GetHashCode();
         }
+
+
+
         #endregion
 
         #region . ToString .

@@ -276,6 +276,6 @@ namespace SharpNL.Utility {
             return GetEnumerator();
         }
         #endregion
-
-    }
+                
+    }    
 }

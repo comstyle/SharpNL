@@ -22,8 +22,10 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Dictionary;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
+using SharpNL.Utility.Serialization;
 using Dic = SharpNL.Dictionary.Dictionary;
 
 namespace SharpNL.POSTag {
@@ -133,6 +135,23 @@ namespace SharpNL.POSTag {
         }
 
         #endregion
+
+        /// <summary>
+        /// Creates the artifact serializers for the <see cref="BaseToolFactory.ArtifactProvider"/>.
+        /// The subclasses should call the <see cref="SharpNL.Utility.Serialization.ArtifactProvider.RegisterArtifactType"/> method to register an new artifact type.
+        /// </summary>
+        /// <param name="provider">The artifact provider.</param>
+        public override void CreateArtifactSerializers(ArtifactProvider provider) {
+            base.CreateArtifactSerializers(provider);
+
+            // TODO: the ITagDictionary is not extensive :(
+
+            provider.RegisterArtifactType(".tagdict", 
+                (artifact, stream) => ((POSDictionary) artifact).Serialize(stream), 
+                stream => new POSDictionary(stream)
+                );
+
+        }
 
         #region . CreateEmptyTagDictionary .
 
