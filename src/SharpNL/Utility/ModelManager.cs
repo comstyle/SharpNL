@@ -25,18 +25,15 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;               
 using SharpNL.Utility.Model;
-using SharpNL.Utility.Serialization;
 
 namespace SharpNL.Utility {
     /// <summary>
     /// Represents a model manager that provides convenient access to culture-specific models at run time.
     /// </summary>
-    public class ModelManager : IEnumerable<string>, IDisposable {
-        private readonly Dictionary<string, BaseModel> models;
+    public class ModelManager : IEnumerable<ModelInfo>, IDisposable {
         private readonly Dictionary<string, ModelInfo> infos;
 
         public ModelManager() {
-            models = new Dictionary<string, BaseModel>();
             infos = new Dictionary<string, ModelInfo>();
         }
 
@@ -49,14 +46,7 @@ namespace SharpNL.Utility {
         /// <value>The number of elements contained in the <see cref="ModelManager"/>.</value>
         public int Count {
             get {
-                var list = new List<string>(Math.Max(models.Count, infos.Count));
-                foreach (var name in models.Keys)
-                    if (!list.Contains(name)) list.Add(name);
-
-                foreach (var name in infos.Keys)
-                    if (!list.Contains(name)) list.Add(name);
-
-                return list.Count;
+                return infos.Count;
             }
         }
         #endregion
@@ -64,35 +54,6 @@ namespace SharpNL.Utility {
         #endregion
 
         #region . Add .
-
-        /// <summary>
-        /// Adds the specified model.
-        /// </summary>
-        /// <param name="name">The model name/key.</param>
-        /// <param name="model">The model.</param>
-        /// <exception cref="System.ArgumentNullException">model</exception>
-        /// <exception cref="System.ArgumentException">
-        /// The specified model does not contain a manifest.
-        /// or
-        /// The manifest in the specified model does not specifies the language.
-        /// or
-        /// The model <paramref name="name"/> is already in this manager.
-        /// </exception>
-        public void Add(string name, BaseModel model) {
-            if (model == null)
-                throw new ArgumentNullException("model");
-
-            if (model.Manifest == null)
-                throw new ArgumentException("The specified model does not contain a manifest.");
-
-            if (!model.Manifest.Contains(ArtifactProvider.LanguageEntry))
-                throw new ArgumentException("The manifest in the specified model does not specifies the language.");
-
-            if (models.ContainsKey(name))
-                throw new ArgumentException("The model " + name + " is already in this manager.");
-
-            models[name] = model;
-        }
 
         /// <summary>
         /// Adds the specified model information. The model key will be de filename without extension.
@@ -107,13 +68,21 @@ namespace SharpNL.Utility {
 
             if (!modelInfo.File.Exists)
                 throw new FileNotFoundException("The model file does not exist.", modelInfo.File.FullName);
-           
-            if (models.ContainsKey(modelInfo.Name))
-                throw new ArgumentException("The model " + modelInfo.Name + " is already in this manager.");
 
             infos[modelInfo.Name] = modelInfo;
         }
 
+        #endregion
+
+        #region . Contains .
+        /// <summary>
+        /// Determines whether this instance contains the specified model name.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns><c>true</c> if model name is in this instance; otherwise, <c>false</c>.</returns>
+        public bool Contains(string name) {
+            return infos.ContainsKey(name);
+        }
         #endregion
 
         #region . Dispose .
@@ -121,7 +90,6 @@ namespace SharpNL.Utility {
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose() {
-            models.Clear();
             infos.Clear();
         }
         #endregion
@@ -133,11 +101,8 @@ namespace SharpNL.Utility {
         /// <param name="name">The model name to be removed.</param>
         /// <exception cref="System.Collections.Generic.KeyNotFoundException">The model <paramref name="name"/> is not in this instance.</exception>
         public void Remove(string name) {
-            if (!models.ContainsKey(name) && !infos.ContainsKey(name))
+            if (!infos.ContainsKey(name))
                 throw new KeyNotFoundException("The model " + name + " is not in this instance.");
-
-            if (models.ContainsKey(name))
-                models.Remove(name); 
 
             if (infos.ContainsKey(name))
                 infos.Remove(name);
@@ -153,19 +118,15 @@ namespace SharpNL.Utility {
             if (modelInfo == null)
                 throw new ArgumentNullException("modelInfo");
 
-            if (!infos.ContainsKey(modelInfo.Name) && !models.ContainsKey(modelInfo.Name))
+            if (!infos.ContainsKey(modelInfo.Name))
                 throw new KeyNotFoundException("The model " + modelInfo.Name + " is not in this instance.");
 
             if (infos.ContainsKey(modelInfo.Name))
                 infos.Remove(modelInfo.Name);
-
-            if (models.ContainsKey(modelInfo.Name))
-                models.Remove(modelInfo.Name);
         }
         #endregion
 
         #region . GetModel .
-
         /// <summary>
         /// Gets the model.
         /// </summary>
@@ -175,16 +136,7 @@ namespace SharpNL.Utility {
         /// <exception cref="FileNotFoundException">The model file does not exist.</exception>
         /// <exception cref="InvalidOperationException">Unable to detect the model type.</exception>
         public T GetModel<T>(string name) where T : BaseModel {
-            if (models.ContainsKey(name))
-                return models[name] as T;
-
-            if (infos.ContainsKey(name)) {
-                models[name] = infos[name].OpenModel();
-
-                return models[name] as T;
-            }
-
-            return null;
+            return infos[name].OpenModel() as T;
         }
 
         #endregion
@@ -196,17 +148,8 @@ namespace SharpNL.Utility {
         /// <returns>
         /// A <see cref="T:IEnumerator{string}"/> that contains all the model names in this manager.
         /// </returns>
-        public IEnumerator<string> GetEnumerator() {
-            var list = new List<string>(Math.Max(models.Count, infos.Count));
-            foreach (var name in models.Keys)
-                if (!list.Contains(name)) list.Add(name);
-
-            foreach (var name in infos.Keys)
-                if (!list.Contains(name)) list.Add(name);
-
-            list.Sort();
-
-            return list.GetEnumerator();
+        public IEnumerator<ModelInfo> GetEnumerator() {
+            return infos.Values.GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
