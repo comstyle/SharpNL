@@ -36,10 +36,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +147,7 @@
     <Compile Include="Stemmer\Snowball\SwedishStemmer.cs" />
     <Compile Include="Utility\ModelManager.cs" />
     <Compile Include="Utility\Model\ModelInfo.cs" />
+    <Compile Include="Utility\Model\ModelInfoEventArgs.cs" />
     <Compile Include="Utility\TypeClassAttribute.cs" />
     <Compile Include="Utility\SegmenterObjectStream.cs" />
     <Compile Include="Utility\TypeResolver.cs" />

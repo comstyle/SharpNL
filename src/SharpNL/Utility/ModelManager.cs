@@ -23,7 +23,8 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Collections.Generic;               
+using System.Collections.Generic;
+using System.Linq;
 using SharpNL.Utility.Model;
 
 namespace SharpNL.Utility {
@@ -32,9 +33,16 @@ namespace SharpNL.Utility {
     /// </summary>
     public class ModelManager : IEnumerable<ModelInfo>, IDisposable {
         private readonly Dictionary<string, ModelInfo> infos;
+        private readonly List<Models> available;
+
+        /// <summary>
+        /// Raised when a model is added or removed from this manager.
+        /// </summary>
+        public EventHandler<ModelInfoEventArgs> Changed;
 
         public ModelManager() {
             infos = new Dictionary<string, ModelInfo>();
+            available = new List<Models>();
         }
 
         #region + Properties .
@@ -70,8 +78,25 @@ namespace SharpNL.Utility {
                 throw new FileNotFoundException("The model file does not exist.", modelInfo.File.FullName);
 
             infos[modelInfo.Name] = modelInfo;
+
+            if (!available.Contains(modelInfo.ModelType))
+                available.Add(modelInfo.ModelType);
+
+            if (Changed != null)
+                Changed(this, new ModelInfoEventArgs(modelInfo));
+
         }
 
+        #endregion
+
+        #region . Available .
+        /// <summary>
+        /// Gets the available models in this instance.
+        /// </summary>
+        /// <value>The available models in this instance.</value>
+        public Models[] Available {
+            get { return available.ToArray(); }
+        }
         #endregion
 
         #region . Contains .
@@ -114,9 +139,16 @@ namespace SharpNL.Utility {
             if (!infos.ContainsKey(name))
                 throw new KeyNotFoundException("The model " + name + " is not in this instance.");
 
-            if (infos.ContainsKey(name))
+            if (infos.ContainsKey(name)) {
+                var info = infos[name];
+
                 infos.Remove(name);
 
+                CheckRemovedType(info.ModelType);
+
+                if (Changed != null)
+                    Changed(this, new ModelInfoEventArgs(info));
+            }
         }
         /// <summary>
         /// Removes the specified model information.
@@ -131,8 +163,28 @@ namespace SharpNL.Utility {
             if (!infos.ContainsKey(modelInfo.Name))
                 throw new KeyNotFoundException("The model " + modelInfo.Name + " is not in this instance.");
 
-            if (infos.ContainsKey(modelInfo.Name))
-                infos.Remove(modelInfo.Name);
+            if (!infos.ContainsKey(modelInfo.Name)) 
+                return;
+
+            infos.Remove(modelInfo.Name);
+
+            CheckRemovedType(modelInfo.ModelType);
+
+            if (Changed != null)
+                Changed(this, new ModelInfoEventArgs(modelInfo));
+        }
+        #endregion
+
+        #region . CheckRemovedType .
+        /// <summary>
+        /// Removes the model type from the available list if there are no more 
+        /// models of the same <paramref name="type"/>.
+        /// </summary>
+        private void CheckRemovedType(Models type) {
+            var another = infos.Values.Any(info => info.ModelType == type);
+            if (!another) {
+                available.Remove(type);
+            }
         }
         #endregion
 
