@@ -21,7 +21,6 @@
 //  
 
 using System;
-using SharpNL.Analyzer;
 
 namespace SharpNL.Text {
     /// <summary>
@@ -136,18 +135,6 @@ namespace SharpNL.Text {
 
         #endregion
 
-        #endregion
-
-        #region . GetAdditionalContext .
-        /// <summary>
-        /// Gets the additional context for the specified analyzer type.
-        /// </summary>
-        /// <param name="analyzerType">The type analyzer.</param>
-        /// <returns>The additional context for the specified analyzer.</returns>
-        /// <exception cref="ArgumentException">
-        /// The specified analyzer type does not implement the <see cref="IAnalyzer"/> interface.
-        /// </exception>
-        string GetAdditionalContext(Type analyzerType);
         #endregion
 
     }

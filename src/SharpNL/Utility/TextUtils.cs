@@ -20,11 +20,14 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
 using SharpNL.Text;
 
 namespace SharpNL.Utility {
     internal class TextUtils {
+
+
 
         public static string[] TokensToString(IReadOnlyList<IToken> tokens) {
             var items = new string[tokens.Count];

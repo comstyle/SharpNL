@@ -21,7 +21,6 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Java;
 using SharpNL.Sentence.Language;
 using SharpNL.Utility;
 using SharpNL.Utility.Serialization;
@@ -107,7 +106,7 @@ namespace SharpNL.Sentence {
         public string LanguageCode {
             get {
                 if (languageCode == null && ArtifactProvider != null) {
-                    languageCode = ArtifactProvider.Manifest[ArtifactProvider.LANGUAGE_PROPERTY];
+                    languageCode = ArtifactProvider.Manifest[ArtifactProvider.LanguageEntry];
                 }
                 return languageCode;
             }

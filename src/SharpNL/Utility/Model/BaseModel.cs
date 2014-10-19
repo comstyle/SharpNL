@@ -71,10 +71,10 @@ namespace SharpNL.Utility.Model {
             }
 
             Manifest[MANIFEST_VERSION_PROPERTY] = "1.0";
-            Manifest[LANGUAGE_PROPERTY] = languageCode;
+            Manifest[LanguageEntry] = languageCode;
             Manifest[VERSION_PROPERTY] = "1.5.3"; // TODO: Implement a better version system for OpenNLP
-            Manifest[TIMESTAMP_PROPERTY] = Library.CurrentTimeMillis().ToString(CultureInfo.InvariantCulture);
-            Manifest[COMPONENT_NAME_PROPERTY] = componentName;
+            Manifest[TimestampEntry] = Library.CurrentTimeMillis().ToString(CultureInfo.InvariantCulture);
+            Manifest[ComponentNameEntry] = componentName;
 
             if (manifestInfoEntries != null) {
                 foreach (var entry in manifestInfoEntries) {
@@ -174,8 +174,8 @@ namespace SharpNL.Utility.Model {
         /// </summary>
         /// <value>The language code of this model.</value>
         public string Language {
-            get { return Manifest[LANGUAGE_PROPERTY]; }
-            protected set { Manifest[LANGUAGE_PROPERTY] = value; }
+            get { return Manifest[LanguageEntry]; }
+            protected set { Manifest[LanguageEntry] = value; }
         }
         #endregion
 

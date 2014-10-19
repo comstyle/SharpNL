@@ -221,7 +221,7 @@ namespace SharpNL.Utility {
         /// A task that represents the asynchronous copy operation.
         /// </returns>
         /// <param name="destination">The stream to which the contents of the current stream will be copied.</param><param name="bufferSize">The size, in bytes, of the buffer. This value must be greater than zero. The default size is 4096.</param><param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None"/>.</param><exception cref="T:System.ArgumentNullException"><paramref name="destination"/> is null.</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="bufferSize"/> is negative or zero.</exception><exception cref="T:System.ObjectDisposedException">Either the current stream or the destination stream is disposed.</exception><exception cref="T:System.NotSupportedException">The current stream does not support reading, or the destination stream does not support writing.</exception>
-        public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken) {
+        public override System.Threading.Tasks.Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken) {
             return realStream.CopyToAsync(destination, bufferSize, cancellationToken);
         }
 
@@ -263,7 +263,7 @@ namespace SharpNL.Utility {
         /// A task that represents the asynchronous flush operation.
         /// </returns>
         /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None"/>.</param><exception cref="T:System.ObjectDisposedException">The stream has been disposed.</exception>
-        public override Task FlushAsync(CancellationToken cancellationToken) {
+        public override System.Threading.Tasks.Task FlushAsync(CancellationToken cancellationToken) {
             return realStream.FlushAsync(cancellationToken);
         }
 
@@ -306,7 +306,7 @@ namespace SharpNL.Utility {
         /// A task that represents the asynchronous write operation.
         /// </returns>
         /// <param name="buffer">The buffer to write data from.</param><param name="offset">The zero-based byte offset in <paramref name="buffer"/> from which to begin copying bytes to the stream.</param><param name="count">The maximum number of bytes to write.</param><param name="cancellationToken">The token to monitor for cancellation requests. The default value is <see cref="P:System.Threading.CancellationToken.None"/>.</param><exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null.</exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> or <paramref name="count"/> is negative.</exception><exception cref="T:System.ArgumentException">The sum of <paramref name="offset"/> and <paramref name="count"/> is larger than the buffer length.</exception><exception cref="T:System.NotSupportedException">The stream does not support writing.</exception><exception cref="T:System.ObjectDisposedException">The stream has been disposed.</exception><exception cref="T:System.InvalidOperationException">The stream is currently in use by a previous write operation. </exception>
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) {
+        public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) {
             return realStream.WriteAsync(buffer, offset, count, cancellationToken);
         }
 

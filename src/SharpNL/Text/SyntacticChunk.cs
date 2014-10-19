@@ -21,12 +21,14 @@
 //  
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SharpNL.Text {
     /// <summary>
     /// Represents a syntactic chunk
     /// </summary>
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class SyntacticChunk : ISyntacticChunk {
 
         private readonly Sentence sentence;

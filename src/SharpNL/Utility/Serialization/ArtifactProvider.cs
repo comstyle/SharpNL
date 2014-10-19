@@ -39,11 +39,11 @@ namespace SharpNL.Utility.Serialization {
         internal const string MANIFEST_ENTRY = "manifest.properties";
         internal const string MANIFEST_VERSION_PROPERTY = "Manifest-Version";
 
-        internal const string LANGUAGE_PROPERTY = "Language";
+        internal const string LanguageEntry = "Language";
         internal const string VERSION_PROPERTY = "OpenNLP-Version";
         
-        internal const string COMPONENT_NAME_PROPERTY = "Component-Name";
-        internal const string TIMESTAMP_PROPERTY = "Timestamp";
+        internal const string ComponentNameEntry = "Component-Name";
+        internal const string TimestampEntry = "Timestamp";
 
         internal const string TRAINING_CUTOFF_PROPERTY = "Training-Cutoff";
         internal const string TRAINING_ITERATIONS_PROPERTY = "Training-Iterations";

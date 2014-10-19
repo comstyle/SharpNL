@@ -20,14 +20,17 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
-using SharpNL.Analyzer;
+using System.ComponentModel;
 using SharpNL.Text.Tree;
+using SharpNL.Utility;
 
 namespace SharpNL.Text {
     /// <summary>
     /// Represents a sentence.
     /// </summary>
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class Sentence : ISentence {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sentence"/> class.
@@ -35,7 +38,7 @@ namespace SharpNL.Text {
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
         /// <param name="document">The document.</param>
-        public Sentence(int start, int end, Document document) : this(start, end, null, document) { }
+        public Sentence(int start, int end, IDocument document) : this(start, end, null, document) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sentence"/> class.
@@ -44,10 +47,13 @@ namespace SharpNL.Text {
         /// <param name="end">The end.</param>
         /// <param name="tokens">The tokens.</param>
         /// <param name="document">The document.</param>
-        public Sentence(int start, int end, List<Token> tokens, Document document) {
+        public Sentence(int start, int end, List<Token> tokens, IDocument document) {
             Start = start;
             End = end;
-            Tokens = tokens.AsReadOnly();
+
+            if (tokens != null)
+                Tokens = tokens.AsReadOnly();
+
             Document = document;
         }
 
@@ -69,11 +75,7 @@ namespace SharpNL.Text {
         /// Gets the document.
         /// </summary>
         /// <value>The document.</value>
-        public Document Document { get; private set; }
-        IDocument ISentence.Document {
-            get { return Document; }
-        }
-
+        public IDocument Document { get; private set; }
         #endregion
 
         #region . End .
@@ -202,6 +204,5 @@ namespace SharpNL.Text {
             return Text.Substring(startIndex, length);
         }
         #endregion
-
     }
 }

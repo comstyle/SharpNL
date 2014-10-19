@@ -20,17 +20,14 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
-using System.Collections.Generic;
-using SharpNL.Analyzer;
+using System.ComponentModel;
 
 namespace SharpNL.Text {
     /// <summary>
     /// Represents a token, which is a word, its lemma, its morphological posTag and the position of it in the sentence.
     /// </summary>
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class Token : IToken {
-
-        private Dictionary<Type, string> additionalContext;
 
         public Token(int start, int end, string lexeme) : this(start, end, lexeme, null, null, null) { }
 
@@ -119,6 +116,14 @@ namespace SharpNL.Text {
         public double POSTagProbability { get; internal set; }
         #endregion
 
+        #region . Probability .
+        /// <summary>
+        /// Gets the token probability.
+        /// </summary>
+        /// <value>The token probability.</value>
+        public double Probability { get; internal set; }
+        #endregion
+
         #region . Start .
         /// <summary>
         /// Gets the token start position.
@@ -180,32 +185,6 @@ namespace SharpNL.Text {
 
         #endregion
 
-        #region . GetAdditionalContext .
-        /// <summary>
-        /// Gets the additional context for the specified analyzer type.
-        /// </summary>
-        /// <param name="analyzerType">The type analyzer.</param>
-        /// <returns>The additional context for the specified analyzer.</returns>
-        /// <exception cref="ArgumentException">
-        /// The specified analyzer type does not implement the <see cref="IAnalyzer"/> interface.
-        /// </exception>
-        public string GetAdditionalContext(Type analyzerType) {
-            if (additionalContext == null)
-                return null;
-
-            if (analyzerType == null)
-                throw new ArgumentNullException("analyzerType");
-
-            if (!typeof (IAnalyzer).IsAssignableFrom(analyzerType))
-                throw new ArgumentException("The specified analyzer type does not implement the IAnalyzer interface.");
-
-            return 
-                additionalContext.ContainsKey(analyzerType) ? 
-                additionalContext[analyzerType] : 
-                null;
-        }
-        #endregion
-
         #region . GetHashCode .
         /// <summary>
         /// Returns a hash code for this token.
@@ -221,29 +200,6 @@ namespace SharpNL.Text {
             }
         }
         #endregion
-
-        #region . SetAdditionalContext .
-        /// <summary>
-        /// Sets the additional context.
-        /// </summary>
-        /// <param name="analyzerType">Type of the analyzer.</param>
-        /// <param name="value">The value.</param>
-        /// <exception cref="System.ArgumentNullException">analyzerType</exception>
-        /// <exception cref="System.ArgumentException">The specified analyzer type does not implement the <see cref="IAnalyzer"/> interface.</exception>
-        internal void SetAdditionalContext(Type analyzerType, string value) {
-            if (analyzerType == null)
-                throw new ArgumentNullException("analyzerType");
-
-            if (!typeof(IAnalyzer).IsAssignableFrom(analyzerType))
-                throw new ArgumentException("The specified analyzer type does not implement the IAnalyzer interface.");
-
-            if (additionalContext == null)
-                additionalContext = new Dictionary<Type, string>();
-
-            additionalContext[analyzerType] = value;
-        }
-        #endregion
-
 
     }
 }

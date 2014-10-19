@@ -20,20 +20,38 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Tokenize {
-    /// <summary>A Detokenizer merges tokens back to their untokenized representation.</summary>
-    public interface IDetokenizer {
-        /// <summary>Detokenizes the specified tokens.</summary>
-        /// <param name="tokens">The tokens to detokenize.</param>
-        /// <returns>The merge operations to detokenize the input tokens.</returns>
-        DetokenizationOperation[] Detokenize(string[] tokens);
+namespace SharpNL.Utility {
+    /// <summary>
+    /// Represents a text position.
+    /// </summary>
+    public struct TextPosition {
 
+        /// <summary>
+        /// The start text index;
+        /// </summary>
+        public int Start;
 
-        /// <summary>Detokenize the input tokens into a String. Tokens which are connected without a space in between can be
-        /// separated by a split marker.</summary>
-        /// <param name="tokens">The token which should be concatenated.</param>
-        /// <param name="splitMarker">The split marker or null.</param>
-        /// <returns>The detokenized string.</returns>
-        string Detokenize(string[] tokens, string splitMarker);
+        /// <summary>
+        /// The end text index.
+        /// </summary>
+        public int End;
+
+        /// <summary>
+        /// Gets the text length.
+        /// </summary>
+        /// <value>The text length.</value>
+        public int Length {
+            get { return End - Start; }
+        }
+
+        /// <summary>
+        /// Gets the covered text.
+        /// </summary>
+        /// <param name="text">The text.</param>
+        /// <returns>The covered text.</returns>
+        public string GetCoveredText(string text) {
+            return text.Substring(Start, Length);
+        }
+
     }
 }

@@ -139,7 +139,7 @@ namespace SharpNL.Tokenize {
         public string LanguageCode {
             get {
                 if (languageCode == null && ArtifactProvider != null)
-                    languageCode = ArtifactProvider.Manifest[ArtifactProvider.LANGUAGE_PROPERTY];
+                    languageCode = ArtifactProvider.Manifest[ArtifactProvider.LanguageEntry];
 
                 return languageCode;
             }

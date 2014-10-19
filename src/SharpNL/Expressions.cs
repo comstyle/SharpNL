@@ -49,5 +49,14 @@ namespace SharpNL {
 
             return tokens;
         }
+
+        public static string RegExMatch(this string value, string pattern, int group = 1, RegexOptions options = RegexOptions.IgnoreCase) {
+            var regex = new Regex(pattern, options);
+            var match = regex.Match(value);
+            if (match.Success && match.Groups[group].Success) {
+                return match.Groups[group].Value;
+            }
+            return null;
+        }
     }
 }

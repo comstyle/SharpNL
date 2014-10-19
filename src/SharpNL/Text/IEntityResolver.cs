@@ -20,20 +20,22 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Tokenize {
-    /// <summary>A Detokenizer merges tokens back to their untokenized representation.</summary>
-    public interface IDetokenizer {
-        /// <summary>Detokenizes the specified tokens.</summary>
-        /// <param name="tokens">The tokens to detokenize.</param>
-        /// <returns>The merge operations to detokenize the input tokens.</returns>
-        DetokenizationOperation[] Detokenize(string[] tokens);
+using SharpNL.Utility;
+using System.Runtime.CompilerServices;
 
-
-        /// <summary>Detokenize the input tokens into a String. Tokens which are connected without a space in between can be
-        /// separated by a split marker.</summary>
-        /// <param name="tokens">The token which should be concatenated.</param>
-        /// <param name="splitMarker">The split marker or null.</param>
-        /// <returns>The detokenized string.</returns>
-        string Detokenize(string[] tokens, string splitMarker);
+namespace SharpNL.Text {
+    /// <summary>
+    /// Provides a entity resolution.
+    /// </summary>
+    public interface IEntityResolver {
+        /// <summary>
+        /// Resolves an entity by the given <paramref name="sentence" /> and <paramref name="span" />.
+        /// </summary>
+        /// <param name="language">The language of the document.</param>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="span">The entity span.</param>
+        /// <returns>The implemented entity. if null the analyzer will ignore this entity.</returns>
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        IEntity Resolve(string language, ISentence sentence, Span span);
     }
 }

@@ -21,12 +21,15 @@
 //  
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+using SharpNL.Utility;
 
 namespace SharpNL.Text {
     /// <summary>
     /// Represents a chunk.
     /// </summary>
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class Chunk : IChunk {
 
         private readonly Sentence sentence;
@@ -36,15 +39,11 @@ namespace SharpNL.Text {
         /// <summary>
         /// Initializes a new instance of the <see cref="Chunk"/> class.
         /// </summary>
-        /// <param name="tag">The POStag.</param>
-        /// <param name="start">The start.</param>
-        /// <param name="end">The end.</param>
         /// <param name="sentence">The sentence.</param>
-        public Chunk(string tag, int start, int end, Sentence sentence) {
-            Tag = tag;
-            Start = start;
-            End = end;
+        /// <param name="span">The chunk span.</param>
+        public Chunk(Sentence sentence, Span span) {
             HeadIndex = -1;
+            Span = span;
             this.sentence = sentence;
         }
         #endregion
@@ -56,7 +55,7 @@ namespace SharpNL.Text {
         /// Gets the chunk end position.
         /// </summary>
         /// <value>The chunk end position.</value>
-        public int End { get; private set; }
+        public int End { get { return Span.End; } }
         #endregion
 
         #region . HeadIndex .
@@ -82,15 +81,27 @@ namespace SharpNL.Text {
         /// Gets the chunk start position.
         /// </summary>
         /// <value>The chunk start position.</value>
-        public int Start { get; private set; }
+        public int Start { get { return Span.Start; } }
+        #endregion
+
+        #region . Span .
+        /// <summary>
+        /// Gets the chunk span.
+        /// </summary>
+        /// <value>The chunk span.</value>
+        public Span Span { get; private set; }
         #endregion
 
         #region . Tag .
+
         /// <summary>
         /// Gets the chunk tag.
         /// </summary>
         /// <value>The chunk tag.</value>
-        public string Tag { get; private set; }
+        public string Tag {
+            get { return Span.Type; }
+        }
+
         #endregion
 
         #region . Tokens .
@@ -132,7 +143,7 @@ namespace SharpNL.Text {
                 if (i == HeadIndex)
                     sb.Append('*');
 
-                sb.Append(tokens[i].Lexeme).Append(" ");
+                sb.Append(tokens[i - Start].Lexeme).Append(" ");
             }
             sb.AppendLine("]");
 

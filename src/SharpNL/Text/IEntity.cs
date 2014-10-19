@@ -20,20 +20,17 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Tokenize {
-    /// <summary>A Detokenizer merges tokens back to their untokenized representation.</summary>
-    public interface IDetokenizer {
-        /// <summary>Detokenizes the specified tokens.</summary>
-        /// <param name="tokens">The tokens to detokenize.</param>
-        /// <returns>The merge operations to detokenize the input tokens.</returns>
-        DetokenizationOperation[] Detokenize(string[] tokens);
+using SharpNL.Utility;
 
-
-        /// <summary>Detokenize the input tokens into a String. Tokens which are connected without a space in between can be
-        /// separated by a split marker.</summary>
-        /// <param name="tokens">The token which should be concatenated.</param>
-        /// <param name="splitMarker">The split marker or null.</param>
-        /// <returns>The detokenized string.</returns>
-        string Detokenize(string[] tokens, string splitMarker);
+namespace SharpNL.Text {
+    /// <summary>
+    /// Represents a named entity.
+    /// </summary>
+    public interface IEntity {
+        /// <summary>
+        /// Gets the entity span.
+        /// </summary>
+        /// <value>The entity span.</value>
+        Span Span { get; }
     }
 }

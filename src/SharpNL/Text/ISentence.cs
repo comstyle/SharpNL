@@ -21,7 +21,7 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Analyzer;
+using SharpNL.NameFind;
 using SharpNL.Text.Tree;
 
 namespace SharpNL.Text {

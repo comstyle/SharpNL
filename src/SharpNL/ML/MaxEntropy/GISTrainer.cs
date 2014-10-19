@@ -206,7 +206,7 @@ namespace SharpNL.ML.MaxEntropy {
             int taskSize = numUniqueEvents / numberOfThreads;
             int leftOver = numUniqueEvents % numberOfThreads;
 
-            var tasks = new Task[numberOfThreads];
+            var tasks = new System.Threading.Tasks.Task[numberOfThreads];
 
             /* 
             Knuppe 2014-10-01: 
@@ -224,14 +224,14 @@ namespace SharpNL.ML.MaxEntropy {
             for (int i = 0; i < numberOfThreads; i++) {
                 int id = i;
                 if (id != numberOfThreads - 1) {
-                    tasks[id] = new Task(() => Compute(id, id * taskSize, taskSize));
+                    tasks[id] = new System.Threading.Tasks.Task(() => Compute(id, id * taskSize, taskSize));
                 } else {
-                    tasks[id] = new Task(() => Compute(id, id * taskSize, taskSize + leftOver));
+                    tasks[id] = new System.Threading.Tasks.Task(() => Compute(id, id * taskSize, taskSize + leftOver));
                 }
                 tasks[id].Start();
             }
 
-            Task.WaitAll(tasks);
+            System.Threading.Tasks.Task.WaitAll(tasks);
 
             for (int i = 0; i < numberOfThreads; i++) {
                 numEvents += threadNumEvents[i];

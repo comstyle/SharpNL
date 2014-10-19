@@ -17,7 +17,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using SharpNL.Text;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -292,12 +294,68 @@ namespace SharpNL.Utility {
 
             var sb = new StringBuilder();
             for (var i = Start; i < End; i++) {
-                sb.Append(tokens[i]).Append(" ");
+                sb.Append(tokens[i]).Append(' ');
             }
 
             return sb.ToString(0, sb.Length - 1);
         }
 
+        /// <summary>
+        /// Gets the covered text by the given tokens using the <see cref="Start" /> and <see cref="End" /> positions.
+        /// </summary>
+        /// <param name="tokens">The tokens.</param>
+        /// <returns>The substring covered by the current span.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="tokens"/>
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">tokens
+        /// <paramref name="tokens"/>
+        /// </exception>
+        public string GetCoveredText(IEnumerable<IToken> tokens) {
+            if (tokens == null)
+                throw new ArgumentNullException("tokens");
+
+            var toks = tokens as IToken[] ?? Enumerable.ToArray(tokens);
+            if (End > toks.Length)
+                throw new ArgumentOutOfRangeException("tokens", toks.Length, string.Format("The token array must have {0} or more elements.", End));
+
+            var sb = new StringBuilder();
+            for (var i = Start; i < End; i++) {
+                sb.Append(toks[i].Lexeme).Append(' ');
+            }
+
+            return sb.ToString(0, sb.Length - 1); 
+        }
+
+        #endregion
+
+        #region . GetSpanPosition .
+        /// <summary>
+        /// Gets the span position in the specified sentence.
+        /// </summary>
+        /// <param name="sentence">The sentence.</param>
+        /// <returns>TextPosition.</returns>
+        /// <exception cref="System.ArgumentNullException">sentence</exception>
+        /// <exception cref="System.ArgumentException">The specified sentence has no tokens.</exception>
+        public TextPosition GetSpanPosition(ISentence sentence) {
+            if (sentence == null)
+                throw new ArgumentNullException("sentence");
+
+            if (sentence.Tokens == null || sentence.Tokens.Count == 0)
+                throw new ArgumentException(@"The specified sentence has no tokens.", "sentence");
+
+            var pos = new TextPosition();
+
+            for (var i = 0; i <= Start; i++)
+                pos.Start = sentence.Text.IndexOf(sentence.Tokens[i].Lexeme, pos.Start, StringComparison.Ordinal);
+
+            for (var i = Start; i < End; i++)
+                pos.End = sentence.Text.IndexOf(sentence.Tokens[i].Lexeme, pos.Start, StringComparison.Ordinal);
+
+            pos.End += sentence.Tokens[End - 1].Length;
+
+            return pos;
+        }
         #endregion
 
         #region . Intersects .
@@ -333,7 +391,7 @@ namespace SharpNL.Utility {
         /// Returns a copy of this span with leading and trailing white spaces removed.
         /// </summary>
         /// <param name="text">The text.</param>
-        /// <returns>The trimmed span.</returns>
+        /// <returns>The trimmed span or the same object if already trimmed.</returns>
         public Span Trim(string text) {
 
             int start = Start;
@@ -431,6 +489,5 @@ namespace SharpNL.Utility {
 
 
         #endregion
-
     }
 }

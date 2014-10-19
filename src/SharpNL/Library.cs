@@ -32,7 +32,6 @@ namespace SharpNL {
     /// Represents the SharpNL library.
     /// </summary>
     public static class Library {
-
         /// <summary>
         /// Initializes static members of the SharpNL library.
         /// </summary>
@@ -131,7 +130,7 @@ namespace SharpNL {
         #endregion
 
         #region . Millis .
-        private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        internal static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         internal static long CurrentTimeMillis() {
             return (long) (DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
