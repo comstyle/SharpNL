@@ -123,6 +123,9 @@
     <Compile Include="Formats\OntoNotes\OntoNotesParseSampleStream.cs" />
     <Compile Include="Java\IIterator.cs" />
     <Compile Include="Java\IteratorAdapter.cs" />
+    <Compile Include="Monitor.cs" />
+    <Compile Include="MonitorExceptionEventArgs.cs" />
+    <Compile Include="MonitorMessageEventArgs.cs" />
     <Compile Include="Text\Entity.cs" />
     <Compile Include="Text\IEntity.cs" />
     <Compile Include="Text\IEntityResolver.cs" />
