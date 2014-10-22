@@ -20,11 +20,10 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using SharpNL.Text.Tree;
-using SharpNL.Utility;
+using SharpNL.Parser;
+
 
 namespace SharpNL.Text {
     /// <summary>
@@ -105,18 +104,12 @@ namespace SharpNL.Text {
         }
         #endregion
 
-        #region + SyntacticChunks .
-
+        #region . Parse .
         /// <summary>
-        /// Gets the syntactic chunks.
+        /// Gets the parsed sentence.
         /// </summary>
-        /// <value>The syntactic chunks.</value>
-        public IReadOnlyList<SyntacticChunk> SyntacticChunks { get; internal set; }
-
-        IReadOnlyList<ISyntacticChunk> ISentence.SyntacticChunks {
-            get { return SyntacticChunks; }
-        }
-
+        /// <value>The parsed sentence.</value>
+        public Parse Parse { get; protected set; }
         #endregion
 
         #region . Start .
@@ -172,25 +165,6 @@ namespace SharpNL.Text {
 
         #endregion
 
-        #region . Tree .
-
-        private TreeNode tree;
-
-        /// <summary>
-        /// Gets the tree.
-        /// </summary>
-        /// <value>The tree.</value>
-        public TreeNode Tree {
-            get {
-                if (tree != null)
-                    return tree;
-
-                return (tree = TreeNode.CreateTree(this));
-            }
-        }
-
-        #endregion
-
         #region . SubString .
         /// <summary>
         /// Retrieves a substring from the current <see cref="Sentence"/> object. 
@@ -204,5 +178,12 @@ namespace SharpNL.Text {
             return Text.Substring(startIndex, length);
         }
         #endregion
+
+        #region . SetParse .
+        internal void SetParse(Parse parse) {
+            Parse = parse;
+        }
+        #endregion
+
     }
 }

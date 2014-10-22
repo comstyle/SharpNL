@@ -214,6 +214,7 @@
     <Compile Include="Sentence\SentenceSampleTest.cs" />
     <Compile Include="Stemmer\PorterStemmerTest.cs" />
     <Compile Include="Stemmer\SnowballTest.cs" />
+    <Compile Include="MonitorTest.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Tokenize\DetokenizationDictionaryTest.cs" />
     <Compile Include="Tokenize\DictionaryDetokenizerTest.cs" />

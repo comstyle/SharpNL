@@ -367,14 +367,9 @@
     <Compile Include="Text\IChunk.cs" />
     <Compile Include="Text\IDocument.cs" />
     <Compile Include="Text\ISentence.cs" />
-    <Compile Include="Text\ISyntacticChunk.cs" />
     <Compile Include="Text\IToken.cs" />
     <Compile Include="Text\Sentence.cs" />
-    <Compile Include="Text\SyntacticChunk.cs" />
     <Compile Include="Text\Token.cs" />
-    <Compile Include="Text\Tree\TreeLeaf.cs" />
-    <Compile Include="Text\Tree\TreeNode.cs" />
-    <Compile Include="Text\Tree\TreeElement.cs" />
     <Compile Include="Tokenize\AbstractTokenizer.cs" />
     <Compile Include="Tokenize\CharacterEnum.cs" />
     <Compile Include="Tokenize\DefaultTokenContextGenerator.cs" />

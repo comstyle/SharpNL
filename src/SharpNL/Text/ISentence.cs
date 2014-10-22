@@ -21,8 +21,7 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.NameFind;
-using SharpNL.Text.Tree;
+using SharpNL.Parser;
 
 namespace SharpNL.Text {
     /// <summary>
@@ -72,12 +71,12 @@ namespace SharpNL.Text {
         int Length { get; }
         #endregion
 
-        #region . SyntacticChunks .
+        #region . Parse .
         /// <summary>
-        /// Gets the syntactic chunks.
+        /// Gets the parsed sentence.
         /// </summary>
-        /// <value>The syntactic chunks.</value>
-        IReadOnlyList<ISyntacticChunk> SyntacticChunks { get; }
+        /// <value>The parsed sentence.</value>
+        Parse Parse { get; }
         #endregion
 
         #region . Start .
@@ -110,14 +109,6 @@ namespace SharpNL.Text {
         /// </summary>
         /// <value>The tokens probability.</value>
         double TokensProbability { get; }
-        #endregion
-
-        #region . Tree .
-        /// <summary>
-        /// Gets the tree.
-        /// </summary>
-        /// <value>The tree.</value>
-        TreeNode Tree { get; }
         #endregion
 
         #endregion

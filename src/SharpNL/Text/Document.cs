@@ -89,6 +89,37 @@ namespace SharpNL.Text {
         public string Language { get; private set; }
         #endregion
 
+        #region . PoS .
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Document"/> has the Part-of-Speech parsed.
+        /// </summary>
+        /// <value><c>true</c> if this document has PoS parsed; otherwise, <c>false</c>.</value>
+        [Description("Determines if the document has the Part-of-Speech parsed.")]
+        public bool PoS { get; internal protected set; }
+        #endregion
+
+        #region . Parsed .
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Document"/> is parsed.
+        /// </summary>
+        /// <value><c>true</c> if parsed; otherwise, <c>false</c>.</value>
+        [Description("Determines if the document is parsed.")]
+        public bool Parsed { get; internal protected set; }
+        #endregion
+
+        #region . Sentences .
+        /// <summary>
+        /// Gets the document sentences.
+        /// </summary>
+        /// <value>The document sentences.</value>
+        [Description("The document sentences.")]
+        public IReadOnlyList<Sentence> Sentences { get; internal set; }
+
+        IReadOnlyList<ISentence> IDocument.Sentences {
+            get { return Sentences; }
+        }
+        #endregion
+
         #region . Text .
         /// <summary>
         /// Gets the document text.
@@ -103,20 +134,7 @@ namespace SharpNL.Text {
         /// Gets a value indicating whether this <see cref="Document"/> is tokenized.
         /// </summary>
         /// <value><c>true</c> if tokenized; otherwise, <c>false</c>.</value>
-        public bool Tokenized { get; protected set; }
-        #endregion
-
-        #region . Sentences .
-        /// <summary>
-        /// Gets the document sentences.
-        /// </summary>
-        /// <value>The document sentences.</value>
-        [Description("The document sentences.")]
-        public IReadOnlyList<Sentence> Sentences { get; internal set; }
-
-        IReadOnlyList<ISentence> IDocument.Sentences {
-            get { return Sentences; }
-        }
+        public bool Tokenized { get; internal protected set; }
         #endregion
 
         #endregion
@@ -148,14 +166,6 @@ namespace SharpNL.Text {
             }
         }
         #endregion
-
-        #region . SetTokenized .
-        internal void SetTokenized(bool value) {
-            Tokenized = value;
-        }
-        #endregion
-
-
 
     }
 }
