@@ -115,7 +115,7 @@ namespace SharpNL.Sentence {
 
                         positions.Add(useTokenEnd
                             ? GetFirstNonWS(text, GetFirstWS(text, cint + 1))
-                            : GetFirstNonWS(text, cint));
+                            : GetFirstNonWS(text, cint + 1));
 
                         sentProbs.Add(probs[model.GetIndex(bestOutcome)]);
                     }
