@@ -29,6 +29,10 @@ using BeamSearch = SharpNL.ML.BeamSearch<string>;
 using Sequence = SharpNL.Utility.Sequence;
 
 namespace SharpNL.Chunker {
+    /// <summary>
+    /// The class represents a maximum-entropy-based chunker. Such a chunker can be used to 
+    /// find flat structures based on sequence inputs such as noun phrases or named entities.
+    /// </summary>
     public class ChunkerME : IChunker {
         public const int DEFAULT_BEAM_SIZE = 10;
 
@@ -41,13 +45,31 @@ namespace SharpNL.Chunker {
         /// </summary>
         protected ML.Model.ISequenceClassificationModel<string> model;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerME"/> with the specified <see cref="ChunkerModel"/>.
+        /// </summary>
+        /// <param name="model">The chunker model.</param>
         public ChunkerME(ChunkerModel model) {
             contextGenerator = model.Factory.GetContextGenerator();
             sequenceValidator = model.Factory.GetSequenceValidator();
 
-            var seqModel = model.ChunkerSequenceModel;
-            this.model = seqModel ?? new BeamSearch(model.BeamSize, model.MaxentModel);
+            this.model = model.ChunkerSequenceModel ?? new BeamSearch(model.BeamSize, model.MaxentModel);
+        }
+
+        /// <summary>
+        /// Initializes the current instance with the specified model and the specified beam size.
+        /// </summary>
+        /// <param name="model">The model for this chunker</param>
+        /// <param name="beamSize">The size of the beam that should be used when decoding sequences.</param>
+        /// <param name="sequenceValidator">The <see cref="ISequenceValidator{String}"/> to determines whether the outcome is valid for the preceding sequence. This can be used to implement constraints on what sequences are valid..</param>
+        /// <param name="contextGenerator">The context generator.</param>
+        internal ChunkerME(ChunkerModel model, int beamSize, ISequenceValidator<string> sequenceValidator, IChunkerContextGenerator contextGenerator) {
+            // This method is marked as deprecated in the OpenNLP, but it is required in the Parser,
+            // I could change the cg in the factory, but its not ideal in this situation (i think) :P
+
+            this.sequenceValidator = sequenceValidator;
+            this.contextGenerator = contextGenerator;
+            this.model = model.ChunkerSequenceModel ?? new BeamSearch(beamSize, model.MaxentModel);
         }
 
         #region + Properties .
