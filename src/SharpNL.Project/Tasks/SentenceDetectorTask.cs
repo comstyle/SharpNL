@@ -112,6 +112,7 @@ namespace SharpNL.Project.Tasks {
                 );
             doc.Sentences = new ReadOnlyCollection<Text.Sentence>(sentences);
 
+            LogMessage(string.Format(" {0} characters analyzed - {1} sentences found.", doc.Text.Length, spans.Length));
 
             return new object[] { doc };
         }

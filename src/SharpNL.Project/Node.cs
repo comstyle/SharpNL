@@ -76,6 +76,14 @@ namespace SharpNL.Project {
         public NodeStatus Status { get; protected set; }
         #endregion
 
+        #region . Tag .
+        /// <summary>
+        /// Gets or sets the object that contains data about the node.
+        /// </summary>
+        /// <value>An <see cref="object"/> that contains data about the node. The default is <c>null</c>.</value>
+        public object Tag { get; set; }
+        #endregion
+
         #endregion
 
         #region . Serialize .
@@ -118,6 +126,39 @@ namespace SharpNL.Project {
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public virtual ProjectProblem[] GetProblems() {
             return null;
+        }
+        #endregion
+
+        #region . LogException .
+        /// <summary>
+        /// Logs the exception.
+        /// </summary>
+        /// <param name="ex">The exception.</param>
+        protected void LogException(Exception ex) {
+            if (Project.Monitor != null)
+                Project.Monitor.OnException(ex);
+        }
+        #endregion
+
+        #region . LogMessage .
+        /// <summary>
+        /// Log a info message.
+        /// </summary>
+        /// <param name="message">The info message.</param>
+        protected void LogMessage(string message) {
+            if (Project.Monitor != null)
+                Project.Monitor.OnMessage(message);
+        }
+        #endregion
+
+        #region . LogWarning .
+        /// <summary>
+        /// Log a warning message.
+        /// </summary>
+        /// <param name="message">The warning message.</param>
+        protected void LogWarning(string message) {
+            if (Project.Monitor != null)
+                Project.Monitor.OnWarning(message);
         }
         #endregion
 

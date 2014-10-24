@@ -115,6 +115,8 @@ namespace SharpNL.Project.Tasks {
             var nameFinderModel = Project.Manager.GetModel<TokenNameFinderModel>(Model);
             var nameFinder = new NameFinderME(nameFinderModel);
 
+            var count = 0;
+
             foreach (var sentence in sentences) {
 
                 Span[] spans;
@@ -122,27 +124,37 @@ namespace SharpNL.Project.Tasks {
                 lock (nameFinder) {
                     spans = nameFinder.Find(tokens);
                 }
-                
-
-                if (spans.Length > 0) {
-                    Debug.Print("");
-                }
 
                 var entities = new List<IEntity>(spans.Length);
                 if (Resolver != null) {
                     for (var i = 0; i < spans.Length; i++) {
                         var e = Resolver.Resolve(doc.Language, sentence, spans[i]);
-                        if (e != null)
+                        if (e != null) {
+                            count++;
                             entities.Add(e);
+                        }                           
                     }
                     
                 } else {
-                    for (var i = 0; i < spans.Length; i++) {
+                    for (var i = 0; i < spans.Length; i++) {                       
                         entities.Add(new Entity(spans[i], tokens));
+                        count++;
                     }
                 }
 
                 sentence.Entities = entities.AsReadOnly();
+            }
+
+            switch (count) {
+                case 0:
+                    LogMessage(string.Format("{0} analyzed sentences - No entities found.", sentences.Count));
+                    break;
+                case 1:
+                    LogMessage(string.Format("{0} analyzed sentences - 1 entity found.", sentences.Count));
+                    break;
+                default:
+                    LogMessage(string.Format("{0} analyzed sentences - {1} entities found.", sentences.Count, count));
+                    break;
             }
 
             return new object[] {doc};

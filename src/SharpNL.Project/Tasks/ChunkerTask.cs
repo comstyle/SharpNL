@@ -109,6 +109,7 @@ namespace SharpNL.Project.Tasks {
             var chunkerModel = Project.Manager.GetModel<ChunkerModel>(Model);
             var chunker = new ChunkerME(chunkerModel);
 
+            int count = 0;
             foreach (var sentence in doc.Sentences) {
                 var tokens = sentence.Tokens;
                 var tokStr = TextUtils.TokensToString(tokens);
@@ -131,8 +132,13 @@ namespace SharpNL.Project.Tasks {
                 chunks.AddRange(
                     chunkSpans.Select(span => new Chunk(sentence, span))
                     );
+
+                count += chunks.Count;
+
                 sentence.Chunks = new ReadOnlyCollection<Chunk>(chunks);
             }
+
+            LogMessage(string.Format(" {0} sentences analyzed - {1} chunks found.", doc.Text.Length, count));
 
             return new object[] {doc};
 

@@ -109,6 +109,7 @@ namespace SharpNL.Project.Tasks {
             var posModel = Project.Manager.GetModel<POSModel>(Model);
             var tagger = new POSTaggerME(posModel);
 
+            var count = 0;
             foreach (var sentence in sentences) {
 
                 string[] tags;
@@ -121,6 +122,7 @@ namespace SharpNL.Project.Tasks {
                     probs = tagger.Probabilities;
                 }
 
+                count += tags.Length;
                 sentence.TokensProbability = TokenProb(probs);
 
                 if (doc.Language == "pt" || doc.Language.StartsWith("pt")) {
@@ -135,6 +137,8 @@ namespace SharpNL.Project.Tasks {
             }
 
             doc.PoS = true;
+
+            LogMessage(string.Format("{0} analyzed sentences - {1} tags marked.", sentences.Count, count));
 
             return new object[] {doc};
         }

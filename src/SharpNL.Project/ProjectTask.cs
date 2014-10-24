@@ -131,11 +131,13 @@ namespace SharpNL.Project {
         /// </summary>
         internal void Run() {
             try {
+                Project.OnTaskStarted(this);
                 Execute();
             } catch (Exception ex) {
                 throw new TaskException(this, "An error occurred during the task execution.", ex);
-            }
-            
+            } finally {
+                Project.OnTaskFinished(this);
+            }           
         }
         #endregion
 

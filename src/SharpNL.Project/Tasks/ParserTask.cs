@@ -134,12 +134,15 @@ namespace SharpNL.Project.Tasks {
             foreach (var sentence in sentences) {
                 var parse = ParserTool.ParseLine(sentence.Text, parser, 1);
 
-                if (parse.Length == 1)
+                if (parse.Length == 1) {
                     sentence.SetParse(parse[0]);
-
+                }
             }
+            
 
             doc.Parsed = true;
+
+            LogMessage(string.Format("{0} parsed sentences", sentences.Count));
 
             return new object[] { doc };
         }

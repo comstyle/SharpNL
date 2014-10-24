@@ -123,6 +123,8 @@ namespace SharpNL.Project.Tasks {
             if (sentences == null || sentences.Count == 0)
                 throw new InvalidOperationException("The sentences are not detected on the specified document.");
 
+            var count = 0;
+
             foreach (var sentence in sentences) {
                 var text = Normalize ? sentence.Text.Replace(quote, '"') : sentence.Text;
 
@@ -139,6 +141,7 @@ namespace SharpNL.Project.Tasks {
                     probs = tokenizer.TokenProbabilities;
                 }
 
+                count += spans.Length;
                 var tokens = new List<Token>(spans.Length);
 
                 // ReSharper disable once LoopCanBeConvertedToQuery
@@ -152,6 +155,8 @@ namespace SharpNL.Project.Tasks {
             }
 
             doc.Tokenized = true;
+
+            LogMessage(string.Format("{0} analyzed sentences - {1} tokens found.", sentences.Count, count));
 
             return new object[] { doc };
         }

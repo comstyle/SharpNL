@@ -65,6 +65,16 @@ namespace SharpNL.Project {
         public event EventHandler<MonitorExceptionEventArgs> Exception;
 
         /// <summary>
+        /// Occurs when a <see cref="ProjectTask"/> begins execution.
+        /// </summary>
+        public event EventHandler<TaskEventArgs> TaskStarted;
+
+        /// <summary>
+        /// Occurs when a <see cref="ProjectTask"/> completes execution.
+        /// </summary>
+        public event EventHandler<TaskEventArgs> TaskFinished;
+
+        /// <summary>
         /// Occurs when the project is modified.
         /// </summary>
         public event EventHandler Modified;
@@ -334,6 +344,22 @@ namespace SharpNL.Project {
                 Modified(this, e);
         }
 
+        #endregion
+
+        #region . OnTaskStarted .
+        internal void OnTaskStarted(ProjectTask task) {
+            if (TaskStarted != null)
+                TaskStarted(this, new TaskEventArgs(task));
+        }
+        #endregion
+
+        #region . OnTaskFinished .
+        internal void OnTaskFinished(ProjectTask task) {
+
+            if (TaskFinished != null) {
+                TaskFinished(this, new TaskEventArgs(task));
+            }
+        }
         #endregion
 
         #region . Run .

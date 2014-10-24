@@ -54,6 +54,7 @@
     <Compile Include="ProjectProblem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProjectTask.cs" />
+    <Compile Include="TaskEventArgs.cs" />
     <Compile Include="TaskException.cs" />
     <Compile Include="Tasks\ChunkerTask.cs" />
     <Compile Include="Tasks\EntityFinder.cs" />
