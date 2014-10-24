@@ -38,7 +38,6 @@ namespace SharpNL.Project {
     /// </summary>
     [DefaultProperty("Name"), Description("Represents a SharpNL project."), TypeConverter(typeof(ExpandableObjectConverter))]
     public sealed class Project : IDisposable, IXmlSerializable {
-        private bool isUntitled = true;
         private bool loading;
 
         private bool? serializeContent;
@@ -87,6 +86,9 @@ namespace SharpNL.Project {
 
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Project"/> class.
+        /// </summary>
         public Project() {
             manager = new ModelManager();
             manager.Changed += ManagerChanged;
@@ -154,13 +156,13 @@ namespace SharpNL.Project {
                     return;
 
                 name = value;
-                isUntitled = false;
 
                 if (loading) 
                     return;
 
                 OnRenamed(EventArgs.Empty);
-                OnModified(EventArgs.Empty);
+
+                IsDirty = true;
             }
         }
         #endregion
@@ -177,12 +179,25 @@ namespace SharpNL.Project {
         #endregion
 
         #region . IsDirty .
+
+        private bool isDirty;
         /// <summary>
-        /// Gets a value indicating whether this instance has changed.
+        /// Gets or sets a value indicating whether this instance has changed.
         /// </summary>
         /// <value><c>true</c> if this instance has changed; otherwise, <c>false</c>.</value>
+        /// <remarks>When this property is set to <c>true</c>, the <see cref="Modified"/> event is rised.</remarks>
         [Description("Indicates whether the project has changed.")]
-        public bool IsDirty { get; internal set; }
+        public bool IsDirty {
+            get { return isDirty; }
+            set {
+                if (loading) return;
+
+                isDirty = value;
+
+                if (value) 
+                    OnModified(EventArgs.Empty);
+            }
+        }
         #endregion
 
         #region . IsRunning .
@@ -196,8 +211,21 @@ namespace SharpNL.Project {
         }
         #endregion
 
-        #region . Problem .
+        #region . IsUntitled .
+        /// <summary>
+        /// Gets a value indicating whether this project is untitled.
+        /// </summary>
+        /// <value><c>true</c> if this project is untitled; otherwise, <c>false</c>.</value>
+        public bool IsUntitled {
+            get { return string.IsNullOrEmpty(Name); }
+        }
+        #endregion
 
+        #region . Problems .
+        /// <summary>
+        /// Gets the problems list from the last <see cref="Validate"/> call.
+        /// </summary>
+        /// <value>The problems list from the last <see cref="Validate"/> call.</value>
         public IReadOnlyCollection<ProjectProblem> Problems {
             get { return problems.AsReadOnly(); }
         }
@@ -219,22 +247,10 @@ namespace SharpNL.Project {
             node.SetProject(this);
             nodes.Add(node);
 
-            Changed();
+            IsDirty = true;
 
             return node;
         }
-        #endregion
-
-        #region . Changed .
-
-        /// <summary>
-        /// The project was modified.
-        /// </summary>
-        internal void Changed() {
-            IsDirty = true;
-            OnModified(EventArgs.Empty);
-        }
-
         #endregion
 
         #region . Dispose .
@@ -247,7 +263,18 @@ namespace SharpNL.Project {
         #endregion
 
         #region . Deserialize .
-
+        /// <summary>
+        /// Deserializes the specified input stream into a <see cref="Project" /> instance.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <returns>The deserialized <see cref="Project" /> instance.</returns>
+        /// <exception cref="System.ArgumentNullException">inputStream</exception>
+        /// <exception cref="System.ArgumentException">@The stream is not readable.;inputStream</exception>
+        /// <exception cref="InvalidFormatException">
+        /// The stream is empty.
+        /// or
+        /// Unable to deserialize the project.
+        /// </exception>
         public static Project Deserialize(Stream inputStream) {           
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
@@ -258,9 +285,13 @@ namespace SharpNL.Project {
             if (inputStream.Length == 0)
                 throw new InvalidFormatException("The stream is empty.");
 
-
             var serializer = new XmlSerializer(typeof(Project));
-            var project = (Project)serializer.Deserialize(inputStream);
+            Project project;
+            try {               
+                project = (Project)serializer.Deserialize(inputStream);    
+            } catch (Exception ex) {
+                throw new InvalidFormatException("Unable to deserialize the project.", ex);
+            }
 
             return project;
         }
@@ -297,12 +328,12 @@ namespace SharpNL.Project {
 
         #region . OnModified .
         private void OnModified(EventArgs e) {
-            if (!loading) {
-                IsDirty = true;
-                if (Modified != null)
-                    Modified(this, e);
-            }
+            if (loading) return;
+
+            if (Modified != null)
+                Modified(this, e);
         }
+
         #endregion
 
         #region . Run .
@@ -369,6 +400,8 @@ namespace SharpNL.Project {
             var doc = new XmlDocument();
 
             doc.Load(reader);
+
+            loading = true;
  
             var root = doc.DocumentElement;
 
@@ -397,6 +430,9 @@ namespace SharpNL.Project {
                     nodes.Add(ProjectNode.DeserializeNode(node, null, this));
                 }
             }
+
+            isDirty = false;
+            loading = false;
         }
         #endregion
 
@@ -479,8 +515,6 @@ namespace SharpNL.Project {
 
         }
         #endregion
-
-
 
     }
 }

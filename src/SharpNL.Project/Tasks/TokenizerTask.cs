@@ -31,6 +31,9 @@ using SharpNL.Tokenize;
 using SharpNL.Utility;
 
 namespace SharpNL.Project.Tasks {
+    /// <summary>
+    /// Represents a tokenizer task.
+    /// </summary>
     public class TokenizerTask : ProjectTask {
 
         private static readonly char[] quote;
@@ -39,7 +42,7 @@ namespace SharpNL.Project.Tasks {
         }
 
         public TokenizerTask() : base(1f) {
-            Normalize = true;
+            normalize = true;
         }
 
         #region + Properties .
@@ -56,22 +59,38 @@ namespace SharpNL.Project.Tasks {
         #endregion
 
         #region . Normalize .
+
+        private bool normalize;
         /// <summary>
         /// Gets or sets a value indicating whether string quotations must be normalized.
         /// </summary>
         /// <value><c>true</c> if the string quotations must be normalized; otherwise, <c>false</c>. The default value is <c>true</c>.</value>
         [Description("Determines if quotations must be normalized"), DefaultValue(true)]
-        public bool Normalize { get; set; }
+        public bool Normalize {
+            get { return normalize; }
+            set {
+                normalize = value;
+                Project.IsDirty = true;
+            }
+        }
 
         #endregion
 
         #region . Model .
+
+        private string model;
         /// <summary>
         /// Gets or sets the model name used in this task.
         /// </summary>
         /// <value>The model name used in this task.</value>
         [Description("The tokenizer model."), TypeConverter(typeof(NodeModelConverter<TokenizerModel>))]
-        public string Model { get; set; }
+        public string Model {
+            get { return model; }
+            set {
+                model = value;
+                Project.IsDirty = true;
+            }
+        }
         #endregion
 
         #region . Output .
@@ -107,14 +126,14 @@ namespace SharpNL.Project.Tasks {
             foreach (var sentence in sentences) {
                 var text = Normalize ? sentence.Text.Replace(quote, '"') : sentence.Text;
 
-                var model = Project.Manager.GetModel<TokenizerModel>(Model);
-                if (model == null)
+                var tokenizerModel = Project.Manager.GetModel<TokenizerModel>(Model);
+                if (tokenizerModel == null)
                     throw new InvalidOperationException("The model manager does not contain the model " + Model);
 
 
                 Span[] spans;
                 double[] probs;
-                var tokenizer = new TokenizerME(model);
+                var tokenizer = new TokenizerME(tokenizerModel);
                 lock (tokenizer) {
                     spans = tokenizer.TokenizePos(text);
                     probs = tokenizer.TokenProbabilities;

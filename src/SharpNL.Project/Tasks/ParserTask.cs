@@ -64,19 +64,29 @@ namespace SharpNL.Project.Tasks {
 
         #region . Model .
 
+        private string model;
         /// <summary>
         /// Gets or sets the model name used in this task.
         /// </summary>
         /// <value>The model name used in this task.</value>
         [TypeConverter(typeof(NodeModelConverter<ParserModel>))]
-        public string Model { get; set; }
+        public string Model {
+            get { return model; }
+            set {
+                model = value;
+                Project.IsDirty = true;
+            }
+        }
 
         #endregion
 
+        #region . SerializeTask .
         protected override void SerializeTask(XmlWriter writer) {
             writer.WriteAttributeString("Model", Model);
         }
+        #endregion
 
+        #region . DeserializeTask .
         protected override void DeserializeTask(XmlNode node) {
             if (node.Attributes != null) {
                 var attModel = node.Attributes["Model"];
@@ -85,7 +95,9 @@ namespace SharpNL.Project.Tasks {
 
             }
         }
+        #endregion
 
+        #region . GetProblems .
         /// <summary>
         /// Gets the problems with this node.
         /// </summary>
@@ -96,7 +108,9 @@ namespace SharpNL.Project.Tasks {
 
             return null;
         }
+        #endregion
 
+        #region . Execute .
         /// <summary>
         /// Executes the derived node task.
         /// </summary>
@@ -114,8 +128,8 @@ namespace SharpNL.Project.Tasks {
             if (sentences == null || sentences.Count == 0)
                 throw new InvalidOperationException("The sentences are not detected on the specified document.");
 
-            var model = Project.Manager.GetModel<ParserModel>(Model);
-            var parser = ParserFactory.Create(model);
+            var parserModel = Project.Manager.GetModel<ParserModel>(Model);
+            var parser = ParserFactory.Create(parserModel);
 
             foreach (var sentence in sentences) {
                 var parse = ParserTool.ParseLine(sentence.Text, parser, 1);
@@ -127,7 +141,9 @@ namespace SharpNL.Project.Tasks {
 
             doc.Parsed = true;
 
-            return new object[] { doc };          
+            return new object[] { doc };
         }
+        #endregion
+
     }
 }

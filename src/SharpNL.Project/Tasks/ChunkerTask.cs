@@ -66,12 +66,24 @@ namespace SharpNL.Project.Tasks {
         #endregion
 
         #region . Model .
+
+        private string model;
+
         /// <summary>
         /// Gets or sets the model name used in this task.
         /// </summary>
         /// <value>The model name used in this task.</value>
-        [TypeConverter(typeof(NodeModelConverter<ChunkerModel>))]
-        public string Model { get; set; }
+        [TypeConverter(typeof (NodeModelConverter<ChunkerModel>))]
+        public string Model {
+            get {
+                return model;               
+            }
+            set {
+                model = value;
+                Project.IsDirty = true;
+            }
+            
+        }
         #endregion
 
         #endregion
@@ -94,8 +106,8 @@ namespace SharpNL.Project.Tasks {
                 throw new InvalidOperationException("The document is not tokenized.");
 
 
-            var model = Project.Manager.GetModel<ChunkerModel>(Model);
-            var chunker = new ChunkerME(model);
+            var chunkerModel = Project.Manager.GetModel<ChunkerModel>(Model);
+            var chunker = new ChunkerME(chunkerModel);
 
             foreach (var sentence in doc.Sentences) {
                 var tokens = sentence.Tokens;

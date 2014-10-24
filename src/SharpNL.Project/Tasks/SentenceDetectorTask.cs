@@ -64,12 +64,22 @@ namespace SharpNL.Project.Tasks {
         #endregion
 
         #region . Model .
+
+        private string model;
+
         /// <summary>
         /// Gets or sets the model name used in this task.
         /// </summary>
         /// <value>The model name used in this task.</value>
-        [TypeConverter(typeof(NodeModelConverter<SentenceModel>))]
-        public string Model { get; set; }
+        [TypeConverter(typeof (NodeModelConverter<SentenceModel>))]
+        public string Model {
+            get { return model; }
+            set {
+                model = value;
+                Project.IsDirty = true;
+            }
+            
+        }
         #endregion
 
         #region . Execute .
@@ -85,11 +95,11 @@ namespace SharpNL.Project.Tasks {
             if (doc == null)
                 throw new NotSupportedException("Unable to retrieve the document from the parent node.");
 
-            var model = Project.Manager.GetModel<SentenceModel>(Model);
-            if (model == null)
+            var sentenceModel = Project.Manager.GetModel<SentenceModel>(Model);
+            if (sentenceModel == null)
                 throw new InvalidOperationException("The model manager does not contain the model " + Model);
             
-            var sentenceDetector = new SentenceDetectorME(model);
+            var sentenceDetector = new SentenceDetectorME(sentenceModel);
 
             Span[] spans;
             lock (sentenceDetector) {
@@ -108,6 +118,7 @@ namespace SharpNL.Project.Tasks {
 
         #endregion
 
+        #region . DeserializeTask .
         /// <summary>
         /// Deserializes the task from a given <see cref="XmlReader"/> object.
         /// </summary>
@@ -119,20 +130,25 @@ namespace SharpNL.Project.Tasks {
                     Model = attModel.Value;
             }
         }
+        #endregion
 
+        #region . SerializeTask .
         protected override void SerializeTask(XmlWriter writer) {
-            writer.WriteAttributeString("Model", Model);           
+            writer.WriteAttributeString("Model", Model);
         }
+        #endregion
 
+        #region . GetProblems .
         /// <summary>
         /// Gets the problems with this node.
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            if (string.IsNullOrEmpty(Model))
-                return new[] {new ProjectProblem(this, "No model selected.")};
-
-            return null;
+            return string.IsNullOrEmpty(Model)
+                ? new[] { new ProjectProblem(this, "No model selected.") } 
+                : null;
         }
+        #endregion
+
     }
 }

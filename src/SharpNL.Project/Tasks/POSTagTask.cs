@@ -31,6 +31,9 @@ using SharpNL.Utility;
 
 
 namespace SharpNL.Project.Tasks {
+    /// <summary>
+    /// Represents a Part-Of-Speech tagger task.
+    /// </summary>
     public class POSTagTask : ProjectTask {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectTask"/>.
@@ -64,13 +67,23 @@ namespace SharpNL.Project.Tasks {
         #endregion
 
         #region . Model .
+
+        private string model;
         /// <summary>
         /// Gets or sets the model name used in this task.
         /// </summary>
         /// <value>The model name used in this task.</value>
         [TypeConverter(typeof(NodeModelConverter<POSModel>))]
-        public string Model { get; set; }
+        public string Model {
+            get { return model; }
+            set {
+                model = value;
+                Project.IsDirty = true;
+            }
+        }
         #endregion
+
+        #region . Execute .
 
         /// <summary>
         /// Executes the derived node task.
@@ -93,8 +106,8 @@ namespace SharpNL.Project.Tasks {
             if (sentences == null || sentences.Count == 0)
                 throw new InvalidOperationException("The sentences are not detected on the specified document.");
 
-            var model = Project.Manager.GetModel<POSModel>(Model);
-            var tagger = new POSTaggerME(model);
+            var posModel = Project.Manager.GetModel<POSModel>(Model);
+            var tagger = new POSTaggerME(posModel);
 
             foreach (var sentence in sentences) {
 
@@ -126,6 +139,10 @@ namespace SharpNL.Project.Tasks {
             return new object[] {doc};
         }
 
+
+        #endregion
+
+        #region . TokenProb .
         private static double TokenProb(double[] probs) {
             var finalProb = 0d;
 
@@ -133,11 +150,13 @@ namespace SharpNL.Project.Tasks {
                 finalProb += probs[i]; //Math.Log(probs[i]);
 
             if (probs.Length > 0)
-                finalProb = finalProb/probs.Length;
+                finalProb = finalProb / probs.Length;
 
             return finalProb;
         }
+        #endregion
 
+        #region . GetProblems .
         /// <summary>
         /// Gets the problems with this node.
         /// </summary>
@@ -148,10 +167,15 @@ namespace SharpNL.Project.Tasks {
 
             return null;
         }
+        #endregion
 
+        #region . SerializeTask .
         protected override void SerializeTask(XmlWriter writer) {
             writer.WriteAttributeString("Model", Model);
         }
+        #endregion
+
+        #region . DeserializeTask .
         protected override void DeserializeTask(XmlNode node) {
             if (node.Attributes != null) {
                 var attModel = node.Attributes["Model"];
@@ -160,5 +184,7 @@ namespace SharpNL.Project.Tasks {
 
             }
         }
+        #endregion
+
     }
 }

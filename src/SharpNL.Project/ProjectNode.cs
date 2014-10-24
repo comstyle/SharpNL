@@ -139,7 +139,7 @@ namespace SharpNL.Project {
             childNode.Parent = this;
             childNode.Project = Project;
 
-            Project.Changed();
+            Project.IsDirty = true;
 
             child.Add(childNode);
         }
@@ -156,7 +156,7 @@ namespace SharpNL.Project {
             projectTask.Parent = this;
             projectTask.SetProject(Project);
 
-            Project.Changed();
+            Project.IsDirty = true;
 
             tasks.Add(projectTask);
             tasks.Sort();
@@ -290,9 +290,59 @@ namespace SharpNL.Project {
         protected abstract object[] Prepare();
         #endregion
 
+        #region + Remove .
 
+        /// <summary>
+        /// Removes the specified node.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <returns><c>true</c> if the node was removed, <c>false</c> otherwise.</returns>
+        public bool Remove(ProjectNode node) {
+            if (node == null)
+                throw new ArgumentNullException("node");
+
+            if (!child.Contains(node))
+                return false;
+
+            child.Remove(node);
+
+            Project.IsDirty = true;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes the specified task.
+        /// </summary>
+        /// <param name="task">The task.</param>
+        /// <returns><c>true</c> if the task was removed, <c>false</c> otherwise.</returns>
+        /// <exception cref="System.ArgumentNullException">task</exception>
+        public bool Remove(ProjectTask task) {
+            if (task == null)
+                throw new ArgumentNullException("task");
+
+            if (!tasks.Contains(task))
+                return false;
+
+            tasks.Remove(task);
+
+            Project.IsDirty = true;
+
+            return true;
+        }
+
+        #endregion
+
+        #region . SerializeProjectNode .
+        /// <summary>
+        /// Serializes the project node.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        /// <param name="content">if set to <c>true</c> the node content must be serialized.</param>
         protected abstract void SerializeProjectNode(XmlWriter writer, bool content);
+        #endregion
 
+        #region . SerializeNode .
         /// <summary>
         /// Serializes the content of the node.
         /// </summary>
@@ -312,15 +362,14 @@ namespace SharpNL.Project {
 
             if (Children.Count > 0) {
                 writer.WriteStartElement("Nodes");
-                foreach (var node in Children) {                   
+                foreach (var node in Children) {
                     node.Serialize("Node", writer, content);
                 }
-                writer.WriteEndElement();  
+                writer.WriteEndElement();
             }
-
-
-
         }
+        #endregion
+
 
     }
 }

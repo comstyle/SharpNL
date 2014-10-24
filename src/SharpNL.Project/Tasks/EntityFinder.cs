@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Xml;
 using SharpNL.NameFind;
 using SharpNL.Project.Design;
@@ -42,10 +41,9 @@ namespace SharpNL.Project.Tasks {
     public class EntityFinderTask : ProjectTask {
         //private readonly IEntityResolver entityResolver;
 
-        public EntityFinderTask() : base(4f) {
+        public EntityFinderTask() : base(4f) { }
 
-        }
-
+        #region . Input .
         /// <summary>
         /// Gets the input types of this <see cref="EntityFinderTask"/>.
         /// </summary>
@@ -54,24 +52,35 @@ namespace SharpNL.Project.Tasks {
         public override Type[] Input {
             get { return new[] { typeof(Document) }; }
         }
+        #endregion
 
-
+        #region . Output .
         /// <summary>
         /// Gets the output types of this <see cref="EntityFinderTask"/>.
         /// </summary>
         /// <value>The output types of this <see cref="EntityFinderTask"/>.</value>
         [Browsable(false)]
         public override Type[] Output {
-            get { return new[] {typeof (Document)}; }
+            get { return new[] { typeof(Document) }; }
         }
+        #endregion
 
         #region . Model .
+
+        private string model;
+
         /// <summary>
         /// Gets or sets the model name used in this task.
         /// </summary>
         /// <value>The model name used in this task.</value>
-        [Description("The tokenizer model."), TypeConverter(typeof(NodeModelConverter<TokenNameFinderModel>))]
-        public string Model { get; set; }
+        [Description("The tokenizer model."), TypeConverter(typeof (NodeModelConverter<TokenNameFinderModel>))]
+        public string Model {
+            get { return model; }
+            set {
+                model = value;
+                Project.IsDirty = true;
+            }
+        }
         #endregion
 
         #region . Resolver .
@@ -82,6 +91,8 @@ namespace SharpNL.Project.Tasks {
         [DefaultValue(null)]
         public IEntityResolver Resolver { get; set; }
         #endregion
+
+        #region . Execute .
 
         /// <summary>
         /// Executes the derived node task.
@@ -101,13 +112,12 @@ namespace SharpNL.Project.Tasks {
             if (sentences == null || sentences.Count == 0)
                 throw new InvalidOperationException("The sentences are not detected on the specified document.");
 
-            var model = Project.Manager.GetModel<TokenNameFinderModel>(Model);
-            var nameFinder = new NameFinderME(model);
+            var nameFinderModel = Project.Manager.GetModel<TokenNameFinderModel>(Model);
+            var nameFinder = new NameFinderME(nameFinderModel);
 
             foreach (var sentence in sentences) {
 
                 Span[] spans;
-                double[] probs;
                 string[] tokens = TextUtils.TokensToString(sentence.Tokens);
                 lock (nameFinder) {
                     spans = nameFinder.Find(tokens);
@@ -137,18 +147,22 @@ namespace SharpNL.Project.Tasks {
 
             return new object[] {doc};
         }
+        #endregion
 
+        #region . GetProblems .
         /// <summary>
         /// Gets the problems with this node.
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
             if (string.IsNullOrEmpty(Model))
-                return new[] {new ProjectProblem(this, "The namefinder model is not specified.")};
+                return new[] { new ProjectProblem(this, "The namefinder model is not specified.") };
 
             return null;
         }
+        #endregion
 
+        #region . DeserializeTask .
         /// <summary>
         /// Deserializes the task from a given <see cref="XmlReader"/> object.
         /// </summary>
@@ -168,15 +182,19 @@ namespace SharpNL.Project.Tasks {
                 }
             }
         }
+        #endregion
 
+        #region . SerializeTask .
         protected override void SerializeTask(XmlWriter writer) {
-            
+
             writer.WriteAttributeString("Model", Model);
 
             if (Resolver != null)
                 writer.WriteAttributeString("Resolver", Resolver.GetType().FullName);
 
         }
+        #endregion
+
 
     }
 }
