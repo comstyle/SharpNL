@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpNL.Text;
+using SharpNL.Tokenize;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -349,8 +350,10 @@ namespace SharpNL.Utility {
             for (var i = 0; i <= Start; i++)
                 pos.Start = sentence.Text.IndexOf(sentence.Tokens[i].Lexeme, pos.Start, StringComparison.Ordinal);
 
+            pos.End = pos.Start;
+
             for (var i = Start; i < End; i++)
-                pos.End = sentence.Text.IndexOf(sentence.Tokens[i].Lexeme, pos.Start, StringComparison.Ordinal);
+                pos.End = sentence.Text.IndexOf(sentence.Tokens[i].Lexeme, pos.End, StringComparison.Ordinal);
 
             pos.End += sentence.Tokens[End - 1].Length;
 
