@@ -219,6 +219,7 @@ namespace SharpNL.Parser {
             var children = p.Children;
             var words = new string[children.Length];
             var pTags = new string[words.Length];
+            var probs = new double[words.Length];
 
             for (int i = 0, il = children.Length; i < il; i++) {
                 words[i] = children[i].Head.CoveredText;
@@ -436,8 +437,8 @@ namespace SharpNL.Parser {
         /// <param name="punctSet">The set of punctuation which is to be removed.</param>
         /// <returns>An array of parses which is a subset of chunks with punctuation removed.</returns>
         public static Parse[] CollapsePunctuation(Parse[] chunks, List<string> punctSet) {
-            var collapsedParses = new List<Parse>();
-            int lastNonPunct = -1;
+            var collapsedParses = new List<Parse>(chunks.Length);
+            var lastNonPunct = -1;
             for (int ci = 0, cn = chunks.Length; ci < cn; ci++) {
                 if (punctSet.Contains(chunks[ci].Type)) {
                     if (lastNonPunct >= 0) {
@@ -457,10 +458,7 @@ namespace SharpNL.Parser {
                     lastNonPunct = ci;
                 }
             }
-            if (collapsedParses.Count == chunks.Length) {
-                return chunks;
-            }
-            return collapsedParses.ToArray();
+            return collapsedParses.Count == chunks.Length ? chunks : collapsedParses.ToArray();
         }
 
         #endregion
@@ -526,6 +524,7 @@ namespace SharpNL.Parser {
             double bestComplete = -100000; //approximating -infinity/0 in ln domain
             while (odh.Size() > 0 && (completeParses.Size() < M || (odh.First()).Probability < minComplete) &&
                    derivationStage < maxDerivationLength) {
+
                 ndh = new ListHeap<Parse>(K);
 
                 var derivationRank = 0;
@@ -548,11 +547,20 @@ namespace SharpNL.Parser {
                         tp.Show();
                         Console.Out.WriteLine();
                     }
+
                     Parse[] nd;
-                    if (0 == derivationStage) {
+
+                    if (derivationStage == 0) {
                         nd = AdvanceTags(tp);
-                    } else if (1 == derivationStage) {
-                        nd = AdvanceChunks(tp, ndh.Size() < K ? bestComplete : (ndh.Last()).Probability);
+
+                    } else if (derivationStage == 1) {
+                        if (ndh.Size() < K) {
+                            nd = AdvanceChunks(tp, bestComplete);
+                        } else {
+                            nd = AdvanceChunks(tp, ndh.Last().Probability);
+                        }
+                        //nd = AdvanceChunks(tp, ndh.Size() < K ? bestComplete : ndh.Last().Probability);
+
                     } else {
                         // i > 1
                         nd = AdvanceParses(tp, Q);
@@ -627,8 +635,7 @@ namespace SharpNL.Parser {
         /// </summary>
         /// <param name="p">The parse whose parent references need to be assigned.</param>
         public static void SetParents(Parse p) {
-            var children = p.Children;
-            foreach (Parse c in children) {
+            foreach (var c in p.Children) {
                 c.Parent = p;
                 SetParents(c);
             }

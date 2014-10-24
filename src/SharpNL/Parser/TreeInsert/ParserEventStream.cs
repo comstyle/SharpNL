@@ -33,15 +33,22 @@ namespace SharpNL.Parser.TreeInsert {
 
         #region + Constructors .
 
+
         public ParserEventStream(IObjectStream<Parse> d, AbstractHeadRules rules, ParserEventTypeEnum type)
             : base(d, rules, type) {
-            Init();
+
+            buildContextGenerator = new BuildContextGenerator();
+            attachContextGenerator = new AttachContextGenerator(Punctuation);
+            checkContextGenerator = new CheckContextGenerator(Punctuation);
         }
 
         public ParserEventStream(IObjectStream<Parse> d, AbstractHeadRules rules, ParserEventTypeEnum type,
             Dictionary.Dictionary dict)
             : base(d, rules, type, dict) {
-            Init();
+
+            buildContextGenerator = new BuildContextGenerator();
+            attachContextGenerator = new AttachContextGenerator(Punctuation);
+            checkContextGenerator = new CheckContextGenerator(Punctuation);
         }
 
         #endregion
@@ -88,13 +95,13 @@ namespace SharpNL.Parser.TreeInsert {
                     if (parent.Label == null && prevParent.Type != parent.Type) {
                         //build level
                         // if (debug) System.err.println("Build: " + parent.Type + " for: " + currentChunks[ci]);
-                        if (eType == ParserEventTypeEnum.Build) {
+                        if (Type == ParserEventTypeEnum.Build) {
                             newEvents.Add(new Event(parent.Type, buildContextGenerator.GetContext(currentChunks, ci)));
                         }
                         builtNodes.Add(parent);
                         //builtNodes[off++] = parent;
                         var newParent = new Parse(currentChunks[ci].Text, currentChunks[ci].Span, parent.Type, 1, 0);
-                        newParent.Add(currentChunks[ci], rules);
+                        newParent.Add(currentChunks[ci], Rules);
                         newParent.PreviousPunctuationSet = currentChunks[ci].PreviousPunctuationSet;
                         newParent.NextPunctuationSet = currentChunks[ci].NextPunctuationSet;
                         currentChunks[ci].Parent = newParent;
@@ -102,15 +109,15 @@ namespace SharpNL.Parser.TreeInsert {
                         newParent.Label = Parser.BUILT;
 
                         //see if chunk is complete
-                        if (IsLastChild(chunks[ci], parent)) {
-                            if (eType == ParserEventTypeEnum.Check) {
+                        if (LastChild(chunks[ci], parent)) {
+                            if (Type == ParserEventTypeEnum.Check) {
                                 newEvents.Add(new Event(AbstractBottomUpParser.COMPLETE,
                                     checkContextGenerator.GetContext(currentChunks[ci], currentChunks, ci, false)));
                             }
                             currentChunks[ci].Label = AbstractBottomUpParser.COMPLETE;
                             parent.Label = AbstractBottomUpParser.COMPLETE;
                         } else {
-                            if (eType == ParserEventTypeEnum.Check) {
+                            if (Type == ParserEventTypeEnum.Check) {
                                 newEvents.Add(new Event(AbstractBottomUpParser.INCOMPLETE,
                                     checkContextGenerator.GetContext(currentChunks[ci], currentChunks, ci, false)));
                             }
@@ -128,7 +135,7 @@ namespace SharpNL.Parser.TreeInsert {
                     parent = parent.Parent;
                 }
                 //decide to attach
-                if (eType == ParserEventTypeEnum.Build) {
+                if (Type == ParserEventTypeEnum.Build) {
                     newEvents.Add(new Event(Parser.DONE, buildContextGenerator.GetContext(currentChunks, ci)));
                 }
                 //attach node
@@ -142,7 +149,7 @@ namespace SharpNL.Parser.TreeInsert {
                     top.Insert(currentChunks[ci]);
                 } else {
                     /** Right frontier consisting of partially-built nodes based on current state of the parse.*/
-                    var currentRightFrontier = Parser.GetRightFrontier(currentChunks[0], punctSet);
+                    var currentRightFrontier = Parser.GetRightFrontier(currentChunks[0], Punctuation);
                     if (currentRightFrontier.Count != rightFrontier.Count) {
                         throw new InvalidOperationException("frontiers mis-aligned: " + currentRightFrontier.Count +
                                                             " != " + rightFrontier.Count + " " + currentRightFrontier +
@@ -161,7 +168,7 @@ namespace SharpNL.Parser.TreeInsert {
                                 attachType = Parser.ATTACH_DAUGHTER;
                                 attachNodeIndex = cfi;
                                 attachNode = cfn;
-                                if (eType == ParserEventTypeEnum.Attach) {
+                                if (Type == ParserEventTypeEnum.Attach) {
                                     newEvents.Add(new Event(attachType,
                                         attachContextGenerator.GetContext(currentChunks, ci, currentRightFrontier,
                                             attachNodeIndex)));
@@ -189,7 +196,7 @@ namespace SharpNL.Parser.TreeInsert {
                             attachType = Parser.ATTACH_SISTER;
                             attachNode = cfn;
                             attachNodeIndex = cfi;
-                            if (eType == ParserEventTypeEnum.Attach) {
+                            if (Type == ParserEventTypeEnum.Attach) {
                                 newEvents.Add(new Event(Parser.ATTACH_SISTER,
                                     attachContextGenerator.GetContext(currentChunks, ci, currentRightFrontier, cfi)));
                             }
@@ -198,7 +205,7 @@ namespace SharpNL.Parser.TreeInsert {
                         } else if (cfi == attachNodeIndex) {
                             //skip over previously attached daughter.
                         } else {
-                            if (eType == ParserEventTypeEnum.Attach) {
+                            if (Type == ParserEventTypeEnum.Attach) {
                                 newEvents.Add(new Event(Parser.NON_ATTACH,
                                     attachContextGenerator.GetContext(currentChunks, ci, currentRightFrontier, cfi)));
                             }
@@ -214,16 +221,16 @@ namespace SharpNL.Parser.TreeInsert {
                         if (attachType == Parser.ATTACH_DAUGHTER) {
                             var daughter = currentChunks[ci];
                             //if (debug) System.err.println("daughter attach a=" + attachNode.Type + ":" + attachNode + " d=" + daughter + " com=" + lastChild(chunks[ci], rightFrontier.get(attachNodeIndex)));
-                            attachNode.Add(daughter, rules);
+                            attachNode.Add(daughter, Rules);
                             daughter.Parent = attachNode;
-                            if (IsLastChild(chunks[ci], rightFrontier[attachNodeIndex])) {
-                                if (eType == ParserEventTypeEnum.Check) {
+                            if (LastChild(chunks[ci], rightFrontier[attachNodeIndex])) {
+                                if (Type == ParserEventTypeEnum.Check) {
                                     newEvents.Add(new Event(AbstractBottomUpParser.COMPLETE,
                                         checkContextGenerator.GetContext(attachNode, currentChunks, ci, true)));
                                 }
                                 attachNode.Label = AbstractBottomUpParser.COMPLETE;
                             } else {
-                                if (eType == ParserEventTypeEnum.Check) {
+                                if (Type == ParserEventTypeEnum.Check) {
                                     newEvents.Add(new Event(AbstractBottomUpParser.INCOMPLETE,
                                         checkContextGenerator.GetContext(attachNode, currentChunks, ci, true)));
                                 }
@@ -233,7 +240,7 @@ namespace SharpNL.Parser.TreeInsert {
                             rightFrontier[attachNodeIndex] = frontierNode.Parent;
                             var sister = currentChunks[ci];
                             //if (debug) System.err.println("sister attach a=" + attachNode.Type + ":" + attachNode + " s=" + sister + " ap=" + attachNode.Parent + " com=" + lastChild(chunks[ci], rightFrontier.get(attachNodeIndex)));
-                            var newParent = attachNode.Parent.AdJoin(sister, rules);
+                            var newParent = attachNode.Parent.AdJoin(sister, Rules);
 
                             newParent.Parent = attachNode.Parent;
                             attachNode.Parent = newParent;
@@ -241,14 +248,14 @@ namespace SharpNL.Parser.TreeInsert {
                             if (Equals(attachNode, currentChunks[0])) {
                                 currentChunks[0] = newParent;
                             }
-                            if (IsLastChild(chunks[ci], rightFrontier[attachNodeIndex])) {
-                                if (eType == ParserEventTypeEnum.Check) {
+                            if (LastChild(chunks[ci], rightFrontier[attachNodeIndex])) {
+                                if (Type == ParserEventTypeEnum.Check) {
                                     newEvents.Add(new Event(AbstractBottomUpParser.COMPLETE,
                                         checkContextGenerator.GetContext(newParent, currentChunks, ci, true)));
                                 }
                                 newParent.Label = AbstractBottomUpParser.COMPLETE;
                             } else {
-                                if (eType == ParserEventTypeEnum.Check) {
+                                if (Type == ParserEventTypeEnum.Check) {
                                     newEvents.Add(new Event(AbstractBottomUpParser.INCOMPLETE,
                                         checkContextGenerator.GetContext(newParent, currentChunks, ci, true)));
                                 }
@@ -292,7 +299,7 @@ namespace SharpNL.Parser.TreeInsert {
 
         #region . IndexOf .
         private int IndexOf(Parse child, Parse parent) {
-            var kids = AbstractBottomUpParser.CollapsePunctuation(parent.Children, punctSet);
+            var kids = AbstractBottomUpParser.CollapsePunctuation(parent.Children, Punctuation);
             for (var ki = 0; ki < kids.Length; ki++) {
                 if (child.Equals(kids[ki])) {
                     return ki;
@@ -302,19 +309,9 @@ namespace SharpNL.Parser.TreeInsert {
         }
         #endregion
 
-        #region . Init .
-
-        private void Init() {
-            buildContextGenerator = new BuildContextGenerator();
-            attachContextGenerator = new AttachContextGenerator(punctSet);
-            checkContextGenerator = new CheckContextGenerator(punctSet);
-        }
-
-        #endregion
-
         #region . NonPunctChildCount .
         private int NonPunctChildCount(Parse node) {
-            return AbstractBottomUpParser.CollapsePunctuation(node.Children, punctSet).Length;
+            return AbstractBottomUpParser.CollapsePunctuation(node.Children, Punctuation).Length;
         }
         #endregion
 

@@ -51,6 +51,7 @@ namespace SharpNL.Parser.Chunking {
         public ParserEventStream(IObjectStream<Parse> samples, AbstractHeadRules rules, ParserEventTypeEnum eType,
             Dictionary.Dictionary dictionary)
             : base(samples, rules, eType, dictionary) {
+
             switch (eType) {
                 case ParserEventTypeEnum.Build:
                     bcg = new BuildContextGenerator(dictionary);
@@ -59,6 +60,7 @@ namespace SharpNL.Parser.Chunking {
                     kcg = new CheckContextGenerator();
                     break;
             }
+
         }
 
         #endregion
@@ -84,15 +86,15 @@ namespace SharpNL.Parser.Chunking {
                     }
                     //System.err.println("parserEventStream.addParseEvents: chunks["+ci+"]="+c+" label="+outcome+" bcg="+bcg);
                     c.Label = outcome;
-                    if (eType == ParserEventTypeEnum.Build) {
+                    if (Type == ParserEventTypeEnum.Build) {
                         parseEvents.Add(new Event(outcome, bcg.GetContext(chunks, ci)));
                     }
                     var start = ci - 1;
                     while (start >= 0 && chunks[start].Parent.Equals(parent)) {
                         start--;
                     }
-                    if (IsLastChild(c, parent)) {
-                        if (eType == ParserEventTypeEnum.Check) {
+                    if (LastChild(c, parent)) {
+                        if (Type == ParserEventTypeEnum.Check) {
                             parseEvents.Add(new Event(AbstractBottomUpParser.COMPLETE,
                                 kcg.GetContext(chunks, type, start + 1, ci)));
                         }
@@ -105,7 +107,7 @@ namespace SharpNL.Parser.Chunking {
                         chunks = ReduceChunks(chunks, ref ci, parent);
                         ci = reduceStart - 1; //ci will be incremented at end of loop
                     } else {
-                        if (eType == ParserEventTypeEnum.Check) {
+                        if (Type == ParserEventTypeEnum.Check) {
                             parseEvents.Add(new Event(AbstractBottomUpParser.INCOMPLETE,
                                 kcg.GetContext(chunks, type, start + 1, ci)));
                         }
@@ -124,7 +126,7 @@ namespace SharpNL.Parser.Chunking {
         /// <param name="parent">The parent parse.</param>
         /// <returns><c>true</c> if the specified child is the first child of the specified parent, <c>false</c> otherwise.</returns>
         protected bool FirstChild(Parse child, Parse parent) {
-            return AbstractBottomUpParser.CollapsePunctuation(parent.Children, punctSet)[0].Equals(child);
+            return AbstractBottomUpParser.CollapsePunctuation(parent.Children, Punctuation)[0].Equals(child);
         }
 
         #endregion

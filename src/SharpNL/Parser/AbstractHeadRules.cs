@@ -29,7 +29,7 @@ namespace SharpNL.Parser {
     /// <summary>
     /// Abstract class for encoding the head rules associated with parsing.
     /// </summary>
-    public abstract class AbstractHeadRules {
+    public abstract class AbstractHeadRules : IHeadRules {
 
         protected AbstractHeadRules() {
             HeadRules = new Dictionary<string, AbstractHeadRule>();

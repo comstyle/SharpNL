@@ -37,7 +37,7 @@ namespace SharpNL.Parser {
             untokenizedParentPattern2 = new Regex("([({)}])([^ ])", RegexOptions.Compiled);
         }
 
-        public static Parse[] ParseLine(String line, IParser parser, int numParses) {
+        public static Parse[] ParseLine(string line, IParser parser, int numParses) {
             line = untokenizedParentPattern1.Replace(line, "$1 $2");
             line = untokenizedParentPattern2.Replace(line, "$1 $2");
 
@@ -52,22 +52,13 @@ namespace SharpNL.Parser {
             var text = sb.ToString(0, sb.Length - 1);
             var p = new Parse(text, new Span(0, text.Length), AbstractBottomUpParser.INC_NODE, 0, 0);
             var start = 0;
-            var i = 0;
-            for (var ti = tokens.GetEnumerator(); ti.MoveNext(); i++) {
-                if (ti.Current == null)
-                    continue;
 
-                var tok = ti.Current;
-                p.Insert(new Parse(text, new Span(start, start + tok.Length), AbstractBottomUpParser.TOK_NODE, 0, i));
-                start += tok.Length + 1;
+            for (var i = 0; i < tokens.Count; i++) {
+                p.Insert(new Parse(text, new Span(start, start + tokens[i].Length), AbstractBottomUpParser.TOK_NODE, 0, i));
+                start += tokens[i].Length + 1;
             }
-            Parse[] parses;
-            if (numParses == 1) {
-                parses = new[] {parser.Parse(p)};
-            } else {
-                parses = parser.Parse(p, numParses);
-            }
-            return parses;
+
+            return numParses == 1 ? new[] { parser.Parse(p) } : parser.Parse(p, numParses);
         }
     }
 }

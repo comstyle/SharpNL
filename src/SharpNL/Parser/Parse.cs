@@ -82,6 +82,7 @@ namespace SharpNL.Parser {
             Text = text;
             Span = span;
             Type = type;
+            Head = this;
             Probability = probability;
             HeadIndex = headIndex;
             parts = new List<Parse>();
@@ -98,10 +99,11 @@ namespace SharpNL.Parser {
         /// <param name="head">The head token of this parse.</param>
         public Parse(string text, Span span, string type, double probability, Parse head)
             : this(text, span, type, probability, 0) {
-            if (head != null) {
-                Head = head;
-                HeadIndex = head.HeadIndex;
-            }
+            if (head == null) 
+                return;
+
+            Head = head;
+            HeadIndex = head.HeadIndex;
         }
 
         #endregion
@@ -319,7 +321,7 @@ namespace SharpNL.Parser {
         #endregion
 
         #region . Add .
-        public void Add(Parse daughter, AbstractHeadRules rules) {
+        public void Add(Parse daughter, IHeadRules rules) {
             if (daughter.PreviousPunctuationSet != null) {
                 parts.AddRange(daughter.PreviousPunctuationSet);
             }
@@ -426,7 +428,7 @@ namespace SharpNL.Parser {
         /// <param name="sister">The node to be adjoined.</param>
         /// <param name="rules">The head rules for the parser.</param>
         /// <returns>The new parent node of this node and the specified sister node.</returns>
-        public Parse AdJoin(Parse sister, AbstractHeadRules rules) {
+        public Parse AdJoin(Parse sister, IHeadRules rules) {
             var lastChild = parts[parts.Count - 1];
             var adjNode = new Parse(Text, new Span(lastChild.Span.Start, sister.Span.End), lastChild.Type, 1, rules.GetHead(new[] {lastChild, sister}, lastChild.Type));
 
@@ -859,12 +861,14 @@ namespace SharpNL.Parser {
         /// <exception cref="System.InvalidOperationException">Inserting constituent not contained in the sentence!</exception>
         public void Insert(Parse constituent) {
             var ic = constituent.Span;
+
             if (Span.Contains(ic)) {
                 var pi = 0;
                 var pn = parts.Count;
                 for (; pi < pn; pi++) {
                     var subPart = parts[pi];
                     var sp = subPart.Span;
+
                     if (sp.Start >= ic.End)
                         break;
 
@@ -875,10 +879,14 @@ namespace SharpNL.Parser {
                         subPart.Parent = constituent;
 
                         pn = parts.Count;
-                    } else if (sp.Contains(ic)) {
-                        subPart.Insert(constituent);
-                        return;
+                        continue;
                     }
+
+                    if (!sp.Contains(ic)) 
+                        continue;
+
+                    subPart.Insert(constituent);
+                    return;
                 }
                 parts.Insert(pi, constituent);
                 constituent.Parent = this;
@@ -1059,7 +1067,7 @@ namespace SharpNL.Parser {
         /// in the parse data structure.
         /// </summary>
         /// <param name="rules">The head rules which determine how the head of the parse is computed.</param>
-        public void UpdateHeads(AbstractHeadRules rules) {
+        public void UpdateHeads(IHeadRules rules) {
             if (parts != null && parts.Count != 0) {
                 for (int pi = 0, pn = parts.Count; pi < pn; pi++) {
                     parts[pi].UpdateHeads(rules);

@@ -35,7 +35,7 @@ namespace SharpNL.Parser.Chunking {
     /// </summary>
     public class Parser : AbstractBottomUpParser {
         private const string TOP_START = START + TOP_NODE;
-        private readonly double[] bprobs;
+        private readonly double[] bProbs;
         private readonly BuildContextGenerator buildContextGenerator;
         private readonly IMaxentModel buildModel;
         private readonly CheckContextGenerator checkContextGenerator;
@@ -53,8 +53,18 @@ namespace SharpNL.Parser.Chunking {
         public Parser(ParserModel model) : this(model, DefaultBeamSize, DefaultAdvancePercentage) {}
 
         public Parser(ParserModel model, int beamSize, double advancePercentage)
-            : this(model.BuildModel, model.CheckModel, new POSTaggerME(model.ParserTaggerModel, 10, 0),
-                   new ChunkerME(model.ParserChunkerModel), model.HeadRules, beamSize, advancePercentage) {
+            : this(
+                model.BuildModel,
+                model.CheckModel, 
+                new POSTaggerME(model.ParserTaggerModel, 10, 0),
+                new ChunkerME(
+                    model.ParserChunkerModel, 
+                    ChunkerME.DEFAULT_BEAM_SIZE, 
+                    new ParserChunkerSequenceValidator(model.ParserChunkerModel), 
+                    new ChunkContextGenerator()), 
+                model.HeadRules, 
+                beamSize, 
+                advancePercentage) {
             
         }
 
@@ -75,7 +85,7 @@ namespace SharpNL.Parser.Chunking {
                 base(tagger, chunker, headRules, beamSize, advancePercentage) {
             this.buildModel = buildModel;
             this.checkModel = checkModel;
-            bprobs = new double[buildModel.GetNumOutcomes()];
+            bProbs = new double[buildModel.GetNumOutcomes()];
             cprobs = new double[checkModel.GetNumOutcomes()];
             buildContextGenerator = new BuildContextGenerator();
             checkContextGenerator = new CheckContextGenerator();
@@ -84,11 +94,9 @@ namespace SharpNL.Parser.Chunking {
             for (int boi = 0, bon = buildModel.GetNumOutcomes(); boi < bon; boi++) {
                 var outcome = buildModel.GetOutcome(boi);
                 if (outcome.StartsWith(START)) {
-                    //System.err.println("startMap "+outcome+"->"+outcome.substring(START.length()));
-                    startTypeMap.Add(outcome, outcome.Substring(START.Length));
+                    startTypeMap[outcome] = outcome.Substring(START.Length);
                 } else if (outcome.StartsWith(CONT)) {
-                    //System.err.println("contMap "+outcome+"->"+outcome.substring(CONT.length()));
-                    contTypeMap.Add(outcome, outcome.Substring(CONT.Length));
+                    contTypeMap[outcome] = outcome.Substring(CONT.Length);
                 }
             }
             topStartIndex = buildModel.GetIndex(TOP_START);
@@ -113,7 +121,7 @@ namespace SharpNL.Parser.Chunking {
             /** The index of the closest previous node which has been labeled as a start node. */
             var lastStartIndex = -1;
             /** The type of the closest previous node which has been labeled as a start node. */
-            String lastStartType = null;
+            string lastStartType = null;
             /** The index of the node which will be labeled in this iteration of advancing the parse. */
             int advanceNodeIndex;
             /** The node which will be labeled in this iteration of advancing the parse. */
@@ -141,23 +149,23 @@ namespace SharpNL.Parser.Chunking {
             var newParsesList = new List<Parse>(buildModel.GetNumOutcomes());
 
             //call build
-            buildModel.Eval(buildContextGenerator.GetContext(children, advanceNodeIndex), bprobs);
-            double bprobSum = 0;
-            while (bprobSum < probMass) {
+            buildModel.Eval(buildContextGenerator.GetContext(children, advanceNodeIndex), bProbs);
+            var bProbSum = 0d;
+            while (bProbSum < probMass) {
                 // The largest un-advanced labeling.
                 var max = 0;
-                for (var pi = 1; pi < bprobs.Length; pi++) {
+                for (var pi = 1; pi < bProbs.Length; pi++) {
                     //for each build outcome
-                    if (bprobs[pi] > bprobs[max]) {
+                    if (bProbs[pi] > bProbs[max]) {
                         max = pi;
                     }
                 }
-                if (bprobs[max].Equals(0d)) {
+                if (bProbs[max].Equals(0d)) {
                     break;
                 }
-                var bprob = bprobs[max];
-                bprobs[max] = 0; //zero out so new max can be found
-                bprobSum += bprob;
+                var bProb = bProbs[max];
+                bProbs[max] = 0; //zero out so new max can be found
+                bProbSum += bProb;
                 var tag = buildModel.GetOutcome(max);
                 //System.out.println("trying "+tag+" "+bprobSum+" lst="+lst);
                 if (max == topStartIndex) {
@@ -179,7 +187,7 @@ namespace SharpNL.Parser.Chunking {
                 if (createDerivationString) newParse1.Derivation.Append(max).Append("-");
                 newParse1.SetChild(originalAdvanceIndex, tag);
                 //replace constituent being labeled to create new derivation
-                newParse1.AddProbability(Math.Log(bprob));
+                newParse1.AddProbability(Math.Log(bProb));
                 //check
                 //String[] context = checkContextGenerator.getContext(newParse1.getChildren(), lastStartType, lastStartIndex, advanceNodeIndex);
                 checkModel.Eval(
@@ -245,8 +253,8 @@ namespace SharpNL.Parser.Chunking {
         /// </summary>
         /// <param name="parse">The complete parse.</param>
         protected override void AdvanceTop(Parse parse) {
-            buildModel.Eval(buildContextGenerator.GetContext(parse.Children, 0), bprobs);
-            parse.AddProbability(Math.Log(bprobs[topStartIndex]));
+            buildModel.Eval(buildContextGenerator.GetContext(parse.Children, 0), bProbs);
+            parse.AddProbability(Math.Log(bProbs[topStartIndex]));
             checkModel.Eval(checkContextGenerator.GetContext(parse.Children, TOP_NODE, 0, 0), cprobs);
             parse.AddProbability(Math.Log(cprobs[completeIndex]));
             parse.Type = TOP_NODE;
@@ -278,10 +286,8 @@ namespace SharpNL.Parser.Chunking {
 
             param.Set("dict", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
 
-
             param.Set("tagger", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
             param.Set("tagger", Parameters.Iterations, iterations.ToString(CultureInfo.InvariantCulture));
-
 
             param.Set("chunker", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
             param.Set("chunker", Parameters.Iterations, iterations.ToString(CultureInfo.InvariantCulture));
@@ -302,7 +308,7 @@ namespace SharpNL.Parser.Chunking {
             TrainingParameters mlParams) {
             //System.err.println("Building dictionary");
 
-            var mdict = BuildDictionary(parseSamples, rules, mlParams);
+            var dict = BuildDictionary(parseSamples, rules, mlParams);
 
             parseSamples.Reset();
 
@@ -310,7 +316,7 @@ namespace SharpNL.Parser.Chunking {
 
             // build
             //System.err.println("Training builder");
-            var bes = new ParserEventStream(parseSamples, rules, ParserEventTypeEnum.Build, mdict);
+            var bes = new ParserEventStream(parseSamples, rules, ParserEventTypeEnum.Build, dict);
             var buildReportMap = new Dictionary<string, string>();
             var buildTrainer = TrainerFactory.GetEventTrainer(mlParams.GetNamespace("build"), buildReportMap);
 

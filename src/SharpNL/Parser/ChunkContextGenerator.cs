@@ -35,8 +35,15 @@ namespace SharpNL.Parser {
         private readonly Cache contextsCache;
         private object wordsKey;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkContextGenerator"/> class without cache.
+        /// </summary>
         public ChunkContextGenerator() : this(0) {}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkContextGenerator"/> class with the specified cache size.
+        /// </summary>
+        /// <param name="cacheSize">Size of the cache.</param>
         public ChunkContextGenerator(int cacheSize) {
             if (cacheSize > 0)
                 contextsCache = new Cache(cacheSize);
@@ -49,7 +56,7 @@ namespace SharpNL.Parser {
         /// <param name="additionalContext">Any addition context specific to a class implementing this interface.</param>
         /// <returns>The context for the specified position in the specified sequence.</returns>
         public string[] GetContext(int index, string[] sequence, string[] priorDecisions, object[] additionalContext) {
-            throw new NotImplementedException();
+            return GetContext(index, sequence, (string[]) additionalContext[0], priorDecisions);
         }
 
         /// <summary>

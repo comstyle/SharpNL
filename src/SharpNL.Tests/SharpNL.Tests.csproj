@@ -187,6 +187,7 @@
     <Compile Include="NameFind\TokenNameFinderCrossValidatorTest.cs" />
     <Compile Include="NameFind\TokenNameFinderEvaluatorTest.cs" />
     <Compile Include="OpenNLP\OpenNLP.cs" />
+    <Compile Include="OpenNLP\ParseTest.cs" />
     <Compile Include="OpenNLP\SentenceDetectorTest.cs" />
     <Compile Include="Parser\Chunking\ParserTest.cs" />
     <Compile Include="Parser\ChunkSampleStreamTest.cs" />

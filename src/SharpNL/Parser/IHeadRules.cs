@@ -20,21 +20,26 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
+using System.Collections.Generic;
 
 namespace SharpNL.Parser {
     /// <summary>
-    /// Enumerated type of event types for the parser.
+    /// Interface for encoding the head rules associated with parsing.
     /// </summary>
-    public enum ParserEventTypeEnum {
-        Attach,
-        Build,
-        Check,
+    public interface IHeadRules {
 
-        [Obsolete("Deprecated", false)]
-        Chunk,
+        /// <summary>
+        /// Returns the head constituent for the specified constituents of the specified type.
+        /// </summary>
+        /// <param name="constituents">The constituents which make up a constituent of the specified type.</param>
+        /// <param name="type">The type of a constituent which is made up of the specified constituents.</param>
+        /// <returns>The constituent which is the head.</returns>
+        Parse GetHead(Parse[] constituents, string type);
 
-        [Obsolete("Deprecated", false)]
-        Tag
+        /// <summary>
+        /// Gets a list with the punctuation tags. Attachment decisions for these tags will not be modeled.
+        /// </summary>
+        /// <value>The list of punctuation tags.</value>
+        List<string> PunctuationTags { get; }
     }
 }

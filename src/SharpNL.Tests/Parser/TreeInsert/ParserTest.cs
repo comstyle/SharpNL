@@ -40,8 +40,8 @@ namespace SharpNL.Tests.Parser.TreeInsert {
 
             // Tests parsing to make sure the code does not has
             // a bug which fails always with a runtime exception
-            parser.Parse(Parse.ParseParse("She was just another freighter from the " +
-                  "States and she seemed as commonplace as her name ."));
+           var p = parser.Parse(Parse.ParseParse("She was just another freighter from the " +
+                   "States and she seemed as commonplace as her name ."));
 
             ParserModel deserialized;
 
