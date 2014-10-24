@@ -189,6 +189,7 @@
     <Compile Include="OpenNLP\OpenNLP.cs" />
     <Compile Include="OpenNLP\ParseTest.cs" />
     <Compile Include="OpenNLP\SentenceDetectorTest.cs" />
+    <Compile Include="OpenNLP\TokenizerTest.cs" />
     <Compile Include="Parser\Chunking\ParserTest.cs" />
     <Compile Include="Parser\ChunkSampleStreamTest.cs" />
     <Compile Include="Parser\Lang\en\HeadRulesTest.cs" />

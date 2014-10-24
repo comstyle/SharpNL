@@ -42,6 +42,11 @@ namespace SharpNL.Tests.Tokenize {
         public void TestTokenizer() {
             var model = TokenizerTestUtil.CreateMaxentTokenModel();
             var tokenizer = new TokenizerME(model);
+
+            TestTokenizer(tokenizer);
+        }
+
+        internal static void TestTokenizer(ITokenizer tokenizer) {
             var tokens = tokenizer.Tokenize("Sounds like it's not properly thought through!");
 
             Assert.AreEqual(9, tokens.Length);
@@ -54,7 +59,6 @@ namespace SharpNL.Tests.Tokenize {
             Assert.AreEqual("thought", tokens[6]);
             Assert.AreEqual("through", tokens[7]);
             Assert.AreEqual("!", tokens[8]);
-
         }
 
     }
