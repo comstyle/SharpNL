@@ -25,6 +25,11 @@ namespace SharpNL {
         public event EventHandler Complete;
 
         /// <summary>
+        /// Occurs when the object that is running the task sends an error message.
+        /// </summary>
+        public event EventHandler<MonitorMessageEventArgs> Error;
+
+        /// <summary>
         /// Occurs when the object that is running the task sends an informational message.
         /// </summary>
         public event EventHandler<MonitorMessageEventArgs> Message;
@@ -56,6 +61,15 @@ namespace SharpNL {
         /// </summary>
         /// <value><c>true</c> if this instance is running; otherwise, <c>false</c>.</value>
         public bool IsRunning { get; internal set; }
+        #endregion
+
+        #region . TotalErrors .
+        /// <summary>
+        /// Gets the number of error messages in the current execution.
+        /// </summary>
+        /// <value>The number of error messages in the current execution.</value>
+        [Description("The number of error messages in the current execution.")]
+        public int TotalErrors { get; private set; }
         #endregion
 
         #region . TotalMessages .
@@ -153,6 +167,18 @@ namespace SharpNL {
             }, cancelSource.Token);
         }
 
+        #endregion
+
+        #region . OnError .
+        /// <summary>
+        /// Processes the error message.
+        /// </summary>
+        /// <param name="message">The error message.</param>
+        internal void OnError(string message) {
+            TotalErrors++;
+            if (Error != null)
+                Error(this, new MonitorMessageEventArgs(message));
+        }
         #endregion
 
         #region . OnException .
