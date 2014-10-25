@@ -42,6 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dictionary\DictionaryBase.cs" />
+    <Compile Include="Formats\Ad\AdContractionNameSampleStream.cs" />
+    <Compile Include="Formats\Ad\AdNameSampleStream.cs" />
+    <Compile Include="Formats\Ad\AdPosSampleStream.cs" />
+    <Compile Include="Formats\Ad\PortugueseContractionUtility.cs" />
     <Compile Include="ModelType.cs" />
     <Compile Include="Chunker\ChunkerCrossValidator.cs" />
     <Compile Include="Chunker\ChunkerEvaluator.cs" />
