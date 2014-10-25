@@ -32,7 +32,7 @@ namespace SharpNL.Tests.Utility.FeatureGen {
         [Test]
         public void TestCreationWithSimpleDescriptor() {
 
-            using (var config = Tests.OpenSample("/opennlp/tools/util/featuregen/TestFeatureGeneratorConfig.xml")) {
+            using (var config = Tests.OpenFile("/opennlp/tools/util/featuregen/TestFeatureGeneratorConfig.xml")) {
                 
                 Assert.NotNull(config);
 
@@ -50,7 +50,7 @@ namespace SharpNL.Tests.Utility.FeatureGen {
 
         [Test]
         public void testCreationWithCustomGenerator() {
-            using (var config = Tests.OpenSample("/opennlp/tools/util/featuregen/CustomClassLoading.xml")) {
+            using (var config = Tests.OpenFile("/opennlp/tools/util/featuregen/CustomClassLoading.xml")) {
 
                 var aggregatedGenerator = (AggregatedFeatureGenerator)GeneratorFactory.Create(config, null);
 
@@ -64,7 +64,7 @@ namespace SharpNL.Tests.Utility.FeatureGen {
 
         [Test, ExpectedException(typeof(InvalidFormatException))]
         public void TestCreationWithUnknownElement() {
-            using (var config = Tests.OpenSample("/opennlp/tools/util/featuregen/FeatureGeneratorConfigWithUnkownElement.xml")) {
+            using (var config = Tests.OpenFile("/opennlp/tools/util/featuregen/FeatureGeneratorConfigWithUnkownElement.xml")) {
 
                 var never = GeneratorFactory.Create(config, null);
 

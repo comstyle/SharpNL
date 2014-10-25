@@ -33,7 +33,7 @@ namespace SharpNL.Tests.ML {
         private static IEnumerable<Event> readPpaFile(String filename) {
             var events = new List<Event>();
 
-            using (var reader = new StreamReader(Tests.OpenSample("opennlp/data/ppa/" + filename))) {
+            using (var reader = new StreamReader(Tests.OpenFile("opennlp/data/ppa/" + filename))) {
                 string line;
                 while ((line = reader.ReadLine()) != null) {
                     var items = Regex.Split(line, "\\s+");

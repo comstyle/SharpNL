@@ -55,7 +55,7 @@ namespace SharpNL.Tests.OpenNLP {
         private static ParserModel OpenSharpModel(string fileName) {
             FileStream fileStream = null;
             try {
-                fileStream = Tests.OpenSample(fileName);
+                fileStream = Tests.OpenFile(fileName);
                 return new ParserModel(fileStream);
             } finally {
                 if (fileStream != null)

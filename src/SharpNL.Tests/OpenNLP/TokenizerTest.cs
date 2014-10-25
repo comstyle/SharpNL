@@ -55,7 +55,7 @@ namespace SharpNL.Tests.OpenNLP {
         private static TokenizerModel OpenSharpModel(string fileName) {
             FileStream fileStream = null;
             try {
-                fileStream = Tests.OpenSample(fileName);
+                fileStream = Tests.OpenFile(fileName);
                 return new TokenizerModel(fileStream);
             } finally {
                 if (fileStream != null)
@@ -117,7 +117,7 @@ namespace SharpNL.Tests.OpenNLP {
 
         [Test]
         public void TestCrossCompatibility() {
-            using (var data = Tests.OpenSample("/opennlp/tools/tokenize/token.train")) {
+            using (var data = Tests.OpenFile("/opennlp/tools/tokenize/token.train")) {
                 var samples = new TokenSampleStream(new PlainTextByLineStream(data));
                 var mlParams = new TrainingParameters();
                 mlParams.Set(TrainingParameters.IterationsParam, "100");

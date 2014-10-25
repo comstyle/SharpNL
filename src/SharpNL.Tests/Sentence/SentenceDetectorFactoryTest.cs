@@ -33,7 +33,7 @@ namespace SharpNL.Tests.Sentence {
     public class SentenceDetectorFactoryTest {
 
         private static IObjectStream<SentenceSample> CreateSampleStream() {
-            return new SentenceSampleStream(new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/sentdetect/Sentences.txt")));
+            return new SentenceSampleStream(new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/sentdetect/Sentences.txt")));
         }
 
         private static SentenceModel Train(SentenceDetectorFactory factory) {
@@ -41,7 +41,7 @@ namespace SharpNL.Tests.Sentence {
         }
 
         private static Dic LoadAbbDictionary() {
-            return new Dic(Tests.OpenSample("opennlp/tools/sentdetect/abb.xml"));
+            return new Dic(Tests.OpenFile("opennlp/tools/sentdetect/abb.xml"));
         }
 
         [Test]

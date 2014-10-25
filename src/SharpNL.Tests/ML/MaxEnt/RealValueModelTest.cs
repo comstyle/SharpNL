@@ -30,8 +30,8 @@ namespace SharpNL.Tests.ML.MaxEnt {
 
         [Test]
         public void TestRealValuedWeightsVsRepeatWeighting() {
-            var rvfes1 = new RealValueFileEventStream(Tests.OpenSample("opennlp/data/maxent/real-valued-weights-training-data.txt"));
-            var rvfes2 = new FileEventStream(Tests.OpenSample("opennlp/data/maxent/repeat-weighting-training-data.txt"));
+            var rvfes1 = new RealValueFileEventStream(Tests.OpenFile("opennlp/data/maxent/real-valued-weights-training-data.txt"));
+            var rvfes2 = new FileEventStream(Tests.OpenFile("opennlp/data/maxent/repeat-weighting-training-data.txt"));
 
             var realModel = GIS.TrainModel(100, new OnePassRealValueDataIndexer(rvfes1, 1));
             var repeatModel = GIS.TrainModel(100, new OnePassRealValueDataIndexer(rvfes2, 1));

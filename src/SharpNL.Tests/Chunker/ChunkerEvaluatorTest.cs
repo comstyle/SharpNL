@@ -34,11 +34,11 @@ namespace SharpNL.Tests.Chunker {
             using (
                 var predictedSample =
                     new DummyChunkSampleStream(
-                        new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/chunker/output.txt")), true))
+                        new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/chunker/output.txt")), true))
             using (
                 var expectedSample =
                     new DummyChunkSampleStream(
-                        new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/chunker/output.txt")), false)) {
+                        new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/chunker/output.txt")), false)) {
                 var dummyChunker = new DummyChunker(predictedSample);
 
                 //var stream = new ByteArrayOutputStream();
@@ -59,11 +59,11 @@ namespace SharpNL.Tests.Chunker {
             using (
                 var predictedSample =
                     new DummyChunkSampleStream(
-                        new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/chunker/output.txt")), true))
+                        new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/chunker/output.txt")), true))
             using (
                 var expectedSample =
                     new DummyChunkSampleStream(
-                        new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/chunker/output.txt")), true)) {
+                        new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/chunker/output.txt")), true)) {
                 var dummyChunker = new DummyChunker(predictedSample);
 
                 var evaluator = new ChunkerEvaluator(dummyChunker);

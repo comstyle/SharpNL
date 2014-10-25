@@ -30,7 +30,7 @@ namespace SharpNL.Tests.Sentence {
 
         [Test]
         public void TestSentenceDetector() {
-            using (var file = Tests.OpenSample("/opennlp/tools/sentdetect/Sentences.txt")) {
+            using (var file = Tests.OpenFile("/opennlp/tools/sentdetect/Sentences.txt")) {
 
                 var mlParams = new TrainingParameters();
 
@@ -51,7 +51,7 @@ namespace SharpNL.Tests.Sentence {
 
         [Test]
         public void TestWithOpenNLPModel() {
-            using (var file = Tests.OpenSample("/opennlp/models/en-sent.bin")) {
+            using (var file = Tests.OpenFile("/opennlp/models/en-sent.bin")) {
 
                 var model = new SentenceModel(file);
                 EvalSentences(new SentenceDetectorME(model));

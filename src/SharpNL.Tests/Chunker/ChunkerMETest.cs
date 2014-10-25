@@ -48,7 +48,7 @@ namespace SharpNL.Tests.Chunker {
         };
 
         internal static ChunkSampleStream CreateSampleStream() {
-            return new ChunkSampleStream(new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/chunker/test.txt")));
+            return new ChunkSampleStream(new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/chunker/test.txt")));
         }
 
         [TestFixtureSetUp]
@@ -117,7 +117,7 @@ namespace SharpNL.Tests.Chunker {
         [Test]
         public void TestTokenProbMinScoreOpenNLP() {
 
-            var model = new ChunkerModel(Tests.OpenSample("opennlp/models/en-chunker.bin"));
+            var model = new ChunkerModel(Tests.OpenFile("opennlp/models/en-chunker.bin"));
 
             Assert.NotNull(model);
 

@@ -47,7 +47,7 @@ namespace SharpNL.Tests.Tokenize {
         }
 
         public static TokenizerModel CreateMaxentTokenModel() {
-            using (var data = Tests.OpenSample("/opennlp/tools/tokenize/token.train")) {
+            using (var data = Tests.OpenFile("/opennlp/tools/tokenize/token.train")) {
                 var samples = new TokenSampleStream(new PlainTextByLineStream(data));
                 var mlParams = new TrainingParameters();
                 mlParams.Set(TrainingParameters.IterationsParam, "100");

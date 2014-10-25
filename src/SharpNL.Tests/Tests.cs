@@ -7,7 +7,7 @@ namespace SharpNL.Tests {
 
         internal static string resourcesPath = @"../../../../resources/";
 
-        public static FileStream OpenSample(string fileName) {
+        public static FileStream OpenFile(string fileName) {
 
             string path = Directory.GetCurrentDirectory();
 

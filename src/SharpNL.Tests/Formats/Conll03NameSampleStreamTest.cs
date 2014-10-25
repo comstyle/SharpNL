@@ -35,7 +35,7 @@ namespace SharpNL.Tests.Formats {
         private static IObjectStream<NameSample> OpenData(CoNLL03NameSampleStream.Language language, string name) {
             return new CoNLL03NameSampleStream(
                 language,
-                Tests.OpenSample("opennlp/tools/formats/" + name),
+                Tests.OpenFile("opennlp/tools/formats/" + name),
                 CoNLL.Types.PersonEntities);
         }
 

@@ -10,7 +10,7 @@ namespace SharpNL.Tests.Sentence {
 
         [Test]
         public void TestStream() {
-            using (var file = Tests.OpenSample("/opennlp/tools/sentdetect/Sentences.txt")) {
+            using (var file = Tests.OpenFile("/opennlp/tools/sentdetect/Sentences.txt")) {
                 var stream = new SentenceSampleStream(new PlainTextByLineStream(file));
 
                 var sample = stream.Read();

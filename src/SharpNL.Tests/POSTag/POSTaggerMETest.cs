@@ -31,7 +31,7 @@ namespace SharpNL.Tests.POSTag {
     public class POSTaggerMETest {
 
         internal static IObjectStream<POSSample> CreateSampleStream() {
-            return new WordTagSampleStream(Tests.OpenSample("opennlp/tools/postag/AnnotatedSentences.txt"));
+            return new WordTagSampleStream(Tests.OpenFile("opennlp/tools/postag/AnnotatedSentences.txt"));
         }
 
         internal static POSModel TrainPOSModel(ModelType type = ModelType.Maxent) {

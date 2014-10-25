@@ -30,7 +30,7 @@ namespace SharpNL.Tests.Parser.Lang.en {
         [Test]
         public void TestSerialization() {
             var headRulesOriginal =
-                new HeadRules(new StreamReader(Tests.OpenSample("/opennlp/tools/parser/en_head_rules")));
+                new HeadRules(new StreamReader(Tests.OpenFile("/opennlp/tools/parser/en_head_rules")));
 
             using (var data = new MemoryStream()) {
                 headRulesOriginal.Serialize(new StreamWriter(data));

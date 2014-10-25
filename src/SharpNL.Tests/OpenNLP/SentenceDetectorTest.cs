@@ -40,7 +40,7 @@ namespace SharpNL.Tests.OpenNLP {
         }
 
         private static SharpModel OpenSharpModel() {
-            return new SharpModel(Tests.OpenSample("opennlp/models/en-sent.bin"));
+            return new SharpModel(Tests.OpenFile("opennlp/models/en-sent.bin"));
         }
 
 
@@ -144,7 +144,7 @@ namespace SharpNL.Tests.OpenNLP {
 
         [Test]
         public void TestEverything() {
-            using (var file = Tests.OpenSample("/opennlp/tools/sentdetect/Sentences.txt")) {
+            using (var file = Tests.OpenFile("/opennlp/tools/sentdetect/Sentences.txt")) {
 
                 var mlParams = new TrainingParameters();
 

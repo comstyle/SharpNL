@@ -33,7 +33,7 @@ namespace SharpNL.Tests.NameFind {
         private static IObjectStream<NameSample> CreateSample() {
             return
                 new NameSampleDataStream(
-                    new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/namefind/AnnotatedSentences.txt"),
+                    new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentences.txt"),
                         "ISO-8859-1"));
         }
 

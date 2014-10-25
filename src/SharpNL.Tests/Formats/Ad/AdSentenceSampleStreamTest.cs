@@ -33,7 +33,7 @@ namespace SharpNL.Tests.Formats.Ad {
 
         [TestFixtureSetUp]
         public void Setup() {
-            var file = Tests.OpenSample("/opennlp/tools/formats/ad.sample");
+            var file = Tests.OpenFile("/opennlp/tools/formats/ad.sample");
 
             try {
                 samples = new List<SentenceSample>();

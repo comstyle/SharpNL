@@ -33,7 +33,7 @@ namespace SharpNL.Tests.DocumentCategorizer {
         private static IObjectStream<DocumentSample> CreateSampleStream() {
             return
                 new DocumentSampleStream(
-                    new PlainTextByLineStream(Tests.OpenSample("opennlp/tools/doccat/DoccatSample.txt")));
+                    new PlainTextByLineStream(Tests.OpenFile("opennlp/tools/doccat/DoccatSample.txt")));
         }
 
         private static DocumentCategorizerModel Train(DocumentCategorizerFactory factory = null) {

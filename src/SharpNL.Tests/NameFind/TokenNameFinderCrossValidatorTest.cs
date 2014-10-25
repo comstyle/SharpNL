@@ -33,7 +33,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test]
         public void TestWithNullResources() {
-            using (var file = Tests.OpenSample("opennlp/tools/namefind/AnnotatedSentences.txt")) {
+            using (var file = Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentences.txt")) {
                 var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
 
                 var parameters = new TrainingParameters();
@@ -52,7 +52,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test]
         public void TestWithNameEvaluationErrorListener() {
-            using (var file = Tests.OpenSample("opennlp/tools/namefind/AnnotatedSentences.txt")) {
+            using (var file = Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentences.txt")) {
                 var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
 
                 var parameters = new TrainingParameters();

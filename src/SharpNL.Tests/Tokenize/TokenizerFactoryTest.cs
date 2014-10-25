@@ -32,7 +32,7 @@ namespace SharpNL.Tests.Tokenize {
     internal class TokenizerFactoryTest {
         private static IObjectStream<TokenSample> CreateSampleStream() {
             return
-                new TokenSampleStream(new PlainTextByLineStream(Tests.OpenSample("/opennlp/tools/tokenize/token.train")));
+                new TokenSampleStream(new PlainTextByLineStream(Tests.OpenFile("/opennlp/tools/tokenize/token.train")));
         }
 
         private static TokenizerModel Train(TokenizerFactory factory) {
@@ -40,7 +40,7 @@ namespace SharpNL.Tests.Tokenize {
         }
 
         private static Dict LoadAbbDictionary() {
-            using (var data = Tests.OpenSample("opennlp/tools/sentdetect/abb.xml")) return new Dict(data);
+            using (var data = Tests.OpenFile("opennlp/tools/sentdetect/abb.xml")) return new Dict(data);
         }
 
         [Test]

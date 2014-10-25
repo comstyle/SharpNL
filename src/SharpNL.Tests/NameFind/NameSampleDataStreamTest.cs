@@ -42,7 +42,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test]
         public void TestWithoutNameTypes() {
-            using (var file = Tests.OpenSample("opennlp/tools/namefind/AnnotatedSentences.txt")) {
+            using (var file = Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentences.txt")) {
                 var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
                 var expectedNames = new[] {
                     "Alan McKennedy", "Julie", "Marie Clara",
@@ -134,7 +134,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test]
         public void TestWithNameTypes() {
-            using (var file = Tests.OpenSample("opennlp/tools/namefind/voa1.train")) {
+            using (var file = Tests.OpenFile("opennlp/tools/namefind/voa1.train")) {
                 var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
                 var names = new Dictionary<string, List<string>>();
                 var spans = new Dictionary<string, List<Span>>();
@@ -275,7 +275,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test]
         public void TestHtmlNameSampleParsing() {
-            using (var file = Tests.OpenSample("opennlp/tools/namefind/html1.train")) {
+            using (var file = Tests.OpenFile("opennlp/tools/namefind/html1.train")) {
                 var ds = new NameSampleDataStream(new PlainTextByLineStream(file));
 
                 NameSample ns = ds.Read();

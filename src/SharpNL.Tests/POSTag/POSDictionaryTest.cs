@@ -30,7 +30,7 @@ namespace SharpNL.Tests.POSTag {
     internal class POSDictionaryTest {
 
         private static POSDictionary LoadDictionary(string fileName) {
-            using (var file = Tests.OpenSample(fileName)) {
+            using (var file = Tests.OpenFile(fileName)) {
                 return new POSDictionary(file);             
             }
         }

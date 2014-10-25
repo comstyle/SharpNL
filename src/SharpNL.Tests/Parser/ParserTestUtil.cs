@@ -30,18 +30,18 @@ namespace SharpNL.Tests.Parser {
 
 
         internal static IObjectStream<Parse> CreateParseTestStream() {
-            return new ParseSampleStream(new PlainTextByLineStream(Tests.OpenSample("/opennlp/tools/parser/test.parse")));
+            return new ParseSampleStream(new PlainTextByLineStream(Tests.OpenFile("/opennlp/tools/parser/test.parse")));
         }
 
         internal static IObjectStream<Parse> CreateParseTrainStream() {
-            return new ParseSampleStream(new PlainTextByLineStream(Tests.OpenSample("/opennlp/tools/parser/parser.train")));
+            return new ParseSampleStream(new PlainTextByLineStream(Tests.OpenFile("/opennlp/tools/parser/parser.train")));
         }
 
         internal static AbstractHeadRules CreateTestHeadRules() {
 
             AbstractHeadRules rules;
 
-            using (var file = Tests.OpenSample("/opennlp/tools/parser/en_head_rules")) {
+            using (var file = Tests.OpenFile("/opennlp/tools/parser/en_head_rules")) {
 
                 Assert.NotNull(file);
 

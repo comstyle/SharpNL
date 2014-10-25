@@ -27,7 +27,7 @@ namespace SharpNL.Tests.Tokenize {
     [TestFixture]
     internal class DictionaryDetokenizerTest {
         internal static IDetokenizer CreateLatinDetokenizer() {
-            using (var dictIn = Tests.OpenSample("/opennlp/tools/tokenize/latin-detokenizer.xml")) {
+            using (var dictIn = Tests.OpenFile("/opennlp/tools/tokenize/latin-detokenizer.xml")) {
                 var dict = new DetokenizationDictionary(dictIn);
                 return new DictionaryDetokenizer(dict);
             }

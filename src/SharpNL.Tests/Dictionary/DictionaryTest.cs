@@ -30,7 +30,7 @@ namespace SharpNL.Tests.Dictionary {
 
         [Test]
         public void TestOpenNLPDic() {
-            var dic = new SharpNL.Dictionary.Dictionary(Tests.OpenSample("opennlp/tools/dictionary/tags.tagdict"));
+            var dic = new SharpNL.Dictionary.Dictionary(Tests.OpenFile("opennlp/tools/dictionary/tags.tagdict"));
 
             Assert.NotNull(dic);
             Assert.AreEqual(7, dic.Count);

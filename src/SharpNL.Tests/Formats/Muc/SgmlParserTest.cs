@@ -34,7 +34,7 @@ namespace SharpNL.Tests.Formats.Muc {
         [Test]
         public void TestParse1() {
 
-            using (var data = Tests.OpenSample("opennlp/tools/formats/muc/parsertest1.sgml")) {
+            using (var data = Tests.OpenFile("opennlp/tools/formats/muc/parsertest1.sgml")) {
 
                 var parser = new SgmlParser();
                 parser.Parse(new StreamReader(data), new DummyContentHandler());
