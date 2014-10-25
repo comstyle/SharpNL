@@ -223,13 +223,14 @@ namespace SharpNL.Sentence {
                 throw new InvalidFormatException(TOKEN_END_PROPERTY + " is a mandatory property!");
             }
 
-            var abbreviationsEntry = ArtifactProvider.Manifest[ABBREVIATIONS_ENTRY_NAME];
-            if (abbreviationDictionary == null || !(abbreviationsEntry is Dic)) {
+            var abbreviationsEntry = ArtifactProvider.GetArtifact<Dic>(ABBREVIATIONS_ENTRY_NAME);
+            if (abbreviationsEntry == null) {
                 throw new InvalidFormatException(
                     "Abbreviations dictionary has wrong type, needs to be of type Dictionary!");
             }
         }
 
         #endregion
+
     }
 }
