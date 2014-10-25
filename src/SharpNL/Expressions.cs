@@ -30,14 +30,16 @@ namespace SharpNL {
     /// </summary>
     internal static class Expressions {
         public enum Expression {
-            Space
+            Space,
+            Underline
         }
 
         private static readonly Dictionary<Expression, Regex> lib;
 
         static Expressions() {
             lib = new Dictionary<Expression, Regex> {
-                {Expression.Space, new Regex("\\s+", RegexOptions.Compiled)}
+                {Expression.Space, new Regex("\\s+", RegexOptions.Compiled)},
+                {Expression.Underline, new Regex("[_]+", RegexOptions.Compiled)}
             };
         }
 
@@ -50,6 +52,10 @@ namespace SharpNL {
             return tokens;
         }
 
+        public static string RegExReplace(this string value, Expression expression, string replacement) {
+            return lib[expression].Replace(value, replacement);
+        }
+
         public static string RegExMatch(this string value, string pattern, int group = 1, RegexOptions options = RegexOptions.IgnoreCase) {
             var regex = new Regex(pattern, options);
             var match = regex.Match(value);
@@ -58,5 +64,7 @@ namespace SharpNL {
             }
             return null;
         }
+
+        
     }
 }
