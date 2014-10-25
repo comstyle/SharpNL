@@ -168,7 +168,8 @@ namespace SharpNL.Dictionary {
                     if (reader.NodeType == XmlNodeType.Element) {
                         switch (reader.Name) {
                             case "dictionary":
-                                IsCaseSensitive = reader.GetAttribute("case_sensitive") == "true";
+                                var caseSens = reader.GetAttribute("case_sensitive");
+                                IsCaseSensitive = caseSens == null || caseSens == "true";
                                 break;
                             case "entry":
                                 /*
