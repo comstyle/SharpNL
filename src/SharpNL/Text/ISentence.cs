@@ -36,7 +36,7 @@ namespace SharpNL.Text {
         /// Gets the sentence chunks.
         /// </summary>
         /// <value>The sentence chunks.</value>
-        IReadOnlyList<IChunk> Chunks { get; }
+        IReadOnlyList<IChunk> Chunks { get; set; }
         #endregion
 
         #region . Document .
@@ -76,7 +76,7 @@ namespace SharpNL.Text {
         /// Gets the parsed sentence.
         /// </summary>
         /// <value>The parsed sentence.</value>
-        Parse Parse { get; }
+        Parse Parse { get; set; }
         #endregion
 
         #region . Start .
@@ -100,7 +100,7 @@ namespace SharpNL.Text {
         /// Gets the sentence tokens.
         /// </summary>
         /// <value>The sentence tokens.</value>
-        IReadOnlyList<IToken> Tokens { get; }
+        IReadOnlyList<IToken> Tokens { get; set; }
         #endregion
 
         #region . TokensProbabilty .
@@ -108,7 +108,7 @@ namespace SharpNL.Text {
         /// Gets the tokens probability.
         /// </summary>
         /// <value>The tokens probability.</value>
-        double TokensProbability { get; }
+        double TokensProbability { get; set; }
         #endregion
 
         #endregion

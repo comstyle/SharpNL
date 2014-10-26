@@ -29,6 +29,8 @@ namespace SharpNL.Text {
     /// </summary>
     public class Entity : IEntity {
 
+        #region + Constructors .
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Entity" /> class.
         /// </summary>
@@ -41,11 +43,39 @@ namespace SharpNL.Text {
 
             CoveredText = span.GetCoveredText(tokens);
 
-            for (int i = 0; i < span.Start; i++)
+            for (var i = 0; i < span.Start; i++)
                 Start += tokens[i].Length + 1;           
 
             Span = span;
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Entity"/> class.
+        /// </summary>
+        /// <param name="span">The span.</param>
+        /// <param name="sentence">The sentence.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="span"/>
+        /// or
+        /// <paramref name="sentence"/>
+        /// </exception>
+        public Entity(Span span, Sentence sentence) {
+            if (span == null)
+                throw new ArgumentNullException("span");
+
+            if (sentence == null)
+                throw new ArgumentNullException("sentence");
+
+            CoveredText = span.GetCoveredText(sentence.Tokens);
+
+            for (var i = 0; i < span.Start; i++)
+                Start += sentence.Tokens[i].Length + 1;
+
+            Span = span;
+        }
+
+
+        #endregion
 
         #region . Probability .
 

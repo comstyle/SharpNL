@@ -29,6 +29,7 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using SharpNL.Text;
 using SharpNL.Utility;
 using SharpNL.Utility.Model;
 
@@ -124,6 +125,8 @@ namespace SharpNL.Project {
 
             nodes = new List<ProjectNode>();     
             problems = new List<ProjectProblem>();
+
+            Factory = DefaultTextFactory.Instance;
         }
 
         private void ManagerChanged(object sender, ModelInfoEventArgs modelInfoEventArgs) {
@@ -131,6 +134,15 @@ namespace SharpNL.Project {
         }
 
         #region + Properties .
+
+        #region . Factory .
+        /// <summary>
+        /// Gets or sets the text factory.
+        /// </summary>
+        /// <value>The text factory.</value>
+        [Description("The factory responsible to create the resources."), Browsable(false)]
+        public ITextFactory Factory { get; set; }
+        #endregion
 
         #region . Manager .
         /// <summary>
@@ -502,6 +514,9 @@ namespace SharpNL.Project {
             
             if (nodes.Count == 0)
                 problems.Add(new ProjectProblem(this, "The project has nothing to execute."));
+
+            if (Factory == null)
+                problems.Add(new ProjectProblem(this, "The factory is not specified."));
 
             if (problems.Count > 0)
                 goto done;

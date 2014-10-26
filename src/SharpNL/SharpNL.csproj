@@ -131,9 +131,9 @@
     <Compile Include="MonitorExceptionEventArgs.cs" />
     <Compile Include="MonitorMessageEventArgs.cs" />
     <Compile Include="Parser\IHeadRules.cs" />
+    <Compile Include="Text\DefaultTextFactory.cs" />
     <Compile Include="Text\Entity.cs" />
     <Compile Include="Text\IEntity.cs" />
-    <Compile Include="Text\IEntityResolver.cs" />
     <Compile Include="NameFind\RegexNameFinder.cs" />
     <Compile Include="NameFind\TokenNameFinderCrossValidator.cs" />
     <Compile Include="NGram\NGramGenerator.cs" />
@@ -156,6 +156,7 @@
     <Compile Include="Stemmer\Snowball\RussianStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SpanishStemmer.cs" />
     <Compile Include="Stemmer\Snowball\SwedishStemmer.cs" />
+    <Compile Include="Text\ITextFactory.cs" />
     <Compile Include="Utility\ModelManager.cs" />
     <Compile Include="Utility\Model\ModelInfo.cs" />
     <Compile Include="Utility\Model\ModelInfoEventArgs.cs" />

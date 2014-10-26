@@ -44,7 +44,7 @@ namespace SharpNL.Text {
         /// Gets the document sentences.
         /// </summary>
         /// <value>The document sentences.</value>
-        IReadOnlyList<ISentence> Sentences { get; }
+        IReadOnlyList<ISentence> Sentences { get; set; }
 
     }
 }

@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Collections.Generic;
 using System.Xml;
 using System.ComponentModel;
 
@@ -103,10 +104,15 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            if (string.IsNullOrEmpty(Model))
-                return new[] { new ProjectProblem(this, "The Parser model is not specified.") };
+            var list = new List<ProjectProblem>();
 
-            return null;
+            if (Project.Factory == null)
+                list.Add(new ProjectProblem("The factory is not specified in the project."));
+
+            if (string.IsNullOrEmpty(Model))
+                list.Add(new ProjectProblem(this, "The parser model is not specified."));
+
+            return list.Count > 0 ? list.ToArray() : null;
         }
         #endregion
 
@@ -116,10 +122,10 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         protected override object[] Execute() {
 
-            Document doc = null;
+            IDocument doc = null;
 
             if (Parent != null)
-                doc = Parent.GetOutput<Document>();
+                doc = Parent.GetOutput<IDocument>();
 
             if (doc == null)
                 throw new NotSupportedException("Unable to retrieve the document from the parent node.");
@@ -135,12 +141,9 @@ namespace SharpNL.Project.Tasks {
                 var parse = ParserTool.ParseLine(sentence.Text, parser, 1);
 
                 if (parse.Length == 1) {
-                    sentence.SetParse(parse[0]);
+                    sentence.Parse = parse[0];
                 }
             }
-            
-
-            doc.Parsed = true;
 
             LogMessage(string.Format("{0} parsed sentences", sentences.Count));
 

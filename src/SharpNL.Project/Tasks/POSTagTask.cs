@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml;
 using SharpNL.POSTag.Language.pt;
@@ -89,22 +90,21 @@ namespace SharpNL.Project.Tasks {
         /// Executes the derived node task.
         /// </summary>
         protected override object[] Execute() {
-             Document doc = null;
+             IDocument doc = null;
 
             if (Parent != null)
-                doc = Parent.GetOutput<Document>();
+                doc = Parent.GetOutput<IDocument>();
 
             if (doc == null)
                 throw new NotSupportedException("Unable to retrieve the document from the parent node.");
-
-            if (!doc.Tokenized)
-                throw new InvalidOperationException("The document is not tokenized.");
-
 
             var sentences = doc.Sentences;
 
             if (sentences == null || sentences.Count == 0)
                 throw new InvalidOperationException("The sentences are not detected on the specified document.");
+
+            if (sentences[0].Tokens == null)
+                throw new InvalidOperationException("The document is not tokenized.");
 
             var posModel = Project.Manager.GetModel<POSModel>(Model);
             var tagger = new POSTaggerME(posModel);
@@ -136,8 +136,6 @@ namespace SharpNL.Project.Tasks {
 
             }
 
-            doc.PoS = true;
-
             LogMessage(string.Format("{0} analyzed sentences - {1} tags marked.", sentences.Count, count));
 
             return new object[] {doc};
@@ -151,7 +149,7 @@ namespace SharpNL.Project.Tasks {
             var finalProb = 0d;
 
             for (var i = 0; i < probs.Length; i++)
-                finalProb += probs[i]; //Math.Log(probs[i]);
+                finalProb += probs[i];
 
             if (probs.Length > 0)
                 finalProb = finalProb / probs.Length;
@@ -166,10 +164,15 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            if (string.IsNullOrEmpty(Model))
-                return new[] { new ProjectProblem(this, "The POS model is not specified.") };
+            var list = new List<ProjectProblem>();
 
-            return null;
+            if (Project.Factory == null)
+                list.Add(new ProjectProblem("The factory is not specified in the project."));
+
+            if (string.IsNullOrEmpty(Model))
+                list.Add(new ProjectProblem(this, "The POS model is not specified."));
+
+            return list.Count > 0 ? list.ToArray() : null;
         }
         #endregion
 

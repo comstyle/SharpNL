@@ -20,8 +20,10 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using SharpNL.Parser;
 
 
@@ -57,14 +59,18 @@ namespace SharpNL.Text {
         }
 
         #region + Chunks .
-
         /// <summary>
         /// Gets the sentence chunks.
         /// </summary>
         /// <value>The sentence chunks.</value>
-        public IReadOnlyList<Chunk> Chunks { get; internal set; }
+        public IReadOnlyList<Chunk> Chunks { get; protected set; }
         IReadOnlyList<IChunk> ISentence.Chunks {
             get { return Chunks; }
+            set {
+                Chunks = value != null
+                    ? value.Cast<Chunk>().ToList().AsReadOnly()
+                    : null;
+            }
         }
 
         #endregion
@@ -109,7 +115,7 @@ namespace SharpNL.Text {
         /// Gets the parsed sentence.
         /// </summary>
         /// <value>The parsed sentence.</value>
-        public Parse Parse { get; protected set; }
+        public Parse Parse { get; set; }
         #endregion
 
         #region . Start .
@@ -147,10 +153,14 @@ namespace SharpNL.Text {
         /// Gets the sentence tokens.
         /// </summary>
         /// <value>The sentence tokens.</value>
-        public IReadOnlyList<Token> Tokens { get; internal set; }
-
+        public IReadOnlyList<Token> Tokens { get; protected set; }
         IReadOnlyList<IToken> ISentence.Tokens {
             get { return Tokens; }
+            set {
+                Tokens = value != null
+                    ? value.Cast<Token>().ToList().AsReadOnly()
+                    : null;
+            }
         }
 
         #endregion
@@ -161,7 +171,7 @@ namespace SharpNL.Text {
         /// Gets the tokens probability.
         /// </summary>
         /// <value>The tokens probability.</value>
-        public double TokensProbability { get; internal set; }
+        public double TokensProbability { get; set; }
 
         #endregion
 

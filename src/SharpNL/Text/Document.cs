@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -95,7 +96,22 @@ namespace SharpNL.Text {
         /// </summary>
         /// <value><c>true</c> if this document has PoS parsed; otherwise, <c>false</c>.</value>
         [Description("Determines if the document has the Part-of-Speech parsed.")]
-        public bool PoS { get; internal protected set; }
+        public bool PoS {
+            get {
+                if (Sentences == null || Sentences.Count == 0)
+                    return false;
+
+                foreach (var sentence in Sentences) {
+                    if (sentence.Tokens == null)
+                        return false;
+
+                    if (sentence.Tokens.Count > 0 && (!string.IsNullOrEmpty(sentence.Tokens[0].POSTag) || !sentence.Tokens[0].POSTagProbability.Equals(0d)))
+                        return true;
+                }
+
+                return false;
+            }
+        }
         #endregion
 
         #region . Parsed .
@@ -104,7 +120,9 @@ namespace SharpNL.Text {
         /// </summary>
         /// <value><c>true</c> if parsed; otherwise, <c>false</c>.</value>
         [Description("Determines if the document is parsed.")]
-        public bool Parsed { get; internal protected set; }
+        public bool Parsed {
+            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Parse != null; } 
+        }
         #endregion
 
         #region . Sentences .
@@ -113,10 +131,15 @@ namespace SharpNL.Text {
         /// </summary>
         /// <value>The document sentences.</value>
         [Description("The document sentences.")]
-        public IReadOnlyList<Sentence> Sentences { get; internal set; }
+        public IReadOnlyList<Sentence> Sentences { get; private set; }
 
         IReadOnlyList<ISentence> IDocument.Sentences {
             get { return Sentences; }
+            set {
+                Sentences = value != null
+                    ? value.Cast<Sentence>().ToList().AsReadOnly()
+                    : null;
+            }
         }
         #endregion
 
@@ -134,7 +157,9 @@ namespace SharpNL.Text {
         /// Gets a value indicating whether this <see cref="Document"/> is tokenized.
         /// </summary>
         /// <value><c>true</c> if tokenized; otherwise, <c>false</c>.</value>
-        public bool Tokenized { get; internal protected set; }
+        public bool Tokenized {
+            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Tokens != null; }
+        }
         #endregion
 
         #endregion

@@ -47,7 +47,7 @@ namespace SharpNL.Text {
         /// Gets the chunk tag.
         /// </summary>
         /// <value>The chunk tag.</value>
-        public string ChunkTag { get; internal set; }
+        public string ChunkTag { get; set; }
         #endregion
 
         #region . End .
@@ -105,7 +105,7 @@ namespace SharpNL.Text {
         /// Gets the POSTag.
         /// </summary>
         /// <value>The POSTag.</value>
-        public string POSTag { get; internal set; }
+        public string POSTag { get; set; }
         #endregion
 
         #region . POSTagProbability .
@@ -113,7 +113,7 @@ namespace SharpNL.Text {
         /// Gets the POSTag probability.
         /// </summary>
         /// <value>The POSTag probability.</value>
-        public double POSTagProbability { get; internal set; }
+        public double POSTagProbability { get; set; }
         #endregion
 
         #region . Probability .
@@ -121,7 +121,7 @@ namespace SharpNL.Text {
         /// Gets the token probability.
         /// </summary>
         /// <value>The token probability.</value>
-        public double Probability { get; internal set; }
+        public double Probability { get; set; }
         #endregion
 
         #region . Start .

@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Xml;
 using SharpNL.Chunker;
 using SharpNL.Project.Design;
@@ -94,16 +93,13 @@ namespace SharpNL.Project.Tasks {
         /// Executes the derived node task.
         /// </summary>
         protected override object[] Execute() {
-            Document doc = null;
+            IDocument doc = null;
 
             if (Parent != null)
-                doc = Parent.GetOutput<Document>();
+                doc = Parent.GetOutput<IDocument>();
    
             if (doc == null)
                 throw new NotSupportedException("Unable to retrieve the document from the parent node.");
-
-            if (!doc.Tokenized)
-                throw new InvalidOperationException("The document is not tokenized.");
 
 
             var chunkerModel = Project.Manager.GetModel<ChunkerModel>(Model);
@@ -128,14 +124,19 @@ namespace SharpNL.Project.Tasks {
                 }
 
                 var chunkSpans = ChunkSample.PhrasesAsSpanList(tokStr, tags, chunkTags);
-                var chunks = new List<Chunk>(chunkSpans.Length);
-                chunks.AddRange(
-                    chunkSpans.Select(span => new Chunk(sentence, span))
-                    );
+                var chunks = new List<IChunk>(chunkSpans.Length);
+
+                foreach (var span in chunkSpans) {
+                    var chunk = Project.Factory.CreateChunk(sentence, span);
+                    if (chunk == null)
+                        continue;
+                    
+                    chunks.Add(chunk);
+                }
 
                 count += chunks.Count;
 
-                sentence.Chunks = new ReadOnlyCollection<Chunk>(chunks);
+                sentence.Chunks = new ReadOnlyCollection<IChunk>(chunks);
             }
 
             LogMessage(string.Format(" {0} sentences analyzed - {1} chunks found.", doc.Text.Length, count));
@@ -153,10 +154,15 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            if (string.IsNullOrEmpty(Model))
-                return new[] { new ProjectProblem(this, "The chunker model is not specified.") };
+            var list = new List<ProjectProblem>();
 
-            return null;
+            if (Project.Factory == null)
+                list.Add(new ProjectProblem("The factory is not specified in the project."));
+
+            if (string.IsNullOrEmpty(Model))
+               list.Add(new ProjectProblem(this, "The chunker model is not specified."));
+
+            return list.Count > 0 ? list.ToArray() : null;
         }
         #endregion
 

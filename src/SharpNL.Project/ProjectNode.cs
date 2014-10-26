@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using SharpNL.Utility;
@@ -278,7 +277,13 @@ namespace SharpNL.Project {
         /// <typeparam name="T">The desired output type</typeparam>
         /// <returns>The output type of this node. If the requested type is not supported, throw an <see cref="InvalidOperationException"/>.</returns>
         public T GetOutput<T>() {
-            return (T)outputs.FirstOrDefault(o => o.GetType() == typeof(T));
+            foreach (var output in outputs) {
+                if (output is T) {
+                    return (T) output;
+                }
+            }
+
+            return default(T);
         }
         #endregion
 

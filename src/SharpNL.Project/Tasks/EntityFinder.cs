@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Xml;
 using SharpNL.NameFind;
 using SharpNL.Project.Design;
@@ -35,8 +34,6 @@ namespace SharpNL.Project.Tasks {
     /// <summary>
     /// The <see cref="EntityFinderTask"/> class searches for entities in the document sentences 
     /// using a <see cref="ITokenNameFinder"/>.
-    /// 
-    /// Each result is processed by the specified <see cref="IEntityResolver"/> resolver.
     /// </summary>
     public class EntityFinderTask : ProjectTask {
         //private readonly IEntityResolver entityResolver;
@@ -83,15 +80,6 @@ namespace SharpNL.Project.Tasks {
         }
         #endregion
 
-        #region . Resolver .
-        /// <summary>
-        /// Gets or sets the entity resolver.
-        /// </summary>
-        /// <value>The entity resolver.</value>
-        [DefaultValue(null)]
-        public IEntityResolver Resolver { get; set; }
-        #endregion
-
         #region . Execute .
 
         /// <summary>
@@ -120,26 +108,21 @@ namespace SharpNL.Project.Tasks {
             foreach (var sentence in sentences) {
 
                 Span[] spans;
-                string[] tokens = TextUtils.TokensToString(sentence.Tokens);
+
+                var tokens = TextUtils.TokensToString(sentence.Tokens);
                 lock (nameFinder) {
                     spans = nameFinder.Find(tokens);
                 }
 
                 var entities = new List<IEntity>(spans.Length);
-                if (Resolver != null) {
-                    for (var i = 0; i < spans.Length; i++) {
-                        var e = Resolver.Resolve(doc.Language, sentence, spans[i]);
-                        if (e != null) {
-                            count++;
-                            entities.Add(e);
-                        }                           
-                    }
-                    
-                } else {
-                    for (var i = 0; i < spans.Length; i++) {                       
-                        entities.Add(new Entity(spans[i], tokens));
-                        count++;
-                    }
+
+                foreach (var span in spans) {
+                    var entity = Project.Factory.CreateEntity(sentence, span);
+                    if (entity == null)
+                        continue;
+
+                    entities.Add(new Entity(span, tokens));
+                    count++;
                 }
 
                 sentence.Entities = entities.AsReadOnly();
@@ -167,10 +150,15 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            if (string.IsNullOrEmpty(Model))
-                return new[] { new ProjectProblem(this, "The namefinder model is not specified.") };
+            var list = new List<ProjectProblem>();
 
-            return null;
+            if (Project.Factory == null)
+                list.Add(new ProjectProblem(this, "The factory is not specified in the project."));
+
+            if (string.IsNullOrEmpty(Model))
+                list.Add(new ProjectProblem(this, "The namefinder model is not specified."));
+
+            return list.Count > 0 ? list.ToArray() : null;
         }
         #endregion
 
@@ -180,30 +168,18 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <param name="node">The xml node.</param>
         protected override void DeserializeTask(XmlNode node) {
-            if (node.Attributes != null) {
-                var attModel = node.Attributes["Model"];
-                if (attModel != null)
-                    Model = attModel.Value;
+            if (node.Attributes == null) 
+                return;
 
-                var attRes = node.Attributes["Resolver"];
-                if (attRes != null) {
-                    var type = Type.GetType(attRes.Value);
-                    if (type != null) {
-                        Resolver = (IEntityResolver)Activator.CreateInstance(type);
-                    }
-                }
-            }
+            var attModel = node.Attributes["Model"];
+            if (attModel != null)
+                Model = attModel.Value;
         }
         #endregion
 
         #region . SerializeTask .
         protected override void SerializeTask(XmlWriter writer) {
-
             writer.WriteAttributeString("Model", Model);
-
-            if (Resolver != null)
-                writer.WriteAttributeString("Resolver", Resolver.GetType().FullName);
-
         }
         #endregion
 

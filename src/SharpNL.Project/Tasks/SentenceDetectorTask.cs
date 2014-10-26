@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Xml;
 using SharpNL.Project.Design;
 using SharpNL.Sentence;
@@ -87,10 +86,10 @@ namespace SharpNL.Project.Tasks {
         /// Executes the derived node task.
         /// </summary>
         protected override object[] Execute() {
-            Document doc = null;
+            IDocument doc = null;
 
             if (Parent != null)
-                doc = Parent.GetOutput<Document>();
+                doc = Parent.GetOutput<IDocument>();
 
             if (doc == null)
                 throw new NotSupportedException("Unable to retrieve the document from the parent node.");
@@ -106,11 +105,15 @@ namespace SharpNL.Project.Tasks {
                 spans = sentenceDetector.SentPosDetect(doc.Text);
             }
 
-            var sentences = new List<Text.Sentence>(spans.Length);
-            sentences.AddRange(
-                spans.Select(span => new Text.Sentence(span.Start, span.End, doc))
-                );
-            doc.Sentences = new ReadOnlyCollection<Text.Sentence>(sentences);
+            var sentences = new List<ISentence>(spans.Length);
+            foreach (var span in spans) {
+                var s = Project.Factory.CreateSentence(span, doc);
+                if (s == null)
+                    continue;
+
+                sentences.Add(s);
+            }
+            doc.Sentences = new ReadOnlyCollection<ISentence>(sentences);
 
             LogMessage(string.Format(" {0} characters analyzed - {1} sentences found.", doc.Text.Length, spans.Length));
 
@@ -145,9 +148,15 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            return string.IsNullOrEmpty(Model)
-                ? new[] { new ProjectProblem(this, "No model selected.") } 
-                : null;
+            var list = new List<ProjectProblem>();
+
+            if (Project.Factory == null)
+                list.Add(new ProjectProblem("The factory is not specified in the project."));
+
+            if (string.IsNullOrEmpty(Model))
+                list.Add(new ProjectProblem(this, "The sentence model is not specified."));
+
+            return list.Count > 0 ? list.ToArray() : null;
         }
         #endregion
 

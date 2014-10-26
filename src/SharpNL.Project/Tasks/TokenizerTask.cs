@@ -111,10 +111,10 @@ namespace SharpNL.Project.Tasks {
         /// Executes the derived node task.
         /// </summary>
         protected override object[] Execute() {
-            Document doc = null;
+            IDocument doc = null;
 
             if (Parent != null)
-                doc = Parent.GetOutput<Document>();
+                doc = Parent.GetOutput<IDocument>();
 
             if (doc == null)
                 throw new NotSupportedException("Unable to retrieve the document from the parent node.");
@@ -142,19 +142,17 @@ namespace SharpNL.Project.Tasks {
                 }
 
                 count += spans.Length;
-                var tokens = new List<Token>(spans.Length);
+                var tokens = new List<IToken>(spans.Length);
 
                 // ReSharper disable once LoopCanBeConvertedToQuery
                 for (var i = 0; i < spans.Length; i++) {
-                    tokens.Add(new Token(spans[i].Start, spans[i].End, spans[i].GetCoveredText(text)) {
-                        Probability = probs[i]
-                    });
+                    var tok = Project.Factory.CreateToken(spans[i].Start, spans[i].End, spans[i].GetCoveredText(text), probs[i]);
+                    if (tok != null)
+                        tokens.Add(tok);                  
                 }
 
-                sentence.Tokens = new ReadOnlyCollection<Token>(tokens);
+                sentence.Tokens = new ReadOnlyCollection<IToken>(tokens);
             }
-
-            doc.Tokenized = true;
 
             LogMessage(string.Format("{0} analyzed sentences - {1} tokens found.", sentences.Count, count));
 
@@ -168,10 +166,15 @@ namespace SharpNL.Project.Tasks {
         /// </summary>
         /// <returns>A array containing the problems or a <c>null</c> value, if any.</returns>
         public override ProjectProblem[] GetProblems() {
-            if (string.IsNullOrEmpty(Model))
-                return new[] { new ProjectProblem(this, "The tokenizer model is not specified.") };
+            var list = new List<ProjectProblem>();
 
-            return null;
+            if (Project.Factory == null)
+                list.Add(new ProjectProblem("The factory is not specified in the project."));
+
+            if (string.IsNullOrEmpty(Model))
+                list.Add(new ProjectProblem(this, "The tokenizer model is not specified."));
+
+            return list.Count > 0 ? list.ToArray() : null;
         }
         #endregion
 
