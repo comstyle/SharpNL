@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -53,11 +54,13 @@ namespace SharpNL.Gui.Controls {
 
 #endif
 
+        #region . AppendText .
+
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void AppendText(string text, Color foreColor) {
 
 #if WIN
-            // prevent  and the stuppid auto scroll
+            // prevent  and the stupid auto scroll
             BeginUpdate();
 #endif
 
@@ -90,6 +93,31 @@ namespace SharpNL.Gui.Controls {
             }
 
         }
+
+        #endregion
+
+        public void Highlight(int start, int length, Color color) {
+            int sPos = 0;
+            Color sColor = Color.White;
+            try {
+                NativeMethods.LockWindowUpdate(Handle);
+                sPos = SelectionStart;
+
+                SelectionStart = start;
+                SelectionLength = length;
+                SelectionBackColor = color;
+
+            } finally {
+                SelectionStart = sPos;
+                SelectionLength = 0;
+                SelectionBackColor = sColor;
+                NativeMethods.LockWindowUpdate(IntPtr.Zero);
+            }
+
+
+
+        }
+
 
     }
 }

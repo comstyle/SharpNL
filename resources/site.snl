@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Project Name="">
+  <Models>
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-sent.bin" />
+  </Models>
+  <Nodes>
+    <Node Type="WebGetNode" url="http://en.wikipedia.org/wiki/Brazil" lang="en">
+      <Tasks>
+        <Task Type="SentenceDetectorTask" Model="en-sent" />
+      </Tasks>
+    </Node>
+  </Nodes>
+</Project>

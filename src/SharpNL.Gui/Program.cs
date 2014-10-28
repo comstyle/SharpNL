@@ -21,10 +21,13 @@
 //  
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using SharpNL.Gui.Forms;
 
@@ -41,21 +44,60 @@ namespace SharpNL.Gui {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
+        [STAThread, SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         private static void Main() {
-            LoadInfo();
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // handle errors in the gui
+            Application.ThreadException += OnThreadException;
+
+            // handle all the errors in the current app domain
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
+            LoadInfo();
+
             Application.Run(new frmMain());
         }
 
-        private static void LoadInfo() {
-            Lang = CultureInfo.CurrentCulture.Name;
-            
-            Encodings = Encoding.GetEncodings().Select(encodingInfo => encodingInfo.Name).ToArray();
-
-
+        private static void OnThreadException(object sender, ThreadExceptionEventArgs args) {
+            var form = new frmException(args.Exception);
+            form.ShowDialog();
         }
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs args) {
+            var ex = args.ExceptionObject as Exception;
+            if (ex != null) {
+                var form = new frmException(ex);
+                form.ShowDialog();
+            }
+        }
+
+        internal static string Path {
+            get {
+                return System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            }
+        }
+
+        private static void LoadInfo() {
+            Lang = "en";
+            
+            var culture = new CultureInfo(Lang);
+            Application.CurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+            Encodings = Encoding.GetEncodings().Select(encodingInfo => encodingInfo.Name).ToArray();
+        }
+
+        public static void InvokeIfRequired(this ISynchronizeInvoke obj, Action action) {
+            if (obj.InvokeRequired) {
+                var args = new object[0];
+                obj.Invoke(action, args);
+            } else {
+                action();
+            }
+        }
+
+
     }
 }

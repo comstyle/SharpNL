@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;WIN</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -44,28 +44,78 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Diagram\Diagram.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Diagram\Diagram.Designer.cs">
+      <DependentUpon>Diagram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Diagram\TextNode.cs" />
+    <Compile Include="Controls\Diagram\TreeNode.cs" />
     <Compile Include="Controls\RichLog.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\Tree.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Forms\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmAbout.Designer.cs">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmException.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmException.Designer.cs">
+      <DependentUpon>frmException.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmMain.Designer.cs">
+    <Compile Include="Forms\frmMain.designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmProject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmProject.Designer.cs">
+      <DependentUpon>frmProject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Manager.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Viewers\DocumentViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewers\DocumentViewer.Designer.cs">
+      <DependentUpon>DocumentViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Viewers\Viewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewers\Viewer.Designer.cs">
+      <DependentUpon>Viewer.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Controls\Diagram\Diagram.resx">
+      <DependentUpon>Diagram.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmAbout.resx">
       <DependentUpon>frmAbout.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmException.resx">
+      <DependentUpon>frmException.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMain.en.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmProject.resx">
+      <DependentUpon>frmProject.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -77,6 +127,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Viewers\DocumentViewer.resx">
+      <DependentUpon>DocumentViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Viewers\Viewer.resx">
+      <DependentUpon>Viewer.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -91,22 +147,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SharpNL.Project\SharpNL.Project.csproj">
+      <Project>{8f54086f-e2a1-46dc-a7ee-386b03f09811}</Project>
+      <Name>SharpNL.Project</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpNL\SharpNL.csproj">
       <Project>{0fb2de8a-7754-425b-8b8f-2ead2dfd8192}</Project>
       <Name>SharpNL</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\avatarMrBean.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\paypal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ok.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Project Name="">
+  <Models>
+    <Model file="F:\Projetos\OpenNLP\models\pt-sent.bin" />
+  </Models>
+  <Nodes>
+    <Node Type="TextFileNode" file="F:\Projetos\OpenNLP\brasil.txt" lang="pt">
+      <Tasks>
+        <Task Type="SentenceDetectorTask" Model="pt-sent" />
+      </Tasks>
+    </Node>
+  </Nodes>
+</Project>

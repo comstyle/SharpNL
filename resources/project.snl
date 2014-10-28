@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<Project Name="">
+  <Models>
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-sent.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-token.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-date.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-location.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-money.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-organization.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-percentage.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-person.bin" />
+    <Model file="F:\Projetos\SharpNL\resources\opennlp\models\en-ner-time.bin" />
+  </Models>
+  <Nodes>
+    <Node Type="TextFileNode" file="F:\Projetos\SharpNL\resources\opennlp\tools\sentdetect\Sentences.txt" lang="en" encoding="iso-8859-1">
+      <Tasks>
+        <Task Type="SentenceDetectorTask" Model="en-sent" />
+        <Task Type="TokenizerTask" Model="en-token" Normalize="true" />
+        <Task Type="EntityFinderTask" Model="en-ner-person" />
+      </Tasks>
+    </Node>
+  </Nodes>
+</Project>

@@ -1,0 +1,47 @@
+# Pound sign
+$ Dollar sign
+'' Close double quote
+`` Open double quote
+' - Close single quote
+` Open single quote
+, Comma
+. Final punctuation
+: Colon, semi-colon
+-LRB- Left bracket
+-RRB- Right bracket
+CC Coordinating conjunction
+CD Cardinal number
+DT Determiner
+EX Existential there
+FW Foreign word
+IN Preposition
+JJ Adjective
+JJR Comparative adjective
+JJS Superlative adjective
+LS List Item Marker
+MD Modal
+NN Singular noun
+NNS Plural noun
+NNP Proper singular noun
+NNPS Proper plural noun
+PDT Predeterminer
+POS Possesive ending
+PRP Personal pronoun
+PP$ Possesive pronoun
+RB Adverb
+RBR Comparative adverb
+RBS Superlative Adverb
+RP Particle
+SYM Symbol
+TO to
+UH Interjection
+VB Verb, base form
+VBD Verb, past tense
+VBG Verb, gerund/present participle
+VBN Verb, past participle
+VBP Verb, non 3rd ps. sing. present
+VBZ Verb, 3rd ps. sing. present
+WDT wh-determiner
+WP wh-pronoun
+WP$ Possesive wh-pronoun
+WRB wh-adverb

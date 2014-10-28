@@ -79,14 +79,20 @@ namespace SharpNL.Gui.Forms {
         private void picDonate_MouseLeave(object sender, EventArgs e) {
             picDonate.Image = hoveDonation;
         }
-        private void lnkLicense_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            Process.Start(lnkLicense.Text);
-        }
         private void lnkOpenNLP_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Process.Start(lnkOpenNLP.Text);
         }
         private void lnkSharpNL_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Process.Start(lnkSharpNL.Text);
+        }
+
+        private void richInfos_LinkClicked(object sender, LinkClickedEventArgs e) {
+            if (string.IsNullOrEmpty(e.LinkText))
+                return;
+
+            try {
+                Process.Start(e.LinkText);
+            } catch { }
         }
     }
 }
