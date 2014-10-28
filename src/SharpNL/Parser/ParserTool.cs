@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using SharpNL.Java;
+using SharpNL.Text;
 using SharpNL.Utility;
 
 namespace SharpNL.Parser {
@@ -35,6 +36,41 @@ namespace SharpNL.Parser {
         static ParserTool() {
             untokenizedParentPattern1 = new Regex("([^ ])([({)}])", RegexOptions.Compiled);
             untokenizedParentPattern2 = new Regex("([({)}])([^ ])", RegexOptions.Compiled);
+        }
+
+        public static Parse[] ParseLine(ISentence sentence, IParser parser, int numParses) {
+            if (sentence == null)
+                throw new ArgumentNullException("sentence");
+
+            if (parser == null)
+                throw new ArgumentNullException("parser");
+
+            if (numParses < 0)
+                throw new ArgumentOutOfRangeException("numParses");
+
+            if (sentence.Tokens == null || sentence.Tokens.Count == 0)
+                throw new InvalidOperationException("The sentence is not tokenized.");
+
+            var sb = new StringBuilder(sentence.Length);
+            for (var i = 0; i < sentence.Tokens.Count; i++) {
+                sb.Append(sentence.Tokens[i].Lexeme).Append(' ');
+            }
+            sb.Remove(sb.Length - 1, 1);
+
+            var start = 0;
+            var p = new Parse(sb.ToString(), new Span(0, sb.Length), AbstractBottomUpParser.INC_NODE, 0, 0);
+
+            for (var i = 0; i < sentence.Tokens.Count; i++) {
+                p.Insert(
+                    new Parse(
+                        sb.ToString(), 
+                        new Span(start, start + sentence.Tokens[i].Lexeme.Length),
+                        AbstractBottomUpParser.TOK_NODE, 0, i));
+
+                start += sentence.Tokens[i].Lexeme.Length + 1;
+            }
+
+            return numParses == 1 ? new[] { parser.Parse(p) } : parser.Parse(p, numParses);
         }
 
         public static Parse[] ParseLine(string line, IParser parser, int numParses) {

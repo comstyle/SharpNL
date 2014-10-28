@@ -67,10 +67,10 @@ namespace SharpNL.Parser.Chunking {
             Parse p1 = null;
             Parse p2 = null;
 
-            List<Parse> punct1s = null;
-            List<Parse> punct2s = null;
-            List<Parse> punct_1s = null;
-            List<Parse> punct_2s = null;
+            SortedSet<Parse> punct1s = null;
+            SortedSet<Parse> punct2s = null;
+            SortedSet<Parse> punct_1s = null;
+            SortedSet<Parse> punct_2s = null;
 
             if (index - 2 >= 0) {
                 p_2 = constituents[index - 2];

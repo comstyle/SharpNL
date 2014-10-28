@@ -38,7 +38,9 @@ namespace SharpNL.Parser {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChunkContextGenerator"/> class without cache.
         /// </summary>
-        public ChunkContextGenerator() : this(0) {}
+        public ChunkContextGenerator() : this(0) {
+            
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChunkContextGenerator"/> class with the specified cache size.

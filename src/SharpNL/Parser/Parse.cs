@@ -246,7 +246,7 @@ namespace SharpNL.Parser {
         /// Gets or sets the set of punctuation tags which follow this parse.
         /// </summary>
         /// <value>The set of punctuation tags which follow this parse.</value>
-        public List<Parse> NextPunctuationSet { get; set; }
+        public SortedSet<Parse> NextPunctuationSet { get; set; }
 
         #endregion
 
@@ -266,7 +266,7 @@ namespace SharpNL.Parser {
         /// Gets or sets the set of punctuation parses that occur immediately before this parse.
         /// </summary>
         /// <value>The set of punctuation parses that occur immediately before this parse.</value>
-        public List<Parse> PreviousPunctuationSet { get; set; }
+        public SortedSet<Parse> PreviousPunctuationSet { get; set; }
 
         #endregion
 
@@ -387,7 +387,7 @@ namespace SharpNL.Parser {
         /// <param name="punct">The punctuation.</param>
         public void AddPreviousPunctuation(Parse punct) {
             if (PreviousPunctuationSet == null) {
-                PreviousPunctuationSet = new List<Parse>();
+                PreviousPunctuationSet = new SortedSet<Parse>();
             }
             PreviousPunctuationSet.Add(punct);
         }
@@ -413,7 +413,7 @@ namespace SharpNL.Parser {
         /// <param name="punctuation">The punctuation set.</param>
         public void AddNextPunctuation(Parse punctuation) {
             if (NextPunctuationSet == null)
-                NextPunctuationSet = new List<Parse>();
+                NextPunctuationSet = new SortedSet<Parse>();
 
             NextPunctuationSet.Add(punctuation);
         }
@@ -1026,19 +1026,10 @@ namespace SharpNL.Parser {
         #region + Show .
 
         /// <summary>
-        /// Displays this parse using Penn Treebank-style formatting.
-        /// </summary>
-        public void Show() {
-            var sb = new StringBuilder();
-            Show(sb);
-            Console.Out.WriteLine(sb);
-        }
-
-        /// <summary>
         /// Appends the specified string buffer with a string representation of this parse.
         /// </summary>
         /// <param name="sb">A string buffer into which the parse string can be appended.</param>
-        public void Show(StringBuilder sb) {
+        protected void Show(StringBuilder sb) {
             var start = Span.Start;
             if (Type != AbstractBottomUpParser.TOK_NODE) {
                 sb.AppendFormat("({0} ", Type);
@@ -1094,6 +1085,20 @@ namespace SharpNL.Parser {
             Span = new Span(parts[0].Span.Start, parts[parts.Count - 1].Span.End);
         }
 
+        #endregion
+
+        #region . ToString .
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>
+        /// A string that represents the current object.
+        /// </returns>
+        public override string ToString() {
+            var sb = new StringBuilder();
+            Show(sb);
+            return sb.ToString();
+        }
         #endregion
 
     }

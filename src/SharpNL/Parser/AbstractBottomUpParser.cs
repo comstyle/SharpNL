@@ -219,7 +219,7 @@ namespace SharpNL.Parser {
             var children = p.Children;
             var words = new string[children.Length];
             var pTags = new string[words.Length];
-            var probs = new double[words.Length];
+            //var probs = new double[words.Length];
 
             for (int i = 0, il = children.Length; i < il; i++) {
                 words[i] = children[i].Head.CoveredText;
@@ -229,19 +229,22 @@ namespace SharpNL.Parser {
             //System.err.println("adjusted mcs = "+(minChunkScore-p.getProb()));
 
             var cs = chunker.TopKSequences(words, pTags, minChunkScore - p.Probability);
+
             var newParses = new Parse[cs.Length];
-            for (int si = 0, sl = cs.Length; si < sl; si++) {
+            for (var si = 0; si < cs.Length; si++) {
                 newParses[si] = (Parse) p.Clone(); //copies top level
-                if (createDerivationString) newParses[si].Derivation.Append(si).Append(".");
+
+                if (createDerivationString) 
+                    newParses[si].Derivation.Append(si).Append(".");
+
                 var tags = cs[si].Outcomes.ToArray();
+
                 var start = -1;
                 var end = 0;
                 string type = null;
 
-                //System.err.print("sequence "+si+" ");
-
                 for (var j = 0; j <= tags.Length; j++) {
-                    //if (j != tags.length) {System.err.println(words[j]+" "+ptags[j]+" "+tags[j]+" "+probs.get(j));}
+
                     if (j != tags.Length) {
                         newParses[si].AddProbability(Math.Log(cs[si].Probabilities[j]));
                     }
@@ -251,10 +254,10 @@ namespace SharpNL.Parser {
                     } else {
                         //make previous constituent if it exists
                         if (type != null) {
-                            //System.err.println("inserting tag "+tags[j]);
+
                             var p1 = p.Children[start];
                             var p2 = p.Children[end];
-                            //System.err.println("Putting "+type+" at "+start+","+end+" for "+j+" "+newParses[si].getProb());
+
                             var cons = new Parse[end - start + 1];
                             cons[0] = p1;
                             //cons[0].label="Start-"+type;
@@ -317,20 +320,24 @@ namespace SharpNL.Parser {
                 words[i] = children[i].CoveredText;
             }
             var ts = tagger.TopKSequences(words);
-            if (ts.Length == 0) {
+
+            if (ts.Length == 0)
                 throw new InvalidOperationException("No tag sequence.");
-                //System.err.println("no tag sequence");
-            }
+
             var newParses = new Parse[ts.Length];
             for (var i = 0; i < ts.Length; i++) {
                 var tags = ts[i].Outcomes.ToArray();
 
-
                 newParses[i] = (Parse) p.Clone(); //copies top level
-                if (createDerivationString) newParses[i].Derivation.Append(i).Append(".");
+
+                if (createDerivationString)
+                    newParses[i].Derivation.Append(i).Append(".");
+
                 for (var j = 0; j < words.Length; j++) {
                     var word = children[j];
+
                     //System.err.println("inserting tag "+tags[j]);
+
                     var prob = ts[i].Probabilities[j];
                     newParses[i].Insert(new Parse(word.Text, word.Span, tags[j], prob, j));
                     newParses[i].AddProbability(Math.Log(prob));
@@ -384,9 +391,10 @@ namespace SharpNL.Parser {
                 //emulate reductions to produce additional n-grams
                 var ci = 0;
                 while (ci < chunks.Length) {
+                    /*
                     if (chunks[ci].Parent == null) {
                         chunks[ci].Show();
-                    }
+                    } */
                     if (LastChild(chunks[ci], chunks[ci].Parent, rules.PunctuationTags)) {
                         //perform reduce
                         var reduceStart = ci;
@@ -439,6 +447,7 @@ namespace SharpNL.Parser {
         public static Parse[] CollapsePunctuation(Parse[] chunks, List<string> punctSet) {
             var collapsedParses = new List<Parse>(chunks.Length);
             var lastNonPunct = -1;
+            
             for (int ci = 0, cn = chunks.Length; ci < cn; ci++) {
                 if (punctSet.Contains(chunks[ci].Type)) {
                     if (lastNonPunct >= 0) {
@@ -494,6 +503,8 @@ namespace SharpNL.Parser {
 
         #endregion
 
+        
+
         #region + Parse .
 
         /// <summary>
@@ -522,7 +533,9 @@ namespace SharpNL.Parser {
             Parse guess = null;
             double minComplete = 2;
             double bestComplete = -100000; //approximating -infinity/0 in ln domain
-            while (odh.Size() > 0 && (completeParses.Size() < M || (odh.First()).Probability < minComplete) &&
+
+            while (odh.Size() > 0 && 
+                  (completeParses.Size() < M || odh.First().Probability < minComplete) &&
                    derivationStage < maxDerivationLength) {
 
                 ndh = new ListHeap<Parse>(K);
@@ -544,7 +557,7 @@ namespace SharpNL.Parser {
                     }
                     if (debugOn) {
                         Console.Out.WriteLine(derivationStage + " " + derivationRank + " " + tp.Probability);
-                        tp.Show();
+                        Console.Out.WriteLine(tp.ToString());
                         Console.Out.WriteLine();
                     }
 
@@ -554,19 +567,15 @@ namespace SharpNL.Parser {
                         nd = AdvanceTags(tp);
 
                     } else if (derivationStage == 1) {
-                        if (ndh.Size() < K) {
-                            nd = AdvanceChunks(tp, bestComplete);
-                        } else {
-                            nd = AdvanceChunks(tp, ndh.Last().Probability);
-                        }
-                        //nd = AdvanceChunks(tp, ndh.Size() < K ? bestComplete : ndh.Last().Probability);
-
+                        nd = AdvanceChunks(tp, ndh.Size() < K ? bestComplete : ndh.Last().Probability);
                     } else {
                         // i > 1
                         nd = AdvanceParses(tp, Q);
                     }
+
                     if (nd != null) {
                         for (int k = 0, kl = nd.Length; k < kl; k++) {
+
                             if (nd[k].Complete) {
                                 AdvanceTop(nd[k]);
                                 if (nd[k].Probability > bestComplete) {

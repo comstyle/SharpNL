@@ -43,7 +43,7 @@ namespace SharpNL.Parser.Chunking {
 
         private readonly int completeIndex;
         private readonly Dictionary<string, string> contTypeMap;
-        private readonly double[] cprobs;
+        private readonly double[] cProbs;
         private readonly int incompleteIndex;
         private readonly Dictionary<string, string> startTypeMap;
         private readonly int topStartIndex;
@@ -60,8 +60,8 @@ namespace SharpNL.Parser.Chunking {
                 new ChunkerME(
                     model.ParserChunkerModel, 
                     ChunkerME.DEFAULT_BEAM_SIZE, 
-                    new ParserChunkerSequenceValidator(model.ParserChunkerModel), 
-                    new ChunkContextGenerator()), 
+                    new ParserChunkerSequenceValidator(model.ParserChunkerModel),
+                    new ChunkContextGenerator(ChunkerME.DEFAULT_BEAM_SIZE)), 
                 model.HeadRules, 
                 beamSize, 
                 advancePercentage) {
@@ -86,7 +86,7 @@ namespace SharpNL.Parser.Chunking {
             this.buildModel = buildModel;
             this.checkModel = checkModel;
             bProbs = new double[buildModel.GetNumOutcomes()];
-            cprobs = new double[checkModel.GetNumOutcomes()];
+            cProbs = new double[checkModel.GetNumOutcomes()];
             buildContextGenerator = new BuildContextGenerator();
             checkContextGenerator = new CheckContextGenerator();
             startTypeMap = new Dictionary<string, string>();
@@ -179,27 +179,38 @@ namespace SharpNL.Parser.Chunking {
                     lastStartNode = advanceNode;
                     lastStartType = startTypeMap[tag];
                 } else if (contTypeMap.ContainsKey(tag)) {
-                    if (lastStartNode == null || lastStartType == null || !lastStartType.Equals(contTypeMap[tag])) {
+                    if (lastStartNode == null || !lastStartType.Equals(contTypeMap[tag])) {
                         continue; //Cont must match previous start or continue
                     }
                 }
                 var newParse1 = (Parse) p.Clone(); //clone parse
-                if (createDerivationString) newParse1.Derivation.Append(max).Append("-");
-                newParse1.SetChild(originalAdvanceIndex, tag);
-                //replace constituent being labeled to create new derivation
+
+                if (createDerivationString) 
+                    newParse1.Derivation.Append(max).Append("-");
+
+                newParse1.SetChild(originalAdvanceIndex, tag); //replace constituent being labeled to create new derivation
                 newParse1.AddProbability(Math.Log(bProb));
+
                 //check
                 //String[] context = checkContextGenerator.getContext(newParse1.getChildren(), lastStartType, lastStartIndex, advanceNodeIndex);
                 checkModel.Eval(
-                    checkContextGenerator.GetContext(CollapsePunctuation(newParse1.Children, punctSet), lastStartType,
-                        lastStartIndex, advanceNodeIndex), cprobs);
+                    checkContextGenerator.GetContext(
+                        CollapsePunctuation(newParse1.Children, punctSet), 
+                        lastStartType,
+                        lastStartIndex, 
+                        advanceNodeIndex),
+                    cProbs);
+
                 //System.out.println("check "+lastStartType+" "+cprobs[completeIndex]+" "+cprobs[incompleteIndex]+" "+tag+" "+java.util.Arrays.asList(context));
                 
-                if (cprobs[completeIndex] > q) {
+                if (cProbs[completeIndex] > q) {
                     //make sure a reduce is likely
                     var newParse2 = (Parse) newParse1.Clone();
-                    if (createDerivationString) newParse2.Derivation.Append(1).Append(".");
-                    newParse2.AddProbability(Math.Log(cprobs[completeIndex]));
+
+                    if (createDerivationString) 
+                        newParse2.Derivation.Append(1).Append(".");
+
+                    newParse2.AddProbability(Math.Log(cProbs[completeIndex]));
                     var cons = new Parse[advanceNodeIndex - lastStartIndex + 1];
                     var flat = true;
 
@@ -222,21 +233,23 @@ namespace SharpNL.Parser.Chunking {
                         if (lastStartIndex == 0 && advanceNodeIndex == numNodes - 1) {
                             //check for top node to include end and beginning punctuation
                             //System.err.println("ParserME.advanceParses: reducing entire span: "+new Span(lastStartNode.getSpan().getStart(), advanceNode.getSpan().getEnd())+" "+lastStartType+" "+java.util.Arrays.asList(children));
-                            newParse2.Insert(new Parse(p.Text, p.Span, lastStartType, cprobs[1],
+                            newParse2.Insert(new Parse(p.Text, p.Span, lastStartType, cProbs[1],
                                 headRules.GetHead(cons, lastStartType)));
                         } else {
                             newParse2.Insert(new Parse(p.Text, new Span(lastStartNode.Span.Start, advanceNode.Span.End),
-                                lastStartType, cprobs[1], headRules.GetHead(cons, lastStartType)));
+                                lastStartType, cProbs[1], headRules.GetHead(cons, lastStartType)));
                         }
                         newParsesList.Add(newParse2);
                     }
                 }
-                if (cprobs[incompleteIndex] > q) {
+                if (cProbs[incompleteIndex] > q) {
                     //make sure a shift is likely
-                    if (createDerivationString) newParse1.Derivation.Append(0).Append(".");
+                    if (createDerivationString) 
+                        newParse1.Derivation.Append(0).Append(".");
+
                     if (advanceNodeIndex != numNodes - 1) {
                         //can't shift last element
-                        newParse1.AddProbability(Math.Log(cprobs[incompleteIndex]));
+                        newParse1.AddProbability(Math.Log(cProbs[incompleteIndex]));
                         newParsesList.Add(newParse1);
                     }
                 }
@@ -255,8 +268,10 @@ namespace SharpNL.Parser.Chunking {
         protected override void AdvanceTop(Parse parse) {
             buildModel.Eval(buildContextGenerator.GetContext(parse.Children, 0), bProbs);
             parse.AddProbability(Math.Log(bProbs[topStartIndex]));
-            checkModel.Eval(checkContextGenerator.GetContext(parse.Children, TOP_NODE, 0, 0), cprobs);
-            parse.AddProbability(Math.Log(cprobs[completeIndex]));
+
+            checkModel.Eval(checkContextGenerator.GetContext(parse.Children, TOP_NODE, 0, 0), cProbs);
+            parse.AddProbability(Math.Log(cProbs[completeIndex]));
+
             parse.Type = TOP_NODE;
         }
 

@@ -134,7 +134,7 @@ namespace SharpNL.Parser {
 
         #region . Cons2 .
 
-        protected void Cons2(List<String> features, Cons c0, Cons c1, List<Parse> punct1s, bool bigram) {
+        protected void Cons2(List<String> features, Cons c0, Cons c1, SortedSet<Parse> punct1s, bool bigram) {
             if (punct1s != null) {
                 foreach (var p in punct1s) {
                     var punctbo = PunctBo(p, c1.index <= 0 ? c1.index - 1 : c1.index);
@@ -185,8 +185,8 @@ namespace SharpNL.Parser {
         /// <param name="trigram">Specifies whether lexical tri-gram features between these nodes should be generated.</param>
         /// <param name="bigram1">Specifies whether lexical bi-gram features between the first and second node should be generated.</param>
         /// <param name="bigram2">Specifies whether lexical bi-gram features between the second and third node should be generated.</param>
-        protected void Cons3(List<String> features, Cons c0, Cons c1, Cons c2, List<Parse> punct1s,
-            List<Parse> punct2s, bool trigram, bool bigram1, bool bigram2) {
+        protected void Cons3(List<String> features, Cons c0, Cons c1, Cons c2, SortedSet<Parse> punct1s,
+            SortedSet<Parse> punct2s, bool trigram, bool bigram1, bool bigram2) {
             //  features.add("stage=cons(0),cons(1),cons(2)");
             if (punct1s != null) {
                 if (c0.index == -2) {
@@ -203,8 +203,7 @@ namespace SharpNL.Parser {
             }
             if (punct2s != null) {
                 if (c2.index == 2) {
-                    for (int i = 0; i < punct2s.Count; i++) {
-                        var p = punct2s[i];
+                    foreach (var p in punct2s) {
                         //          String punct = punct(p,c2.index);
                         var punctbo = PunctBo(p, c2.index <= 0 ? c2.index - 1 : c2.index);
                         //punct(2)
@@ -217,8 +216,7 @@ namespace SharpNL.Parser {
                 }
                 if (punct1s != null) {
                     //cons(0),punctbo(1),cons(1),punctbo(2),cons(2)
-                    for (int i = 0; i < punct2s.Count; i++) {
-                        var pi2 = punct2s[i];
+                    foreach (var pi2 in punct2s) {
                         var punctbo2 = PunctBo(pi2, c2.index <= 0 ? c2.index - 1 : c2.index);
 
                         foreach (var pi1 in punct1s) {
@@ -330,7 +328,7 @@ namespace SharpNL.Parser {
         /// <param name="type">The type of the completed node.</param>
         /// <param name="punctuation">The punctuation adjacent and between the specified surrounding node.</param>
         /// <param name="features">A list to which features are added.</param>
-        protected void Surround(Parse node, int i, String type, List<Parse> punctuation, List<String> features) {
+        protected void Surround(Parse node, int i, String type, SortedSet<Parse> punctuation, List<String> features) {
             var feat = new StringBuilder();
             feat.Append("s").Append(i).Append("=");
             if (punctuation != null) {

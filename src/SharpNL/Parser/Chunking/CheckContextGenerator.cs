@@ -75,9 +75,9 @@ namespace SharpNL.Parser.Chunking {
             Parse p1 = null;
             Parse p2 = null;
             var p1s = constituents[end].NextPunctuationSet;
-            List<Parse> p2s = null;
+            SortedSet<Parse> p2s = null;
             var p_1s = constituents[start].PreviousPunctuationSet;
-            List<Parse> p_2s = null;
+            SortedSet<Parse> p_2s = null;
             if (start - 2 >= 0) {
                 p_2 = constituents[start - 2];
             }

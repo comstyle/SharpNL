@@ -447,6 +447,9 @@ namespace SharpNL {
         internal static string ToDisplay(this string[] list) {
             return string.Format("[{0}]", string.Join(", ", list));
         }
+        internal static string ToDisplay(this List<string> list) {
+            return list.ToArray().ToDisplay();
+        }
         #endregion
 
         #region . IEnumerator.Cast .

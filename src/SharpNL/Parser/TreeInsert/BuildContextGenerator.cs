@@ -62,8 +62,8 @@ namespace SharpNL.Parser.TreeInsert {
                 p2 = constituents[index + 2];
             }
 
-            List<Parse> punct2s = null;
-            List<Parse> punct_2s = null;
+            SortedSet<Parse> punct2s = null;
+            SortedSet<Parse> punct_2s = null;
 
             var punct_1s = p0.PreviousPunctuationSet;
             var punct1s = p0.NextPunctuationSet;
