@@ -36,18 +36,18 @@ namespace SharpNL.Text {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sentence"/> class.
         /// </summary>
-        /// <param name="start">The start.</param>
-        /// <param name="end">The end.</param>
-        /// <param name="document">The document.</param>
+        /// <param name="start">The start position.</param>
+        /// <param name="end">The end position.</param>
+        /// <param name="document">The document where the sentence is located.</param>
         public Sentence(int start, int end, IDocument document) : this(start, end, null, document) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sentence"/> class.
         /// </summary>
-        /// <param name="start">The start.</param>
-        /// <param name="end">The end.</param>
-        /// <param name="tokens">The tokens.</param>
-        /// <param name="document">The document.</param>
+        /// <param name="start">The start position.</param>
+        /// <param name="end">The end position.</param>
+        /// <param name="tokens">The sentence tokens.</param>
+        /// <param name="document">The document where the sentence is located.</param>
         public Sentence(int start, int end, List<Token> tokens, IDocument document) {
             Start = start;
             End = end;
