@@ -158,6 +158,8 @@
     <Compile Include="Chunker\DummyChunker.cs" />
     <Compile Include="Chunker\DummyChunkerFactory.cs" />
     <Compile Include="Chunker\DummyChunkSampleStream.cs" />
+    <Compile Include="Compatibility\ChunkerTest.cs" />
+    <Compile Include="Compatibility\PosTaggerTest.cs" />
     <Compile Include="Dictionary\DictionaryTest.cs" />
     <Compile Include="DocumentCategorizer\DocumentCategorizerFactoryTest.cs" />
     <Compile Include="DocumentCategorizer\DocumentCategorizerMETest.cs" />
@@ -192,10 +194,10 @@
     <Compile Include="NameFind\RegexNameFinderTest.cs" />
     <Compile Include="NameFind\TokenNameFinderCrossValidatorTest.cs" />
     <Compile Include="NameFind\TokenNameFinderEvaluatorTest.cs" />
-    <Compile Include="OpenNLP\OpenNLP.cs" />
-    <Compile Include="OpenNLP\ParseTest.cs" />
-    <Compile Include="OpenNLP\SentenceDetectorTest.cs" />
-    <Compile Include="OpenNLP\TokenizerTest.cs" />
+    <Compile Include="Compatibility\OpenNLP.cs" />
+    <Compile Include="Compatibility\ParseTest.cs" />
+    <Compile Include="Compatibility\SentenceDetectorTest.cs" />
+    <Compile Include="Compatibility\TokenizerTest.cs" />
     <Compile Include="Parser\Chunking\ParserTest.cs" />
     <Compile Include="Parser\ChunkSampleStreamTest.cs" />
     <Compile Include="Parser\Lang\en\HeadRulesTest.cs" />

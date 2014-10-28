@@ -22,7 +22,7 @@
 
 using System.IO;
 
-namespace SharpNL.Tests.OpenNLP {
+namespace SharpNL.Tests.Compatibility {
     /// <summary>
     /// Helper methods for the java OpenNLP
     /// </summary>

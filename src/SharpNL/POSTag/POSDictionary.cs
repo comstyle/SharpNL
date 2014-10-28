@@ -60,7 +60,7 @@ namespace SharpNL.POSTag {
                 throw new ArgumentException(@"Stream was not readable.", "inputStream");
             }
 
-            base.Deserialize(inputStream);
+            Deserialize(inputStream);
 
             items = new Dictionary<string, Entry>(IsCaseSensitive
                 ? StringComparer.Ordinal

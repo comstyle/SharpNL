@@ -102,12 +102,12 @@ namespace SharpNL.Tests.Parser {
 
         [Test]
         public void testShow() {
+
+            // Show method was removed, now the result of the show is returned by the ToString method.
+
             var p1 = Parse.ParseParse(ParseString);
 
-            var parseString = new StringBuilder();
-            p1.Show(parseString);
-
-            var p2 = Parse.ParseParse(parseString.ToString());
+            var p2 = Parse.ParseParse(p1.ToString());
 
             Assert.AreEqual(p1, p2);
         }
@@ -131,10 +131,7 @@ namespace SharpNL.Tests.Parser {
                                       " (NP (DT the)  (NN spotlight)  )(PP (IN on)  (NP (DT the) " +
                                       " (JJ international)  (NN play-girl)  ))))))(. .)  ))");
 
-            var parseString = new StringBuilder();
-            p1.Show(parseString);
-
-            var p2 = Parse.ParseParse(parseString.ToString());
+            var p2 = Parse.ParseParse(p1.ToString());
 
             Assert.AreEqual(p1, p2);
         }

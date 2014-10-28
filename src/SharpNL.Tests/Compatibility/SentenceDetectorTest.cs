@@ -32,7 +32,7 @@ using SharpModel = SharpNL.Sentence.SentenceModel;
 using JavaSDME = opennlp.tools.sentdetect.SentenceDetectorME;
 using SharpSDME = SharpNL.Sentence.SentenceDetectorME;
 
-namespace SharpNL.Tests.OpenNLP {
+namespace SharpNL.Tests.Compatibility {
     [TestFixture(Category = "Compatibility")]
     internal class SentenceDetectorTest {
         private static JavaModel OpenJavaModel() {

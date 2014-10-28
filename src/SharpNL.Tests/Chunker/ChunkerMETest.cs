@@ -30,18 +30,18 @@ namespace SharpNL.Tests.Chunker {
 
         private IChunker chunker;
 
-        private readonly string[] toks1 = {
+        internal static readonly string[] toks1 = {
             "Rockwell", "said", "the", "agreement", "calls", "for",
             "it", "to", "supply", "200", "additional", "so-called", "shipsets",
             "for", "the", "planes", "."
         };
 
-        private readonly string[] tags1 = {
+        internal static readonly string[] tags1 = {
             "NNP", "VBD", "DT", "NN", "VBZ", "IN", "PRP", "TO", "VB",
             "CD", "JJ", "JJ", "NNS", "IN", "DT", "NNS", "."
         };
 
-        private readonly string[] expect1 = {
+        internal static readonly string[] expect1 = {
             "B-NP", "B-VP", "B-NP", "I-NP", "B-VP", "B-SBAR",
             "B-NP", "B-VP", "I-VP", "B-NP", "I-NP", "I-NP", "I-NP", "B-PP", "B-NP",
             "I-NP", "O"
@@ -97,8 +97,6 @@ namespace SharpNL.Tests.Chunker {
 
         }
 
-
-        // Knuppe: I can't make it work :(
         [Test]
         public void TestTokenProbMinScore() {
             var preds = chunker.TopKSequences(toks1, tags1, -5.55);
@@ -107,13 +105,8 @@ namespace SharpNL.Tests.Chunker {
             Assert.AreEqual(expect1.Length, preds[0].Probabilities.Count);
             Assert.True(expect1.SequenceEqual(preds[0].Outcomes));
             Assert.False(expect1.SequenceEqual(preds[1].Outcomes));
-            
-
         }
 
-        // I tried to test with an compiled model, and the same thing happens...
-        // > Is that even an issue? The GetHashCode is different from Java so the scores are different.
-        // > :(
         [Test]
         public void TestTokenProbMinScoreOpenNLP() {
 

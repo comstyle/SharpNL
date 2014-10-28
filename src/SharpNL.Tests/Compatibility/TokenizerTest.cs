@@ -26,7 +26,7 @@ using SharpNL.Tests.Tokenize;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 
-namespace SharpNL.Tests.OpenNLP {
+namespace SharpNL.Tests.Compatibility {
     [TestFixture(Category = "Compatibility")]
     internal class TokenizerTest {
 
