@@ -138,7 +138,7 @@ namespace SharpNL.Project.Tasks {
             var parser = ParserFactory.Create(parserModel);
 
             foreach (var sentence in sentences) {
-                var parse = ParserTool.ParseLine(sentence.Text, parser, 1);
+                var parse = ParserTool.ParseLine(sentence, parser, 1);
 
                 if (parse.Length == 1) {
                     sentence.Parse = parse[0];

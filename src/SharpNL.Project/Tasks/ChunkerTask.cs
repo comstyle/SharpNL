@@ -139,7 +139,7 @@ namespace SharpNL.Project.Tasks {
                 sentence.Chunks = new ReadOnlyCollection<IChunk>(chunks);
             }
 
-            LogMessage(string.Format(" {0} sentences analyzed - {1} chunks found.", doc.Text.Length, count));
+            LogMessage(string.Format(" {0} sentences analyzed - {1} chunks found.", doc.Sentences.Count, count));
 
             return new object[] {doc};
 
