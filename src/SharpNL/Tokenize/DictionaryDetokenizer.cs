@@ -22,14 +22,35 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace SharpNL.Tokenize {
+    /// <summary>
+    /// A rule based detokenizer. Simple rules which indicate in which direction a token should be 
+    /// moved are looked up in a <see cref="DetokenizationDictionary"/> object.
+    /// </summary>
     public class DictionaryDetokenizer : IDetokenizer {
         private readonly DetokenizationDictionary dictionary;
 
         public DictionaryDetokenizer(DetokenizationDictionary dictionary) {
             this.dictionary = dictionary;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryDetokenizer"/> class.
+        /// </summary>
+        /// <param name="dictionaryFile">The dictionary file.</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="dictionaryFile"/></exception>
+        /// <exception cref="System.IO.FileNotFoundException">The dictionary file does not exist.</exception>
+        public DictionaryDetokenizer(FileInfo dictionaryFile) {
+            if (dictionaryFile == null)
+                throw new ArgumentNullException("dictionaryFile");
+
+            if (!dictionaryFile.Exists)
+                throw new FileNotFoundException("The dictionary file does not exist.", dictionaryFile.FullName);
+
+            dictionary = new DetokenizationDictionary(dictionaryFile.OpenRead());
         }
 
         /// <summary>Detokenizes the specified tokens.</summary>
