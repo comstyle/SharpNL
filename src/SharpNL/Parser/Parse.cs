@@ -300,6 +300,22 @@ namespace SharpNL.Parser {
 
         #endregion
 
+        #region . this .
+        /// <summary>
+        /// Gets the child <see cref="Parse"/> at the specified index.
+        /// </summary>
+        /// <param name="index">The child index.</param>
+        /// <returns>The child <see cref="Parse"/> object.</returns>
+        public Parse this[int index] {
+            get {
+                if (index < 0 || index > parts.Count)
+                    return null;
+
+                return parts[index];
+            }
+        }
+        #endregion
+
         #region . Type .
 
         /// <summary>
