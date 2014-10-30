@@ -4,13 +4,19 @@
 
 > An awesome and independent reimplementation of the [Apache OpenNLP] software library in C#
 
+## Request
+
+> I need someone else to help test what we have so far, because a mistake can go unnoticed, and honestly I do not like bugs in my code :)
+
+> [How to contribute](contributing.md)
+
 ## Warning
 
 > At the moment, there is no published version, the port seems to be going well but I don't have any ETA for the first release. 
 
 > I'm making changes that can break your code... Wait a stable version to avoid problems!
 
-So far the project has ~14,199 lines of code and counting!
+So far the project has ~24,210 lines of code!
 
 ## Goals
 
@@ -22,10 +28,10 @@ and, perhaps one day be compatible with Standord NLP =)
 
 ## Current tasks
 
-> - Port the OpenNLP Library ~70% done
-> - Improve usability of the library
+> - Port the OpenNLP Library ~98% done (The alpha version is almost ready).
+> - Improve usability of the library (Good progress so far)
 > - Improve the portuguese recognition - [CoGrOO] Project already found some good answer on how to do this.
-> - Create a GUI (Only a sketch)
+> - Create a GUI/IDE (WiP)
 
 ## Support
 
