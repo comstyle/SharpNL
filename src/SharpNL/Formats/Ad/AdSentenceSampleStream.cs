@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats.Ad {

@@ -27,7 +27,7 @@ using SharpNL.ML.Model;
 using SharpNL.Utility;
 using SharpNL.Utility.Model;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// The <see cref="SentenceModel"/> is the model used by a learnable <see cref="ISentenceDetector"/>.
     /// </summary>

@@ -26,7 +26,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Xml;
 using SharpNL.Project.Design;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Text;
 using SharpNL.Utility;
 

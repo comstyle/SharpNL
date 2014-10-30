@@ -20,38 +20,74 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
-    /// Scans for the offsets of sentence ending characters.
+    /// Represents an default end of sentence scanner.
     /// </summary>
-    /// <remarks>
-    /// Implementations of this interface can use regular expressions,
-    /// hand-coded DFAs, and other scanning techniques to locate end of
-    /// sentence offsets.
-    /// </remarks>
-    public interface IEndOfSentenceScanner {
+    public class DefaultEndOfSentenceScanner : IEndOfSentenceScanner {
+
+        private readonly char[] eosCharacters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultEndOfSentenceScanner"/> with the specified eos delimiters.
+        /// </summary>
+        /// <param name="eosCharacters">The end of sentence characters.</param>
+        public DefaultEndOfSentenceScanner(char[] eosCharacters) {
+
+            this.eosCharacters = eosCharacters;
+
+        }
+
+        #region . GetEndOfSentenceCharacters .
         /// <summary>
         /// Returns an array of character which can indicate the end of a sentence.
         /// </summary>
         /// <returns>An array of character which can indicate the end of a sentence.</returns>
-        char[] GetEndOfSentenceCharacters();
+        public char[] GetEndOfSentenceCharacters() {
+            return eosCharacters;
+        }
+        #endregion
 
-
+        #region + GetPositions .
         /// <summary>
         /// Scans the specified string for sentence ending characters and
         /// returns their offsets.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>The positions list.</returns>
-        List<int> GetPositions(string value);
+        public List<int> GetPositions(string value) {
+            return GetPositions(value.ToCharArray());
+        }
+
+        /// <summary>
+        /// Scans the specified string for sentence ending characters and returns their offsets.
+        /// </summary>
+        /// <param name="sb">The sb.</param>
+        /// <returns>The positions list.</returns>
+        public List<int> GetPositions(StringBuilder sb) {
+            return GetPositions(sb.ToString().ToCharArray());
+        }
 
         /// <summary>
         /// Scans the characters for sentence ending characters and returns their offsets.
         /// </summary>
         /// <param name="chars">The chars to scan.</param>
         /// <returns>Positions.</returns>
-        List<int> GetPositions(char[] chars);
+        public List<int> GetPositions(char[] chars) {
+            var list = new List<int>();
+            foreach (var eos in eosCharacters) {
+                int index = -1;
+                while ((index = Array.IndexOf(chars, eos, index + 1)) != -1) {
+                    list.Add(index);
+                }
+            }
+            return list;
+        }
+        #endregion
+
     }
 }

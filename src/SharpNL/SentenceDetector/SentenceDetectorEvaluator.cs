@@ -24,7 +24,7 @@ using System;
 using SharpNL.Utility;
 using SharpNL.Utility.Evaluation;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// The SentenceDetectorEvaluator measures the performance of the given <see cref="ISentenceDetector"/>
     /// with the provided reference <see cref="SentenceSample"/>s.

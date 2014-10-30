@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
 
     using Java;
     using Utility;

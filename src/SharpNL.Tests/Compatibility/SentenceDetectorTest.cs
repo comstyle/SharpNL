@@ -22,15 +22,15 @@
 
 using System.IO;
 using NUnit.Framework;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Tests.Sentence;
 using SharpNL.Utility;
 
 using JavaModel = opennlp.tools.sentdetect.SentenceModel;
-using SharpModel = SharpNL.Sentence.SentenceModel;
+using SharpModel = SharpNL.SentenceDetector.SentenceModel;
 
 using JavaSDME = opennlp.tools.sentdetect.SentenceDetectorME;
-using SharpSDME = SharpNL.Sentence.SentenceDetectorME;
+using SharpSDME = SharpNL.SentenceDetector.SentenceDetectorME;
 
 namespace SharpNL.Tests.Compatibility {
     [TestFixture(Category = "Compatibility")]

@@ -21,7 +21,7 @@
 //  
 
 using NUnit.Framework;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Sentence {

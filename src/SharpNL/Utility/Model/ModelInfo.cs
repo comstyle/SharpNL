@@ -28,7 +28,7 @@ using SharpNL.Chunker;
 using SharpNL.NameFind;
 using SharpNL.Parser;
 using SharpNL.POSTag;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Tokenize;
 using SharpNL.Utility.Serialization;
 

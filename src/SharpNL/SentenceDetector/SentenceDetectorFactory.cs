@@ -21,11 +21,11 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Sentence.Language;
+using SharpNL.SentenceDetector.Language;
 using SharpNL.Utility;
 using SharpNL.Utility.Serialization;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     using Dic = Dictionary.Dictionary;
 
     /// <summary>

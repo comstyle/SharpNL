@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 
-namespace SharpNL.Sentence.Language {
+namespace SharpNL.SentenceDetector.Language {
     /// <summary>
     /// Represents the sentence detection factory.
     /// </summary>

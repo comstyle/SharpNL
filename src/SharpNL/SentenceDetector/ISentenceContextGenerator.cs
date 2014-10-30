@@ -20,7 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Interface for <see cref="T:SentenceDetectorME"/> context generators.
     /// </summary>

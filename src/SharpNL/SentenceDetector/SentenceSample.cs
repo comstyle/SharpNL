@@ -25,7 +25,7 @@ using System.Text;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Represents a document with begin indexes of the individual sentences.
     /// </summary>

@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using SharpNL.Formats.Ad;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Formats.Ad {

@@ -22,7 +22,7 @@
 
 using SharpNL.Utility;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Stream to to clean up empty lines for empty line separated document streams.
     /// <code>

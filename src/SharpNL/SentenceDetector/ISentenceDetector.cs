@@ -1,6 +1,6 @@
 ﻿using SharpNL.Utility;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// The interface for sentence detectors, which find the sentence boundaries in a text.
     /// </summary>

@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace SharpNL.Sentence.Language.pt {
+namespace SharpNL.SentenceDetector.Language.pt {
     /// <summary>
     /// Generate event contexts for maxent decisions for sentence detection.
     /// </summary>

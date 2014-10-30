@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 

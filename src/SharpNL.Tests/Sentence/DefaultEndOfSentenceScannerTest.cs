@@ -21,7 +21,7 @@
 //  
 
 using NUnit.Framework;
-using SharpNL.Sentence;
+using SharpNL.SentenceDetector;
 
 namespace SharpNL.Tests.Sentence {
     [TestFixture]

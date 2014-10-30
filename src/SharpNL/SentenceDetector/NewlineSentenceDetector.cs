@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using SharpNL.Utility;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// The Newline Sentence Detector assumes that sentences are line delimited and 
     /// recognizes one sentence per non-empty line.

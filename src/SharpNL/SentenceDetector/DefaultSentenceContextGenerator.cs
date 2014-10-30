@@ -24,7 +24,7 @@ using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Generate event contexts for maxent decisions for sentence detection.
     /// </summary>

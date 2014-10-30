@@ -26,7 +26,7 @@ using SharpNL.ML;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// A maximum entropy model is used to evaluate end-of-sentence characters in a
     /// string to determine if they signify the end of a sentence.

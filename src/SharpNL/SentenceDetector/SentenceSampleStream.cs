@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Text;
 using SharpNL.Utility;
 
-namespace SharpNL.Sentence {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// This class is a stream filter which reads a sentence by line samples from
     /// a reader and converts them into <see cref="T:SentenceSample"/> objects.

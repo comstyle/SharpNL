@@ -24,11 +24,11 @@
 //   under Apache V2 license.
 //
 
-namespace SharpNL.Sentence.Language.pt {
+namespace SharpNL.SentenceDetector.Language.pt {
     /// <summary>
     /// Represents a portuguese sentence detection factory.
     /// </summary>
-    public class PtSentenceDetectorFactory : Sentence.SentenceDetectorFactory {
+    public class PtSentenceDetectorFactory : SentenceDetectorFactory {
 
         /// <summary>
         /// Gets the portuguese context generator.

@@ -22,8 +22,8 @@
 
 using System.IO;
 using NUnit.Framework;
-using SharpNL.Sentence;
-using SharpNL.Sentence.Language;
+using SharpNL.SentenceDetector;
+using SharpNL.SentenceDetector.Language;
 using SharpNL.Utility;
 using Dic = SharpNL.Dictionary.Dictionary;
 

@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SharpNL.Sentence.Language.th {
+namespace SharpNL.SentenceDetector.Language.th {
     /// <summary>
     /// Creates contexts/features for end-of-sentence detection in Thai text.
     /// </summary>
