@@ -35,15 +35,31 @@ namespace SharpNL.Utility {
 
         private int currentLine;
         private StreamReader reader;
-        private StringReader stringReader;
+        private readonly StringReader stringReader;
 
         public PlainTextByLineStream(StringReader reader) {
             currentLine = 0;
             stringReader = reader;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlainTextByLineStream"/> using a <see cref="Stream"/> object encoded as UTF-8.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
         public PlainTextByLineStream(Stream inputStream) : this(inputStream, Encoding.UTF8) {}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlainTextByLineStream"/> using a <see cref="StreamReader"/> object.
+        /// </summary>
+        /// <param name="reader">The stream reader.</param>
+        /// <exception cref="System.ArgumentNullException">reader</exception>
+        public PlainTextByLineStream(StreamReader reader) {
+            if (reader == null)
+                throw new ArgumentNullException("reader");
+
+            currentLine = 0;
+            this.reader = reader;
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="PlainTextByLineStream"/> class.
         /// </summary>
