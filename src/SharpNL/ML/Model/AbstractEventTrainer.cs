@@ -31,8 +31,7 @@ namespace SharpNL.ML.Model {
         public const string DataIndexerOnePass = "OnePass";
         public const string DataIndexerTwoPass = "TwoPass";
 
-        protected AbstractEventTrainer(Monitor monitor, bool isSortAndMerge) {
-            Monitor = monitor;
+        protected AbstractEventTrainer(Monitor monitor, bool isSortAndMerge) : base(monitor) {
             IsSortAndMerge = isSortAndMerge;
         }
 
@@ -57,14 +56,6 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <value><c>true</c> if this instance is sort and merge; otherwise, <c>false</c>.</value>
         public bool IsSortAndMerge { get; private set; }
-        #endregion
-
-        #region . Monitor .
-        /// <summary>
-        /// Gets the evaluation monitor.
-        /// </summary>
-        /// <value>The evaluation monitor.</value>
-        protected Monitor Monitor { get; private set; }
         #endregion
 
         #endregion

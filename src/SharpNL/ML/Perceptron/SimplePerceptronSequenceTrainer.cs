@@ -68,6 +68,23 @@ namespace SharpNL.ML.Perceptron {
         private int[][][] updates;
         private bool useAverage;
 
+        #region + Constructors .
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimplePerceptronSequenceTrainer"/> class
+        /// without a evaluation monitor.
+        /// </summary>
+        public SimplePerceptronSequenceTrainer() : base(null) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimplePerceptronSequenceTrainer" /> 
+        /// class with the specified evaluation monitor.
+        /// </summary>
+        /// <param name="monitor">The evaluation monitor. This argument can be <c>null</c>.</param>
+        public SimplePerceptronSequenceTrainer(Monitor monitor) : base(monitor) { }
+
+        #endregion
+
         #region + Properties .
 
         #endregion

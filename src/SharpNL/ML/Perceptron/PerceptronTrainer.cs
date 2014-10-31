@@ -184,20 +184,6 @@ namespace SharpNL.ML.Perceptron {
 
         #endregion
 
-        #region . DisplayIteration .
-        private void DisplayIteration(int i) {
-            if (i > 10 && (i%10) != 0)
-                return;
-
-            if (i < 10)
-                Display("  " + i + ":  ");
-            else if (i < 100)
-                Display(" " + i + ":  ");
-            else
-                Display(i + ":  ");
-        }
-        #endregion
-
         #region . DoTrain .
         protected override IMaxentModel DoTrain(IDataIndexer indexer) {
             if (!IsValid())
@@ -287,17 +273,17 @@ namespace SharpNL.ML.Perceptron {
             numPreds = predLabels.Length;
             numOutcomes = outcomeLabels.Length;
 
-            Display("done.");
+            Display("\ndone.\n");
 
             Display("\tNumber of Event Tokens: " + numUniqueEvents);
             Display("\t    Number of Outcomes: " + numOutcomes);
             Display("\t  Number of Predicates: " + numPreds);
 
-            Display("Computing model parameters...");
+            Display("Computing model parameters.");
 
             var finalParameters = FindParameters(iterations, useAverage);
 
-            Display("...done.");
+            Display("\ndone.\n");
 
             // ReSharper disable once CoVariantArrayConversion
             return new PerceptronModel(finalParameters, predLabels, outcomeLabels);
@@ -327,9 +313,11 @@ namespace SharpNL.ML.Perceptron {
                 }
             }
             var trainingAccuracy = (double) numCorrect/numEvents;
-            Display("Stats: (" + numCorrect + "/" + numEvents + ") " + trainingAccuracy);
 
-            //return trainingAccuracy;
+            Display("\nPerceptron training complete:\n");
+            Display("   Correct Events : " + numCorrect);
+            Display("     Total Events : " + numEvents);
+            Display("         Accuracy : " + trainingAccuracy);            
         }
 
 
@@ -338,7 +326,7 @@ namespace SharpNL.ML.Perceptron {
         #region . FindParameters .
 
         private MutableContext[] FindParameters(int iterations, bool useAverage) {
-            Display("Performing " + iterations + " iterations.");
+            Display("\nPerforming " + iterations + " iterations.\n");
 
             var allOutcomesPattern = new int[numOutcomes];
             for (var oi = 0; oi < numOutcomes; oi++)
@@ -381,7 +369,6 @@ namespace SharpNL.ML.Perceptron {
                 if (stepSizeDecrease > 0)
                     stepSize *= 1 - stepSizeDecrease;
 
-                DisplayIteration(i);
 
                 if (Monitor != null && Monitor.Token.CanBeCanceled)
                     Monitor.Token.ThrowIfCancellationRequested();
@@ -428,8 +415,12 @@ namespace SharpNL.ML.Perceptron {
 
                 // Calculate the training accuracy and display.
                 var trainingAccuracy = (double) numCorrect/numEvents;
-                if (i < 10 || (i%10) == 0)
-                    Display(". (" + numCorrect + "/" + numEvents + ") " + trainingAccuracy + "\n");
+                Display(string.Format("{0,-4} {1} of {2} - {3}",
+                    i,
+                    numCorrect,
+                    numEvents,
+                    trainingAccuracy));
+                    
 
                 // TODO: Make averaging configurable !!!
 
@@ -453,9 +444,10 @@ namespace SharpNL.ML.Perceptron {
                 // If the tolerance is greater than the difference between the
                 // current training accuracy and all of the previous three
                 // training accuracies, stop training.
-                if (Math.Abs(prevAccuracy1 - trainingAccuracy) < tolerance
-                    && Math.Abs(prevAccuracy2 - trainingAccuracy) < tolerance
-                    && Math.Abs(prevAccuracy3 - trainingAccuracy) < tolerance) {
+                if (Math.Abs(prevAccuracy1 - trainingAccuracy) < tolerance &&
+                    Math.Abs(prevAccuracy2 - trainingAccuracy) < tolerance && 
+                    Math.Abs(prevAccuracy3 - trainingAccuracy) < tolerance) {
+
                     Display("Stopping: change in training set accuracy less than " + tolerance + "\n");
                     break;
                 }

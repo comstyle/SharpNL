@@ -27,6 +27,12 @@ namespace SharpNL.ML {
 
     public abstract class AbstractEventModelSequenceTrainer : AbstractTrainer {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractEventModelSequenceTrainer"/> class with the specified evaluation monitor.
+        /// </summary>
+        /// <param name="monitor">The evaluation monitor. This argument can be <c>null</c>. </param>
+        protected AbstractEventModelSequenceTrainer(Monitor monitor) : base(monitor) { }
+
         protected abstract IMaxentModel DoTrain(ISequenceStream events);
 
         public IMaxentModel Train(ISequenceStream events) {

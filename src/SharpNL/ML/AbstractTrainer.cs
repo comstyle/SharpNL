@@ -20,8 +20,8 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace SharpNL.ML {
@@ -39,6 +39,11 @@ namespace SharpNL.ML {
 
         private TrainingParameters trainParams;
         private Dictionary<string, string> reportMap;
+
+        protected AbstractTrainer(Monitor monitor) {
+            Monitor = monitor;
+        }
+        
 
         #region + Properties .
 
@@ -69,6 +74,14 @@ namespace SharpNL.ML {
 
         #endregion
 
+        #region . Monitor .
+        /// <summary>
+        /// Gets evaluation the monitor.
+        /// </summary>
+        /// <value>The evaluation monitor.</value>
+        protected Monitor Monitor { get; private set; }
+        #endregion
+
         #endregion
 
         #region . AddToReport .
@@ -81,8 +94,12 @@ namespace SharpNL.ML {
 
         #region . Display .
 
-        protected void Display(string text) {
-            Console.Out.WriteLine(text);
+        protected void Display(string message) {
+            if (Monitor != null)
+                Monitor.OnMessage(message);
+#if DEBUG
+            Debug.Print(message);
+#endif
         }
 
         #endregion
