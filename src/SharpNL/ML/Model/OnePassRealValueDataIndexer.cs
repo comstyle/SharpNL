@@ -81,8 +81,7 @@ namespace SharpNL.ML.Model {
                     }
                     eventsToCompare.Add(new ComparableEvent(ocID, cons, ev.Values));
                 } else {
-                    // TODO: Console output
-                    Console.Error.WriteLine("Dropped event " + ev.Outcome + ":" + ev.Context.ToDisplay());
+                    Display("Dropped event " + ev.Outcome + ":" + ev.Context.ToDisplay());
                 }
 
                 // indexedContext.Clear();

@@ -34,7 +34,7 @@ namespace SharpNL.Tests.ML.MaxEnt {
 
         [Test]
         public void TestMaxentOnPrepAttachData() {
-            var model = new GISTrainer(true).TrainModel(100,
+            var model = new GISTrainer().TrainModel(100,
                 new TwoPassDataIndexer(PrepAttachDataUtility.CreateTrainingStream(), 1), 1);
 
             PrepAttachDataUtility.TestModel(model, 0.7997028967566229d);
@@ -43,7 +43,7 @@ namespace SharpNL.Tests.ML.MaxEnt {
         [Test]
         public void TestMaxentOnPrepAttachData2Threads() {
 
-            var trainer = new GISTrainer(true);
+            var trainer = new GISTrainer();
             var di = new TwoPassDataIndexer(PrepAttachDataUtility.CreateTrainingStream(), 1);
 
             var model = trainer.TrainModel(100, di, new UniformPrior(), 1, 2);
@@ -60,7 +60,7 @@ namespace SharpNL.Tests.ML.MaxEnt {
             trainParams.Set(Parameters.DataIndexer, Parameters.DataIndexers.TwoPass);
             trainParams.Set(Parameters.Cutoff, "1");
 
-            var trainer = TrainerFactory.GetEventTrainer(trainParams, reportMap);
+            var trainer = TrainerFactory.GetEventTrainer(trainParams, reportMap, null);
             var model = trainer.Train(PrepAttachDataUtility.CreateTrainingStream());
 
             PrepAttachDataUtility.TestModel(model, 0.7997028967566229d);
@@ -73,7 +73,7 @@ namespace SharpNL.Tests.ML.MaxEnt {
 
             trainParams.Set(Parameters.Algorithm, Parameters.Algorithms.MaxEnt);
 
-            var trainer = TrainerFactory.GetEventTrainer(trainParams, reportMap);
+            var trainer = TrainerFactory.GetEventTrainer(trainParams, reportMap, null);
             var model = trainer.Train(PrepAttachDataUtility.CreateTrainingStream());
 
             PrepAttachDataUtility.TestModel(model, 0.8086159940579352d);

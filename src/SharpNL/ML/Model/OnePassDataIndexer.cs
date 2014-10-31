@@ -20,7 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
 using SharpNL.Utility;
 
@@ -34,8 +33,22 @@ namespace SharpNL.ML.Model {
         protected readonly int cutoff;
         protected readonly bool sort;
 
-        public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff) : this(eventStream, cutoff, true) { }
-        public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort) {
+        public OnePassDataIndexer(Monitor monitor, IObjectStream<Event> eventStream, int cutoff)
+            : this(monitor, eventStream, cutoff, true) {
+            
+        }
+        public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff) 
+            : this(eventStream, cutoff, true) {
+            
+        }
+        public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort)
+            : this(null, eventStream, cutoff, sort) {
+            
+        }
+
+        public OnePassDataIndexer(Monitor monitor, IObjectStream<Event> eventStream, int cutoff, bool sort)
+            : base(monitor) {
+
             this.eventStream = eventStream;
             this.cutoff = cutoff;
             this.sort = sort;
@@ -45,28 +58,30 @@ namespace SharpNL.ML.Model {
 
             var predicateIndex = new Dictionary<string, int>();
 
-            Console.Out.WriteLine("Indexing events using cutoff of " + cutoff);
-            Console.Out.WriteLine("\tComputing event counts...");
+            Display("Indexing events using cutoff of " + cutoff);
+            Display("\tComputing event counts...");
 
-            LinkedList<Event> events = ComputeEventCounts(predicateIndex);
+            var events = ComputeEventCounts(predicateIndex);
 
-            Console.Out.WriteLine("done. " + events.Count + " events");
+            Display("done. " + events.Count + " events");
 
+            if (Monitor != null && Monitor.Token.CanBeCanceled)
+                Monitor.Token.ThrowIfCancellationRequested();
 
-            Console.Out.WriteLine("\tIndexing...");
+            Display("\tIndexing...");
 
-            List<ComparableEvent> eventsToCompare = Index(events, predicateIndex);
+            var eventsToCompare = Index(events, predicateIndex);
 
             events.Clear();
             predicateIndex.Clear();
 
-            Console.Out.WriteLine("done.");
+            Display("done.");
 
-            Console.Out.WriteLine("Sorting and merging events...");
+            Display("Sorting and merging events...");
 
             SortAndMerge(eventsToCompare, sort);
 
-            Console.Out.WriteLine("Done indexing.");
+            Display("Done indexing.");
         }
 
         #region . ComputeEventCounts .
@@ -86,6 +101,10 @@ namespace SharpNL.ML.Model {
 
             Event ev;
             while ((ev = eventStream.Read()) != null) {
+
+                if (Monitor != null && Monitor.Token.CanBeCanceled)
+                    Monitor.Token.ThrowIfCancellationRequested();
+
                 events.AddLast(ev);
                 Update(ev.Context, predicateSet, counter, cutoff);
             }
@@ -109,15 +128,18 @@ namespace SharpNL.ML.Model {
         protected virtual List<ComparableEvent> Index(LinkedList<Event> events, Dictionary<string, int> predicateIndex) {
             var map = new Dictionary<string, int>();
 
-            int numEvents = events.Count;
-            int outcomeCount = 0;
+            var numEvents = events.Count;
+            var outcomeCount = 0;
            
             var eventsToCompare = new List<ComparableEvent>();
             var indexedContext = new List<int>();
 
-            for (int eventIndex = 0; eventIndex < numEvents; eventIndex++) {
+            for (var eventIndex = 0; eventIndex < numEvents; eventIndex++) {
                 var ev = events.First.Value;
                 events.RemoveFirst();
+
+                if (Monitor != null && Monitor.Token.CanBeCanceled)
+                    Monitor.Token.ThrowIfCancellationRequested();
 
                 int ocID;
 
@@ -138,7 +160,8 @@ namespace SharpNL.ML.Model {
                 if (indexedContext.Count > 0) {
                     eventsToCompare.Add(new ComparableEvent(ocID, indexedContext.ToArray()));
                 } else {
-                    Console.Error.WriteLine("Dropped event {0}:{1}", ev.Outcome, ev.Context.ToDisplay());
+                    if (Monitor != null)
+                        Monitor.OnWarning(string.Format("Dropped event {0}:{1}", ev.Outcome, ev.Context.ToDisplay()));
                 }
 
                 indexedContext.Clear();

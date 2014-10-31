@@ -1,6 +1,27 @@
-﻿using System;
+﻿// 
+//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+// 
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+// 
+//       http://www.apache.org/licenses/LICENSE-2.0
+// 
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+// 
+//   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//   - May you do good and not evil.                                         -
+//   - May you find forgiveness for yourself and forgive others.             -
+//   - May you share freely, never taking more than you give.                -
+//   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//  
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -11,8 +32,7 @@ namespace SharpNL.Formats.Ad {
     /// the first alternative (A1).
     /// </summary>
     public class AdSentenceParser {
-
-        private readonly static Regex nodePattern;
+        private static readonly Regex nodePattern;
         private static readonly Regex leafPattern;
 
         private static readonly Regex bizarreLeafPattern;
@@ -27,31 +47,45 @@ namespace SharpNL.Formats.Ad {
 
         /// <summary>
         /// Parses the specified sentence string.
+        /// Converts the string representation of a sentence in a specified attributes and culture-specific
+        /// format to its <see cref="AdSentence" /> equivalent. A return value indicates whether the
+        /// conversion succeeded or failed.
         /// </summary>
+        /// <param name="sentence">The sentence.</param>
         /// <param name="sentenceString">The sentence string.</param>
         /// <param name="para">The para.</param>
         /// <param name="isTitle">if set to <c>true</c> [is title].</param>
         /// <param name="isBox">if set to <c>true</c> [is box].</param>
-        /// <param name="safeParse">if set to <c>true</c> the bizarre cases are not parsed.</param>
-        /// <returns>AdSentence.</returns>
-        /// <exception cref="System.IO.InvalidDataException"></exception>
-        public static AdSentence Parse(string sentenceString, int para, bool isTitle, bool isBox, bool safeParse) {
-
+        /// <param name="safeParse">if set to <c>true</c> the invalid sentences will be ignored.</param>
+        /// <param name="monitor">The evaluation monitor. This value can be a <c>null</c> value.</param>
+        /// <returns><c>true</c> if the <paramref name="sentenceString"/> parameter was converted successfully, <c>false</c> otherwise.</returns>
+        /// <exception cref="System.IO.InvalidDataException">
+        /// Something went wrong.
+        /// </exception>
+        /// <exception cref="System.InvalidOperationException">Should not happen!</exception>
+        public static bool TryParse(
+            out AdSentence sentence,
+            string sentenceString,
+            int para,
+            bool isTitle,
+            bool isBox,
+            bool safeParse,
+            Monitor monitor) {
             string text = null;
             string meta = null;
-            var sentence = new AdSentence();
+            var sent = new AdSentence();
 
             try {
                 using (var reader = new StringReader(sentenceString)) {
-
                     // first line is <s ...>
-                    string line = reader.ReadLine();
+                    var line = reader.ReadLine();
 
                     if (line == null) {
-                        throw new InvalidDataException();
+                        sentence = null;
+                        return false;
                     }
 
-                    bool useSameTextAndMeta = false; // to handle cases where there are diff sug of parse (&&)
+                    var useSameTextAndMeta = false; // to handle cases where there are diff sug of parse (&&)
 
                     while (!line.StartsWith("SOURCE")) {
                         if (line.Equals("&&")) {
@@ -59,41 +93,51 @@ namespace SharpNL.Formats.Ad {
                             break;
                         }
                         line = reader.ReadLine();
+
                         if (line == null) {
-                            return null;
+                            sentence = null;
+                            return false;
                         }
                     }
 
                     if (!useSameTextAndMeta) {
-                        string metaFromSource = line.Substring(7);
+                        var metaFromSource = line.Substring(7);
 
                         line = reader.ReadLine();
 
                         if (line == null) {
-                            throw new InvalidDataException();
+                            sentence = null;
+                            return false;
                         }
 
-                        int start = line.IndexOf(" ", StringComparison.InvariantCulture);
+                        var start = line.IndexOf(" ", StringComparison.InvariantCulture);
 
                         text = FixPunctuation(line.Substring(start + 1).Trim());
 
                         if (start > 0) {
                             meta = line.Substring(0, start) + " p=" + para;
-                            if (isTitle) {
+                            if (isTitle)
                                 meta += " title";
-                            }
-                            if (isBox) {
+
+                            if (isBox)
                                 meta += " box";
-                            }
+
                             meta += metaFromSource;
                         } else {
-                            throw new Exception("Let me see!");
                             // rare case were there is no space between id and the sentence.
-                            // will use previous meta for now
+
+                            if (monitor != null)
+                                monitor.OnWarning("A sentence was skipped due a possible integrity loss.");
+
+                            // The OpenNLP uses previous meta, but its better to just ignore the sentence
+                            // since the previous meta its not related to the current.
+
+                            sentence = null;
+                            return false;                           
                         }
                     }
-                    sentence.Text = text;
-                    sentence.Metadata = meta;
+                    sent.Text = text;
+                    sent.Metadata = meta;
 
                     // skip lines starting with ###
                     line = reader.ReadLine();
@@ -103,23 +147,24 @@ namespace SharpNL.Formats.Ad {
 
                     var nodeStack = new List<AdNode>();
 
-                    sentence.Root = new AdNode {
+                    sent.Root = new AdNode {
                         SyntacticTag = "ROOT",
                         Level = 0
                     };
 
-                    nodeStack.Add(sentence.Root);
+                    nodeStack.Add(sent.Root);
 
                     while (!string.IsNullOrEmpty(line) && !line.StartsWith("</s>") && !line.Equals("&&")) {
-                        var element = ParseElement(line, !safeParse);
+                        AdTreeElement element;
 
-                        if (element != null) {
+                        if (TryParseElement(out element, line, safeParse, monitor)) {
                             // The idea here is to keep a stack of nodes that are candidates for
                             // parenting the following elements (nodes and leafs).
 
                             // 1) When we get a new element, we check its level and remove from
                             // the top of the stack nodes that are brothers or nephews.
-                            while (nodeStack.Count != 0 && element.Level > 0 && element.Level <= nodeStack[nodeStack.Count - 1].Level) {
+                            while (nodeStack.Count != 0 && element.Level > 0 &&
+                                   element.Level <= nodeStack[nodeStack.Count - 1].Level) {
                                 nodeStack.RemoveAt(nodeStack.Count - 1); // pop
                             }
 
@@ -128,7 +173,7 @@ namespace SharpNL.Formats.Ad {
                                 // look for the node with the correct level
 
                                 if (element.Level == 0) {
-                                    sentence.Root.Elements.Add(element);
+                                    nodeStack[0].Elements.Add(element);
                                 } else {
                                     var peek = nodeStack[nodeStack.Count - 1];
                                     var index = nodeStack.Count - 1;
@@ -136,12 +181,13 @@ namespace SharpNL.Formats.Ad {
                                     while (parent == null) {
                                         if (peek.Level < element.Level) {
                                             parent = peek;
+                                            break;
                                         }
                                         index--;
                                         if (index > -1) {
                                             peek = nodeStack[index];
                                         } else {
-                                            parent = sentence.Root;
+                                            parent = nodeStack[0];
                                         }
                                     }
                                     parent.AddElement(element);
@@ -158,41 +204,54 @@ namespace SharpNL.Formats.Ad {
 
                                 nodeStack.Add((AdNode) element);
                             }
+                        } else if (safeParse) {
+                            // invalid element, so we skip this sentence...
+                            sentence = null;
+                            return false;
                         }
                         line = reader.ReadLine();
                     }
                 }
             } catch (Exception ex) {
-#if DEBUG
-                throw new InvalidDataException("Something went wrong.", ex);
-#else
-                Trace.TraceError(ex.Message);
-                return sentence;
-#endif
+                if (monitor != null)
+                    monitor.OnException(new InvalidDataException("Something went wrong during the AdSentence parse.", ex));
+
+                sentence = null;
+                return false;
             }
 
-            return sentence;
+            sentence = sent;
+            return true;
         }
 
         /// <summary>
-        /// Parse a tree element from a AD line
+        /// Converts the specified string representation of a tree element to its <see cref="AdTreeElement"/> 
+        /// equivalent and returns a value that indicates whether the conversion succeeded.
         /// </summary>
-        /// <param name="line">The line.</param>
-        /// <param name="parseBizarre">Parse the bizarre elements.</param>
-        /// <returns>AdTreeElement.</returns>
-        private static AdTreeElement ParseElement(string line, bool parseBizarre) {
-
-            Match m = nodePattern.Match(line);
+        /// <param name="element">
+        /// When this method returns, contains the <see cref="AdTreeElement"/> value equivalent to the element 
+        /// contained in <paramref name="line"/>, if the conversion succeeded, or <c>null</c> if the conversion 
+        /// failed. The conversion fails if the <paramref name="line"/> parameter is null, is an empty string (""),
+        /// or does not contain a valid string representation of a AdElement. This parameter is passed 
+        /// uninitialized.
+        /// </param>
+        /// <param name="line">The string representation of the element.</param>
+        /// <param name="safeParse">if set to <c>true</c> the invalid sentences will be ignored.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        /// <returns><c>true</c> if the s parameter was converted successfully; otherwise, <c>false</c>.</returns>
+        private static bool TryParseElement(out AdTreeElement element, string line, bool safeParse, Monitor monitor) {
+            var m = nodePattern.Match(line);
             if (m.Success) {
-                return new AdNode {
+                element = new AdNode {
                     Level = m.Groups[1].Length + 1,
                     SyntacticTag = m.Groups[2].Value
                 };
+                return true;
             }
 
             m = leafPattern.Match(line);
             if (m.Success) {
-                return new AdLeaf {
+                element = new AdLeaf {
                     Level = m.Groups[1].Length + 1,
                     SyntacticTag = m.Groups[2].Value,
                     FunctionalTag = m.Groups[3].Value,
@@ -201,31 +260,33 @@ namespace SharpNL.Formats.Ad {
                     MorphologicalTag = m.Groups[6].Value,
                     Lexeme = m.Groups[7].Value
                 };
+                return true;
             }
 
             m = punctuationPattern.Match(line);
             if (m.Success) {
-                return new AdLeaf {
+                element = new AdLeaf {
                     Level = m.Groups[1].Length + 1,
                     Lexeme = m.Groups[2].Value
-
                 };
+                return true;
             }
 
+            if (safeParse) {
+                element = null;
+                return false;
+            }
 
-            // TODO: Implement a tracking system for this weird AD elements.
+            // Knuppe: The most bizarre cases I found, were invalid data (like HTML, inside the sentences)
+            //         so I decided to implement the safeParse attribute, to ignore this junk...
+            //
+            //         I think any program should adapt to an error in a file. otherwise the files will never
+            //         be fixed...                      
 
             // process the bizarre cases.
             if (line.Equals("_") || line.StartsWith("<lixo") || line.StartsWith("pause")) {
-                return null;
-            }
-
-            if (!parseBizarre) {
-                Trace.TraceError("Couldn't parse leaf: {0}", line);
-                return new AdLeaf {
-                    Level = 1,
-                    Lexeme = line
-                };
+                element = null;
+                return false;
             }
 
             if (line.StartsWith("=")) {
@@ -242,24 +303,26 @@ namespace SharpNL.Formats.Ad {
                     if (!string.IsNullOrEmpty(leaf.Lemma) && leaf.Lemma.Length > 2) {
                         leaf.Lemma = leaf.Lemma.Substring(1);
                     }
-                    return leaf;
+                    element = leaf;
+                    return true;
                 }
 
-                int level = line.LastIndexOf("=", StringComparison.InvariantCulture) + 1;
-
-                var leaf2 = new AdLeaf {
-                    Level = level + 1,
-                    Lexeme = line.Substring(level + 1)
-                };
-
-                if (Regex.IsMatch(leaf2.Lexeme, "\\w.*?[\\.<>].*")) {
-                    return null;
+                var level = line.LastIndexOf("=", StringComparison.InvariantCulture) + 1;
+                if (level > 0 && level < line.Length - 2 && Regex.IsMatch(line.Substring(level + 1), "\\w.*?[\\.<>].*")) {
+                    element = new AdLeaf {
+                        Level = level + 1,
+                        Lexeme = line.Substring(level + 1)
+                    };
+                    return true;
                 }
-
-                return leaf2;
             }
 
-            return null;
+            if (monitor != null) {
+                monitor.OnWarning("Couldn't parse leaf: " + line);
+            }
+
+            element = null;
+            return false;
         }
 
         private static string FixPunctuation(string text) {

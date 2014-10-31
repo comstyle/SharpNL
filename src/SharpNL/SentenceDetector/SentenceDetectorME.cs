@@ -233,21 +233,50 @@ namespace SharpNL.SentenceDetector {
         #endregion
 
         #region . Train .
-        public static SentenceModel Train(string languageCode, IObjectStream<SentenceSample> samples,
-            SentenceDetectorFactory sdFactory, TrainingParameters mlParameters) {
+
+        /// <summary>
+        /// Trains sentence detection model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="factory">The sentence detector factory.</param>
+        /// <returns>The trained <see cref="SentenceModel"/> object.</returns>
+        public static SentenceModel Train(
+            string languageCode,
+            IObjectStream<SentenceSample> samples,
+            SentenceDetectorFactory factory,
+            TrainingParameters parameters) {
+
+            return Train(languageCode, samples, factory, parameters, null);
+        }
+
+        /// <summary>
+        /// Trains sentence detection model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="factory">The sentence detector factory.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The trained <see cref="SentenceModel"/> object.</returns>
+        public static SentenceModel Train(string languageCode, IObjectStream<SentenceSample> samples, SentenceDetectorFactory factory, TrainingParameters parameters, Monitor monitor) {
 
             var manifestInfoEntries = new Dictionary<string, string>();
 
             // TODO: Fix the EventStream to throw exceptions when training goes wrong
             var eventStream = new SentenceEventStream(
                 samples, 
-                sdFactory.GetContextGenerator(),
-                sdFactory.GetEndOfSentenceScanner());
+                factory.GetContextGenerator(),
+                factory.GetEndOfSentenceScanner());
 
-            var trainer = TrainerFactory.GetEventTrainer(mlParameters, manifestInfoEntries);
+            var trainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
             var model = trainer.Train(eventStream);
 
-            return new SentenceModel(languageCode, model, manifestInfoEntries, sdFactory);
+            return new SentenceModel(languageCode, model, manifestInfoEntries, factory);
         }
         #endregion
 

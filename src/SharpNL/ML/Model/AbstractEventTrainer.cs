@@ -31,7 +31,8 @@ namespace SharpNL.ML.Model {
         public const string DataIndexerOnePass = "OnePass";
         public const string DataIndexerTwoPass = "TwoPass";
 
-        protected AbstractEventTrainer(bool isSortAndMerge) {
+        protected AbstractEventTrainer(Monitor monitor, bool isSortAndMerge) {
+            Monitor = monitor;
             IsSortAndMerge = isSortAndMerge;
         }
 
@@ -58,17 +59,14 @@ namespace SharpNL.ML.Model {
         public bool IsSortAndMerge { get; private set; }
         #endregion
 
-        #region . PrintMessages .
-        public bool PrintMessages { get; set; }
+        #region . Monitor .
+        /// <summary>
+        /// Gets the evaluation monitor.
+        /// </summary>
+        /// <value>The evaluation monitor.</value>
+        protected Monitor Monitor { get; private set; }
         #endregion
 
-        #endregion
-
-        #region . Display .
-        protected void Display(string message) {
-            if (PrintMessages)
-                Console.Out.WriteLine(message);
-        }
         #endregion
 
         #region . IsValid .
@@ -92,19 +90,22 @@ namespace SharpNL.ML.Model {
         public IDataIndexer GetDataIndexer(IObjectStream<Event> events) {
             switch (DataIndexerName) {
                 case DataIndexerOnePass:
-                    return new OnePassDataIndexer(events, Cutoff, IsSortAndMerge);
+                    return new OnePassDataIndexer(Monitor, events, Cutoff, IsSortAndMerge);
                 case DataIndexerTwoPass:
-                    return new TwoPassDataIndexer(events, Cutoff, IsSortAndMerge);
+                    return new TwoPassDataIndexer(Monitor, events, Cutoff, IsSortAndMerge);
                 default:
                     throw new InvalidOperationException("Unexpected data indexer name: " + DataIndexerName);
             }
         }
         #endregion
 
-
-
         protected abstract IMaxentModel DoTrain(IDataIndexer indexer);
 
+        /// <summary>
+        /// Trains the maximum entropy model using the specified <paramref name="events"/>.
+        /// </summary>
+        /// <param name="events">The training events.</param>
+        /// <returns>The trained <see cref="IMaxentModel"/> model.</returns>
         public IMaxentModel Train(IObjectStream<Event> events) {
 
             if (!IsValid()) {

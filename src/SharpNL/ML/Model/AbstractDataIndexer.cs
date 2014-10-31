@@ -44,6 +44,19 @@ namespace SharpNL.ML.Model {
         protected string[] predLabels;
         private bool indexed;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractDataIndexer"/> class without a evaluation monitor.
+        /// </summary>
+        protected AbstractDataIndexer() { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractDataIndexer"/> with the specified evaluation monitor.
+        /// </summary>
+        /// <param name="monitor">The evaluation monitor.</param>
+        protected AbstractDataIndexer(Monitor monitor) {
+            Monitor = monitor;
+        }
+
         #region + Properties .
 
         #region . Values .
@@ -54,6 +67,31 @@ namespace SharpNL.ML.Model {
         public float[][] Values { get; protected set; }
         #endregion
 
+        #region . Monitor .
+        /// <summary>
+        /// Gets the evaluation monitor.
+        /// </summary>
+        /// <value>The evaluation monitor.</value>
+        protected Monitor Monitor { get; private set; }
+        #endregion
+
+        #endregion
+
+        #region . Display .
+
+        /// <summary>
+        /// Displays the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        protected void Display(string message) {
+            if (Monitor != null)
+                Monitor.OnMessage(message);
+
+#if DEBUG
+            Debug.Print(message);
+#endif
+
+        }
         #endregion
 
         #region . Execute .
@@ -159,11 +197,6 @@ namespace SharpNL.ML.Model {
 
         #endregion
 
-        #region . GetValues .
-
-
-        #endregion
-
         #region . GetNumEvents .
 
         /// <summary>
@@ -192,6 +225,9 @@ namespace SharpNL.ML.Model {
                 for (var i = 1; i < numEvents; i++) {
                     var ce2 = eventsToCompare[i];
 
+                    if (Monitor != null && Monitor.Token.CanBeCanceled)
+                        Monitor.Token.ThrowIfCancellationRequested();
+
                     if (ce.CompareTo(ce2) == 0) {
                         ce.seen++; // increment the seen count
                         eventsToCompare[i] = null; // kill the duplicate
@@ -205,7 +241,7 @@ namespace SharpNL.ML.Model {
             }
 
             if (sort) {
-                Debug.WriteLine("done. Reduced " + numEvents + " events to " + numUniqueEvents + ".");
+                Display("done. Reduced " + numEvents + " events to " + numUniqueEvents + ".");
             }
 
             contexts = new int[numUniqueEvents][];
@@ -217,6 +253,10 @@ namespace SharpNL.ML.Model {
                 if (evt == null) {
                     continue; // this was a dupe, skip over it.
                 }
+
+                if (Monitor != null && Monitor.Token.CanBeCanceled)
+                    Monitor.Token.ThrowIfCancellationRequested();
+
                 numTimesEventsSeen[j] = evt.seen;
                 outcomeList[j] = evt.outcome;
                 contexts[j] = evt.predIndexes;
@@ -271,5 +311,6 @@ namespace SharpNL.ML.Model {
         }
 
         #endregion
+
     }
 }

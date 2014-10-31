@@ -160,13 +160,30 @@ namespace SharpNL.DocumentCategorizer {
         public static DocumentCategorizerModel Train(
             string languageCode,
             IObjectStream<DocumentSample> samples,
-            TrainingParameters parameters, 
+            TrainingParameters parameters,
             DocumentCategorizerFactory factory) {
+
+            return Train(languageCode, samples, parameters, factory, null);
+        }
+
+        /// <summary>
+        /// Trains document categorizer model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="factory">The document categorizer factory.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The trained <see cref="DocumentCategorizerModel"/> model.</returns>
+        public static DocumentCategorizerModel Train(string languageCode, IObjectStream<DocumentSample> samples, TrainingParameters parameters, DocumentCategorizerFactory factory, Monitor monitor) {
 
             var manifestInfoEntries = new Dictionary<string, string>();
 
             var eventStream = new DocumentCategorizerEventStream(samples, factory.FeatureGenerators);
-            var trainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries);
+            var trainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
             var model = trainer.Train(eventStream);
 
             return new DocumentCategorizerModel(languageCode, model, manifestInfoEntries, factory);

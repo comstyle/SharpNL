@@ -342,37 +342,59 @@ namespace SharpNL.POSTag {
         #endregion
 
         #region + Train .
+        /// <summary>
+        /// Trains a Part of Speech model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="factory">The sentence detector factory.</param>
+        /// <returns>The trained <see cref="POSModel"/> object.</returns>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static POSModel Train(string languageCode, IObjectStream<POSSample> samples,
+            TrainingParameters parameters, POSTaggerFactory factory) {
+            return Train(languageCode, samples, parameters, factory, null);
+        }
 
-        public static POSModel Train(
-            string languageCode, 
-            IObjectStream<POSSample> samples, 
-            TrainingParameters trainParams,
-            POSTaggerFactory posFactory) {
+        /// <summary>
+        /// Trains a Part of Speech model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="factory">The sentence detector factory.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The trained <see cref="POSModel"/> object.</returns>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static POSModel Train(string languageCode, IObjectStream<POSSample> samples, TrainingParameters parameters, POSTaggerFactory factory, Monitor monitor) {
 
             //int beamSize = trainParams.Get(Parameters.BeamSize, NameFinderME.DefaultBeamSize);
 
-            var contextGenerator = posFactory.GetPOSContextGenerator();
+            var contextGenerator = factory.GetPOSContextGenerator();
             var manifestInfoEntries = new Dictionary<string, string>();
 
-            var trainerType = TrainerFactory.GetTrainerType(trainParams);
+            var trainerType = TrainerFactory.GetTrainerType(parameters);
 
             IMaxentModel posModel = null;
             ML.Model.ISequenceClassificationModel<string> seqPosModel = null;
             switch (trainerType) {
                 case TrainerType.EventModelTrainer:
                     var es = new POSSampleEventStream(samples, contextGenerator);
-                    var trainer = TrainerFactory.GetEventTrainer(trainParams, manifestInfoEntries);
+                    var trainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
 
                     posModel = trainer.Train(es);
                     break;
                 case TrainerType.EventModelSequenceTrainer:
                     var ss = new POSSampleSequenceStream(samples, contextGenerator);
-                    var trainer2 = TrainerFactory.GetEventModelSequenceTrainer(trainParams, manifestInfoEntries);
+                    var trainer2 = TrainerFactory.GetEventModelSequenceTrainer(parameters, manifestInfoEntries, monitor);
 
                     posModel = trainer2.Train(ss);
                     break;
                 case TrainerType.SequenceTrainer:
-                    var trainer3 = TrainerFactory.GetSequenceModelTrainer(trainParams, manifestInfoEntries);
+                    var trainer3 = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries, monitor);
 
                     // TODO: This will probably cause issue, since the feature generator uses the outcomes array
 
@@ -384,10 +406,10 @@ namespace SharpNL.POSTag {
             }
 
             if (posModel != null) {
-                return new POSModel(languageCode, posModel, manifestInfoEntries, posFactory);
+                return new POSModel(languageCode, posModel, manifestInfoEntries, factory);
             } 
 
-            return new POSModel(languageCode, seqPosModel, manifestInfoEntries, posFactory);
+            return new POSModel(languageCode, seqPosModel, manifestInfoEntries, factory);
 
         }
         #endregion

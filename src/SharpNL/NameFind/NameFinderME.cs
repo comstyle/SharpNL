@@ -249,15 +249,29 @@ namespace SharpNL.NameFind {
         /// <param name="factory">The name finder factory.</param>
         /// <returns>the newly <see cref="TokenNameFinderModel"/> trained model.</returns>
         public static TokenNameFinderModel Train(
-            string languageCode,
-            IObjectStream<NameSample> samples,
+            string languageCode, 
+            IObjectStream<NameSample> samples, 
             TrainingParameters parameters,
             TokenNameFinderFactory factory) {
             return Train(languageCode, DefaultType, samples, parameters, factory);
         }
-
         /// <summary>
         /// Trains a name finder model.
+        /// </summary>
+        /// <param name="languageCode">The language of the training data.</param>
+        /// <param name="samples">The training samples.</param>
+        /// <param name="parameters">The machine learning train parameters.</param>
+        /// <param name="factory">The name finder factory.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.</param>
+        /// <returns>the newly <see cref="TokenNameFinderModel"/> trained model.</returns>
+        public static TokenNameFinderModel Train(string languageCode, IObjectStream<NameSample> samples, TrainingParameters parameters, TokenNameFinderFactory factory, Monitor monitor) {
+            return Train(languageCode, DefaultType, samples, parameters, factory, monitor);
+        }
+
+        /// <summary>
+        /// Trains a name finder model with the given parameters.
         /// </summary>
         /// <param name="languageCode">The language of the training data.</param>
         /// <param name="type">Overrides the type parameter in the provided samples. This value can be null.</param>
@@ -271,6 +285,23 @@ namespace SharpNL.NameFind {
             IObjectStream<NameSample> samples,
             TrainingParameters parameters,
             TokenNameFinderFactory factory) {
+
+            return Train(languageCode, type, samples, parameters, factory, null);
+        }
+
+        /// <summary>
+        /// Trains a name finder model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language of the training data.</param>
+        /// <param name="type">Overrides the type parameter in the provided samples. This value can be null.</param>
+        /// <param name="samples">The training samples.</param>
+        /// <param name="parameters">The machine learning train parameters.</param>
+        /// <param name="factory">The name finder factory.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.</param>
+        /// <returns>the newly <see cref="TokenNameFinderModel"/> trained model.</returns>
+        public static TokenNameFinderModel Train(string languageCode, string type, IObjectStream<NameSample> samples, TrainingParameters parameters, TokenNameFinderFactory factory, Monitor monitor) {
             var beamSize = parameters.Get(Parameters.BeamSize, DefaultBeamSize);
             var manifestInfoEntries = new Dictionary<string, string>();
             var trainerType = TrainerFactory.GetTrainerType(parameters);
@@ -282,19 +313,19 @@ namespace SharpNL.NameFind {
                 case TrainerType.EventModelTrainer:
                     var eventStream = new NameFinderEventStream(samples, type, factory.CreateContextGenerator(),
                         factory.CreateSequenceCodec());
-                    var nfTrainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries);
+                    var nfTrainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
 
                     meModel = nfTrainer.Train(eventStream);
                     break;
                 case TrainerType.EventModelSequenceTrainer:
                     var sampleStream = new NameSampleSequenceStream(samples, factory.CreateContextGenerator());
-                    var nsTrainer = TrainerFactory.GetEventModelSequenceTrainer(parameters, manifestInfoEntries);
+                    var nsTrainer = TrainerFactory.GetEventModelSequenceTrainer(parameters, manifestInfoEntries, monitor);
 
                     meModel = nsTrainer.Train(sampleStream);
                     break;
                 case TrainerType.SequenceTrainer:
                     var sequenceStream = new NameSampleSequenceStream(samples, factory.CreateContextGenerator());
-                    var sqTrainer = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries);
+                    var sqTrainer = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries, monitor);
 
 
                     scModel = sqTrainer.Train(sequenceStream);

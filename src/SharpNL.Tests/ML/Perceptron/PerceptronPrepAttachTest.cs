@@ -47,7 +47,7 @@ namespace SharpNL.Tests.ML.Perceptron {
             trainParams.Set(Parameters.Cutoff, "1");
             trainParams.Set(Parameters.UseSkippedAveraging, "true");
 
-            var trainer = TrainerFactory.GetEventTrainer(trainParams, null);
+            var trainer = TrainerFactory.GetEventTrainer(trainParams, null, null);
             var model = trainer.Train(PrepAttachDataUtility.CreateTrainingStream());
 
             PrepAttachDataUtility.TestModel(model, 0.773706362961129);
@@ -63,7 +63,7 @@ namespace SharpNL.Tests.ML.Perceptron {
             trainParams.Set(Parameters.Iterations, "500");
             trainParams.Set(Parameters.Tolerance, "0.0001");
 
-            var trainer = TrainerFactory.GetEventTrainer(trainParams, null);
+            var trainer = TrainerFactory.GetEventTrainer(trainParams, null, null);
             var model = trainer.Train(PrepAttachDataUtility.CreateTrainingStream());
 
             PrepAttachDataUtility.TestModel(model, 0.7677642980935875);
@@ -79,7 +79,7 @@ namespace SharpNL.Tests.ML.Perceptron {
             trainParams.Set(Parameters.Iterations, "500");
             trainParams.Set(Parameters.StepSizeDecrease, "0.06");
 
-            var trainer = TrainerFactory.GetEventTrainer(trainParams, null);
+            var trainer = TrainerFactory.GetEventTrainer(trainParams, null, null);
             var model = trainer.Train(PrepAttachDataUtility.CreateTrainingStream());
 
             /*

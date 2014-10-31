@@ -156,8 +156,42 @@ namespace SharpNL.Chunker {
 
         #endregion
 
-        public static ChunkerModel Train(string languageCode, IObjectStream<ChunkSample> samples,
-            TrainingParameters parameters, ChunkerFactory factory) {
+        #region + Train .
+
+        /// <summary>
+        /// Trains a chunker model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="factory">The sentence detector factory.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <returns>The trained <see cref="ChunkerModel"/> object.</returns>
+        /// <exception cref="System.InvalidOperationException">The trainer was not specified.</exception>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static ChunkerModel Train(
+            string languageCode,
+            IObjectStream<ChunkSample> samples,
+            TrainingParameters parameters,
+            ChunkerFactory factory) {
+
+            return Train(languageCode, samples, parameters, factory, null);
+        }
+
+        /// <summary>
+        /// Trains a chunker model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="factory">The sentence detector factory.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.</param>
+        /// <returns>The trained <see cref="ChunkerModel"/> object.</returns>
+        /// <exception cref="System.InvalidOperationException">The trainer was not specified.</exception>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static ChunkerModel Train(string languageCode, IObjectStream<ChunkSample> samples, TrainingParameters parameters, ChunkerFactory factory, Monitor monitor) {
+
             var trainerType = TrainerFactory.GetTrainerType(parameters);
             if (!trainerType.HasValue) {
                 throw new InvalidOperationException("The trainer was not specified.");
@@ -170,7 +204,7 @@ namespace SharpNL.Chunker {
 
             switch (trainerType) {
                 case TrainerType.SequenceTrainer:
-                    var st = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries);
+                    var st = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries, monitor);
 
                     // TODO: This will probably cause issue, since the feature generator uses the outcomes array
 
@@ -180,7 +214,7 @@ namespace SharpNL.Chunker {
                     break;
                 case TrainerType.EventModelTrainer:
                     var es = new ChunkerEventStream(samples, factory.GetContextGenerator());
-                    var et = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries);
+                    var et = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
 
                     chunkerModel = et.Train(es);
                     break;
@@ -188,10 +222,11 @@ namespace SharpNL.Chunker {
                     throw new NotSupportedException("Trainer type is not supported.");
             }
 
-            if (chunkerModel != null) {
-                return new ChunkerModel(languageCode, chunkerModel, manifestInfoEntries, factory);
-            }
-            return new ChunkerModel(languageCode, seqChunkerModel, manifestInfoEntries, factory);
+            return chunkerModel != null
+                ? new ChunkerModel(languageCode, chunkerModel, manifestInfoEntries, factory) 
+                : new ChunkerModel(languageCode, seqChunkerModel, manifestInfoEntries, factory);
         }
+
+        #endregion
     }
 }

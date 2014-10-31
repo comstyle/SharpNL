@@ -23,6 +23,7 @@
 
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using SharpNL.ML.MaxEntropy.IO;
 
@@ -46,10 +47,6 @@ namespace SharpNL.ML.MaxEntropy {
     /// relative entropy between the distribution specified by the empirical constraints of the training
     /// data and the specified prior.  By default, the uniform distribution is used as the prior.
     /// </remarks>
-    /// <history>
-    ///  Knuppe 2014-09-18: Ported from OpenNLP 1.5.3
-    ///         2014-09-26: This class is giving me a lot of work :(
-    /// </history>
     public class GISTrainer {
         private const double LLThreshold = 0.0001;
 
@@ -61,7 +58,7 @@ namespace SharpNL.ML.MaxEntropy {
         private double sigma = 2.0;
 
         /// <summary>
-        /// Number of unique events which occured in the event set.
+        /// Number of unique events which occurred in the event set.
         /// </summary>
         private int numUniqueEvents;
 
@@ -141,23 +138,35 @@ namespace SharpNL.ML.MaxEntropy {
         /// </summary>
         private EvalParameters evalParams;
 
+        /// <summary>
+        /// The evaluation monitor
+        /// </summary>
+        private readonly Monitor monitor;
+
         private int[] threadNumEvents;
         private int[] threadNumCorrect;
         private double[] threadLoglikelihood;
 
-        public GISTrainer() : this(false) { }
-
-        public GISTrainer(bool printMessages) {
-            PrintMessages = printMessages;
+        #region  + Constructors .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GISTrainer"/> class.
+        /// </summary>
+        public GISTrainer() {
             Smoothing = false;
             SmoothingObservation = 0.1;
         }
 
-        #region + Properties .
-
-        #region . PrintMessages .
-        public bool PrintMessages { get; private set; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GISTrainer"/> class with a specified evaluation monitor.
+        /// </summary>
+        /// <param name="monitor">The evaluation monitor.</param>
+        public GISTrainer(Monitor monitor)
+            : this() {
+            this.monitor = monitor;
+        }
         #endregion
+
+        #region + Properties .
 
         #region . Smoothing .
         /// <summary>
@@ -181,11 +190,12 @@ namespace SharpNL.ML.MaxEntropy {
         #region . Display .
         private void Display(string message) {
 
-            // TODO: Improve the output report...
-            if (PrintMessages) 
-                Console.Out.WriteLine(message);
+            if (monitor != null) 
+                monitor.OnMessage(message);              
 
+#if DEBUG
             System.Diagnostics.Debug.Print(message);
+#endif
         }
         #endregion
 
@@ -194,9 +204,10 @@ namespace SharpNL.ML.MaxEntropy {
         /// <summary>
         /// Compute one iteration of GIS and return the log-likelihood.
         /// </summary>
+        /// <param name="iteration">The iteration number.</param>
         /// <param name="correctionConstant">The correction constant.</param>
         /// <remarks>Compute contribution of p(a|b_i) for each feature and the new correction parameter.</remarks>
-        private double NextIteration(double correctionConstant) {
+        private double NextIteration(int iteration, double correctionConstant) {
             double loglikelihood = 0.0;
             int numEvents = 0;
             int numCorrect = 0;
@@ -206,7 +217,7 @@ namespace SharpNL.ML.MaxEntropy {
             int taskSize = numUniqueEvents / numberOfThreads;
             int leftOver = numUniqueEvents % numberOfThreads;
 
-            var tasks = new System.Threading.Tasks.Task[numberOfThreads];
+            var tasks = new Task[numberOfThreads];
 
             /* 
             Knuppe 2014-10-01: 
@@ -224,14 +235,14 @@ namespace SharpNL.ML.MaxEntropy {
             for (int i = 0; i < numberOfThreads; i++) {
                 int id = i;
                 if (id != numberOfThreads - 1) {
-                    tasks[id] = new System.Threading.Tasks.Task(() => Compute(id, id * taskSize, taskSize));
+                    tasks[id] = new Task(() => Compute(id, id * taskSize, taskSize));
                 } else {
-                    tasks[id] = new System.Threading.Tasks.Task(() => Compute(id, id * taskSize, taskSize + leftOver));
+                    tasks[id] = new Task(() => Compute(id, id * taskSize, taskSize + leftOver));
                 }
                 tasks[id].Start();
             }
 
-            System.Threading.Tasks.Task.WaitAll(tasks);
+            Task.WaitAll(tasks);
 
             for (int i = 0; i < numberOfThreads; i++) {
                 numEvents += threadNumEvents[i];
@@ -239,33 +250,26 @@ namespace SharpNL.ML.MaxEntropy {
                 loglikelihood += threadLoglikelihood[i];
             }
 
-            Display(".");
-
             // merge the results of the two computations
             for (int pi = 0; pi < numPreds; pi++) {
-                int[] activeOutcomes = param[pi].Outcomes;
-
-                for (int aoi = 0; aoi < activeOutcomes.Length; aoi++) {
+                for (int aoi = 0; aoi < param[pi].Outcomes.Length; aoi++) {
                     for (int i = 1; i < modelExpects.Length; i++) {
                         modelExpects[0][pi].UpdateParameter(aoi, modelExpects[i][pi].Parameters[aoi]);
                     }
                 }
             }
 
-            Display(".");
-
             // compute the new parameter values
-            for (int pi = 0; pi < numPreds; pi++) {
-                double[] observed = observedExpects[pi].Parameters;
-                double[] model = modelExpects[0][pi].Parameters;
-                int[] activeOutcomes = param[pi].Outcomes;
-                for (int aoi = 0; aoi < activeOutcomes.Length; aoi++) {
+            for (var pi = 0; pi < numPreds; pi++) {
+                var observed = observedExpects[pi].Parameters;
+                var model = modelExpects[0][pi].Parameters;
+                var activeOutcomes = param[pi].Outcomes;
+                for (var aoi = 0; aoi < activeOutcomes.Length; aoi++) {
                     if (useGaussianSmoothing) {
                         param[pi].UpdateParameter(aoi, GaussianUpdate(pi, aoi, correctionConstant));
                     } else {
-                        if (model[aoi].Equals(0d)) {
-                            Console.Error.WriteLine("Model expects == 0 for " + predLabels[pi] + " " +
-                                                    outcomeLabels[aoi]);
+                        if (model[aoi].Equals(0d) && monitor != null) {
+                            monitor.OnError("Model expects == 0 for " + predLabels[pi] + " " + outcomeLabels[aoi]);
                         }
                         //params[pi].updateParameter(aoi,(Math.log(observed[aoi]) - Math.log(model[aoi])));
                         param[pi].UpdateParameter(aoi,
@@ -279,7 +283,13 @@ namespace SharpNL.ML.MaxEntropy {
                 }
             }
 
-            Display(". loglikelihood=" + loglikelihood + "\t" + ((double)numCorrect / numEvents) + "\n");
+
+            Display(string.Format("{0,-5} loglikelihood = {1,-20:0.00000000000} {2,20:0.00000000000}", 
+                iteration, 
+                loglikelihood, 
+                ((double)numCorrect / numEvents)));
+
+            //Display(". loglikelihood=" + loglikelihood + "\t" + ((double)numCorrect / numEvents) + "\n");
 
             return loglikelihood;
         }
@@ -305,20 +315,17 @@ namespace SharpNL.ML.MaxEntropy {
         /// <param name="iterations">The iterations.</param>
         /// <param name="correctionConstant">The correction constant.</param>
         private void FindParameters(int iterations, double correctionConstant) {
-            double prevLL = 0.0;
-            Display("Performing " + iterations + " iterations.\n");
-            for (int i = 1; i <= iterations; i++) {
-                if (i < 10)
-                    Display("  " + i + ":  ");
-                else if (i < 100)
-                    Display(" " + i + ":  ");
-                else
-                    Display(i + ":  ");
+            var prevLL = 0d;
 
-                double currLL = NextIteration(correctionConstant);
+            Display("Performing " + iterations + " iterations.\n");
+
+            for (var i = 1; i <= iterations; i++) {
+                var currLL = NextIteration(i, correctionConstant);
                 if (i > 1) {
                     if (prevLL > currLL) {
-                        Console.Error.WriteLine("Model Diverging: loglikelihood decreased");
+                        if (monitor != null)
+                            monitor.OnError("Model Diverging: loglikelihood decreased");
+
                         break;
                     }
                     if (currLL - prevLL < LLThreshold) {
@@ -337,20 +344,24 @@ namespace SharpNL.ML.MaxEntropy {
         #endregion
 
         #region . GaussianUpdate .
-        /// <remarks>Modeled on implementation in Zhang Le's maxent kit.</remarks>
+
+        /// <remarks>
+        /// Modeled on implementation in Zhang Le's maxent kit.
+        /// </remarks>
         private double GaussianUpdate(int predicate, int oid, double correctionConstant) {
             var p = param[predicate].Parameters[oid];
-            double x0 = 0.0;
-            double modelValue = modelExpects[0][predicate].Parameters[oid];
-            double observedValue = observedExpects[predicate].Parameters[oid];
-            for (int i = 0; i < 50; i++) {
-                double tmp = modelValue*Math.Exp(correctionConstant*x0);
-                double f = tmp + (p + x0)/sigma - observedValue;
-                double fp = tmp*correctionConstant + 1/sigma;
-                if (fp.Equals(0d)) {
+            var x0 = 0.0d;
+            var modelValue = modelExpects[0][predicate].Parameters[oid];
+            var observedValue = observedExpects[predicate].Parameters[oid];
+            for (var i = 0; i < 50; i++) {
+                var tmp = modelValue * Math.Exp(correctionConstant*x0);
+                var f = tmp + (p + x0)/sigma - observedValue;
+                var fp = tmp * correctionConstant + 1 / sigma;
+
+                if (fp.Equals(0d))
                     break;
-                }
-                double x = x0 - f/fp;
+                
+                var x = x0 - f/fp;
                 if (Math.Abs(x - x0) < 0.000001) {
                     x0 = x;
                     break;
@@ -359,6 +370,7 @@ namespace SharpNL.ML.MaxEntropy {
             }
             return x0;
         }
+
         #endregion
 
         #region . Compute .
@@ -366,7 +378,14 @@ namespace SharpNL.ML.MaxEntropy {
         private void Compute(int threadIndex, int startIndex, int length) {
             var modelDistribution = new double[numOutcomes];
 
-            for (int ei = startIndex; ei < startIndex + length; ei++) {
+            // to avoid unnecessary comparisons during the loop 
+            var token = monitor != null
+                ? monitor.Token
+                : new CancellationToken();
+
+            for (var ei = startIndex; ei < startIndex + length; ei++) {
+
+                token.ThrowIfCancellationRequested();
 
                 if (values != null) {
                     prior.LogPrior(modelDistribution, contexts[ei], values[ei]);
@@ -376,30 +395,34 @@ namespace SharpNL.ML.MaxEntropy {
                     GISModel.Eval(contexts[ei], modelDistribution, evalParams);
                 }
 
-                for (int j = 0; j < contexts[ei].Length; j++) {
-                    int pi = contexts[ei][j];
+                for (var j = 0; j < contexts[ei].Length; j++) {
+                    var pi = contexts[ei][j];
 
-                    if (predicateCounts[pi] >= cutoff) {
-                        int[] activeOutcomes = modelExpects[threadIndex][pi].Outcomes;
-                        for (int aoi = 0; aoi < activeOutcomes.Length; aoi++) {
-                            int oi = activeOutcomes[aoi];
+                    if (predicateCounts[pi] < cutoff) 
+                        continue;
 
-                            if (values != null && values[ei] != null) {
-                                modelExpects[threadIndex][pi].UpdateParameter(aoi, modelDistribution[oi] * values[ei][j] * numTimesEventsSeen[ei]);
-                            } else {
-                                modelExpects[threadIndex][pi].UpdateParameter(aoi, modelDistribution[oi] * numTimesEventsSeen[ei]);
-                            }
+                    var activeOutcomes = modelExpects[threadIndex][pi].Outcomes;
+                    for (var aoi = 0; aoi < activeOutcomes.Length; aoi++) {
+                        var oi = activeOutcomes[aoi];
 
+                        if (values != null && values[ei] != null) {
+                            modelExpects[threadIndex][pi].UpdateParameter(aoi, modelDistribution[oi] * values[ei][j] * numTimesEventsSeen[ei]);
+                        } else {
+                            modelExpects[threadIndex][pi].UpdateParameter(aoi, modelDistribution[oi] * numTimesEventsSeen[ei]);
                         }
+
                     }
                 }
                 
                 threadLoglikelihood[threadIndex] += Math.Log(modelDistribution[outcomeList[ei]]) * numTimesEventsSeen[ei];
                 threadNumEvents[threadIndex] += numTimesEventsSeen[ei];
-
-                if (PrintMessages) {
-                    int max = 0;
-                    for (int oi = 0; oi < numOutcomes; oi++) {
+                
+#if !DEBUG
+                // only when we have a monitor to report...
+                if (monitor != null) {
+#endif
+                    var max = 0;
+                    for (var oi = 0; oi < numOutcomes; oi++) {
                         if (modelDistribution[oi] > modelDistribution[max]) {
                             max = oi;
                         }
@@ -407,7 +430,10 @@ namespace SharpNL.ML.MaxEntropy {
                     if (max == outcomeList[ei]) {
                         threadNumCorrect[threadIndex] += numTimesEventsSeen[ei];
                     }
+#if !DEBUG
                 }
+#endif
+
             }
         }
 
@@ -466,8 +492,8 @@ namespace SharpNL.ML.MaxEntropy {
                         correctionConstant = contexts[ci].Length;
                     }
                 } else {
-                    float cl = values[ci][0];
-                    for (int vi = 1; vi < values[ci].Length; vi++) {
+                    var cl = values[ci][0];
+                    for (var vi = 1; vi < values[ci].Length; vi++) {
                         cl += values[ci][vi];
                     }
 
@@ -487,9 +513,9 @@ namespace SharpNL.ML.MaxEntropy {
             prior.SetLabels(outcomeLabels, predLabels);
             numPreds = predLabels.Length;
 
-            Display("\tNumber of Event Tokens: " + numUniqueEvents + "\n");
-            Display("\t    Number of Outcomes: " + numOutcomes + "\n");
-            Display("\t  Number of Predicates: " + numPreds + "\n");
+            Display("\tNumber of Event Tokens: " + numUniqueEvents);
+            Display("\t    Number of Outcomes: " + numOutcomes);
+            Display("\t  Number of Predicates: " + numPreds);
 
             // set up feature arrays
             //var predCount = new float[numPreds][numOutcomes];
@@ -510,6 +536,9 @@ namespace SharpNL.ML.MaxEntropy {
                     }
                 }
             }
+
+            // ReSharper disable once RedundantAssignment
+            di = null;
 
             // Get the observed expectations of the features. Strictly speaking,
             // we should divide the counts by the number of Tokens, but because of
@@ -532,18 +561,18 @@ namespace SharpNL.ML.MaxEntropy {
 
             var activeOutcomes = new int[numOutcomes];
             var allOutcomesPattern = new int[numOutcomes];
-            for (int oi = 0; oi < numOutcomes; oi++) {
+            for (var oi = 0; oi < numOutcomes; oi++) {
                 allOutcomesPattern[oi] = oi;
             }
-            for (int pi = 0; pi < numPreds; pi++) {
-                int numActiveOutcomes = 0;
+            for (var pi = 0; pi < numPreds; pi++) {
+                var numActiveOutcomes = 0;
                 int[] outcomePattern;
                 if (Smoothing) {
                     numActiveOutcomes = numOutcomes;
                     outcomePattern = allOutcomesPattern;
                 } else {
                     //determine active outcomes
-                    for (int oi = 0; oi < numOutcomes; oi++) {
+                    for (var oi = 0; oi < numOutcomes; oi++) {
                         if (predCount[pi][oi] > 0 && predicateCounts[pi] >= cutoff) {
                             activeOutcomes[numActiveOutcomes] = oi;
                             numActiveOutcomes++;
@@ -553,7 +582,7 @@ namespace SharpNL.ML.MaxEntropy {
                         outcomePattern = allOutcomesPattern;
                     } else {
                         outcomePattern = new int[numActiveOutcomes];
-                        for (int aoi = 0; aoi < numActiveOutcomes; aoi++) {
+                        for (var aoi = 0; aoi < numActiveOutcomes; aoi++) {
                             outcomePattern[aoi] = activeOutcomes[aoi];
                         }
                     }
@@ -564,8 +593,8 @@ namespace SharpNL.ML.MaxEntropy {
                     me[pi] = new MutableContext(outcomePattern, new double[numActiveOutcomes]);
 
                 observedExpects[pi] = new MutableContext(outcomePattern, new double[numActiveOutcomes]);
-                for (int aoi = 0; aoi < numActiveOutcomes; aoi++) {
-                    int oi = outcomePattern[aoi];
+                for (var aoi = 0; aoi < numActiveOutcomes; aoi++) {
+                    var oi = outcomePattern[aoi];
                     param[pi].SetParameter(aoi, 0.0);
 
                     foreach (var modelExpect in modelExpects) {
@@ -580,13 +609,13 @@ namespace SharpNL.ML.MaxEntropy {
                 }
             }
 
-            Display("...done.\n");
+            Display("...done.");
 
             /***************** Find the parameters ************************/
             if (threads == 1)
-                Display("Computing model parameters ...\n");
+                Display("Computing model parameters ...");
             else
-                Display("Computing model parameters in " + threads + " threads...\n");
+                Display("Computing model parameters in " + threads + " threads...");
 
             FindParameters(iterations, correctionConstant);
 

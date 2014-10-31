@@ -32,6 +32,7 @@ namespace SharpNL.Formats.Ad {
         public static readonly char[] eosCharacters;
         private static readonly Regex metaTag1;
 
+        private readonly Monitor monitor;
         private readonly IObjectStream<AdSentence> adSentenceStream;
         private readonly bool isIncludeTitles;
 
@@ -58,6 +59,19 @@ namespace SharpNL.Formats.Ad {
         public AdSentenceSampleStream(IObjectStream<string> lineStream, bool includeTitles, bool safeParse) {
             adSentenceStream = new AdSentenceStream(lineStream, safeParse);
             isIncludeTitles = includeTitles;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdSentenceSampleStream"/> stream from a line stream.
+        /// </summary>
+        /// <param name="lineStream">The line stream.</param>
+        /// <param name="includeTitles">if set to <c>true</c> it will output the sentences marked as news headlines.</param>
+        /// <param name="safeParse">if set to <c>true</c> it will ignore the invalid Ad elements.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        public AdSentenceSampleStream(IObjectStream<string> lineStream, bool includeTitles, bool safeParse, Monitor monitor) {
+            adSentenceStream = new AdSentenceStream(lineStream, safeParse, monitor);
+            isIncludeTitles = includeTitles;
+            this.monitor = monitor;
         }
 
         #region . Dispose .
@@ -145,7 +159,13 @@ namespace SharpNL.Formats.Ad {
                     currentText = int.Parse(m.Groups[1].Value);
                     currentPara = int.Parse(m.Groups[2].Value);
                 } else {
-                    throw new InvalidDataException("Invalid metadata: " + sentence.Metadata);
+                    var ex = new InvalidDataException("Invalid metadata: " + sentence.Metadata);
+
+                    if (monitor == null) 
+                        throw ex;
+
+                    monitor.OnException(ex);
+                    return;
                 }
 
                 isTitle = sentence.Metadata.Contains("title");

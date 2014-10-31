@@ -20,7 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -79,12 +78,16 @@ namespace SharpNL.SentenceDetector {
         /// <returns>Positions.</returns>
         public List<int> GetPositions(char[] chars) {
             var list = new List<int>();
-            foreach (var eos in eosCharacters) {
-                int index = -1;
-                while ((index = Array.IndexOf(chars, eos, index + 1)) != -1) {
-                    list.Add(index);
+            for (var i = 0; i < chars.Length; i++) {
+                // ReSharper disable once LoopCanBeConvertedToQuery
+                foreach (var eos in eosCharacters) {
+                    if (chars[i] != eos) continue;
+
+                    list.Add(i);
+                    break;
                 }
             }
+
             return list;
         }
         #endregion

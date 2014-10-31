@@ -52,12 +52,12 @@ namespace SharpNL.SentenceDetector {
             if (lastLineWasEmpty) {
                 lastLineWasEmpty = false;
 
-                while (line != null && string.IsNullOrWhiteSpace(line)) {
+                while (line != null && line.Trim().Length == 0) {
                     line = Samples.Read();
                 }
             }
 
-            if (line != null && string.IsNullOrWhiteSpace(line)) {
+            if (line != null && line.Trim().Length == 0) {
                 lastLineWasEmpty = true;
                 line = string.Empty;
             }

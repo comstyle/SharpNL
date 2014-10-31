@@ -163,14 +163,12 @@ namespace SharpNL.ML.MaxEntropy {
             for (int ci = 0; ci < context.Length; ci++) {
 
                 if (context[ci] >= 0) {
-                    var predParams = model.Parameters[context[ci]];
-                    var activeOutcomes = predParams.Outcomes;
-                    var activeParameters = predParams.Parameters;
+                    var activeParameters = model.Parameters[context[ci]].Parameters;
                     if (values != null) {
                         value = values[ci];
                     }
-                    for (int ai = 0; ai < activeOutcomes.Length; ai++) {
-                        int oid = activeOutcomes[ai];
+                    for (int ai = 0; ai < model.Parameters[context[ci]].Outcomes.Length; ai++) {
+                        int oid = model.Parameters[context[ci]].Outcomes[ai];
                         numfeats[oid]++;
                         prior[oid] += activeParameters[ai]*value;
                     }

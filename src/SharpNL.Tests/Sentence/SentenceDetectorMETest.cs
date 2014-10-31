@@ -20,6 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System.Text;
 using NUnit.Framework;
 using SharpNL.SentenceDetector;
 using SharpNL.Utility;
@@ -46,6 +47,24 @@ namespace SharpNL.Tests.Sentence {
                 Assert.AreEqual(model.UseTokenEnd, true);
 
                 EvalSentences(new SentenceDetectorME(model));
+            }
+        }
+
+        [Test]
+        public void TestSentenceDetectorBosque() {
+            using (var file = Tests.OpenFile("/opennlp/tools/sentdetect/Bosque_CP_8.0.sd")) {
+
+                var mlParams = new TrainingParameters();
+
+                mlParams.Set(TrainingParameters.IterationsParam, "100");
+                mlParams.Set(TrainingParameters.CutoffParam, "5");
+
+                var sdFactory = new SentenceDetectorFactory("pt", true, null, null);
+                var stream = new SentenceSampleStream(new PlainTextByLineStream(file, Encoding.GetEncoding("ISO-8859-1")));
+
+                var model = SentenceDetectorME.Train("pt", stream, sdFactory, mlParams);
+
+                Assert.NotNull(model);
             }
         }
 

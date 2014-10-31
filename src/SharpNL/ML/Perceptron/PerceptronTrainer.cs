@@ -101,26 +101,19 @@ namespace SharpNL.ML.Perceptron {
         #endregion
 
         #region + Constructors .
-        public PerceptronTrainer() : base(false) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PerceptronTrainer"/> class.
+        /// </summary>
+        public PerceptronTrainer() : base(null, false) { }
 
-        protected override IMaxentModel DoTrain(IDataIndexer indexer) {
-            if (!IsValid())
-                throw new InvalidOperationException("trainParams are not valid!");
-
-            var useAverage = GetBoolParam(Parameters.UseAverage, true);
-
-            UseSkippedAveraging = GetBoolParam(Parameters.UseSkippedAveraging, false);
-
-            // overwrite otherwise it might not work
-            if (UseSkippedAveraging)
-                useAverage = true;
-
-            StepSizeDecrease = GetDoubleParam(Parameters.StepSizeDecrease, 0d);
-
-            Tolerance = GetDoubleParam(Parameters.Tolerance, DefaultTolerance);
-
-            return TrainModel(Iterations, indexer, Cutoff, useAverage);
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PerceptronTrainer"/> class.
+        /// </summary>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        public PerceptronTrainer(Monitor monitor) : base(monitor, false) { }
         #endregion
 
         #region + Properties .
@@ -205,6 +198,27 @@ namespace SharpNL.ML.Perceptron {
         }
         #endregion
 
+        #region . DoTrain .
+        protected override IMaxentModel DoTrain(IDataIndexer indexer) {
+            if (!IsValid())
+                throw new InvalidOperationException("trainParams are not valid!");
+
+            var useAverage = GetBoolParam(Parameters.UseAverage, true);
+
+            UseSkippedAveraging = GetBoolParam(Parameters.UseSkippedAveraging, false);
+
+            // overwrite otherwise it might not work
+            if (UseSkippedAveraging)
+                useAverage = true;
+
+            StepSizeDecrease = GetDoubleParam(Parameters.StepSizeDecrease, 0d);
+
+            Tolerance = GetDoubleParam(Parameters.Tolerance, DefaultTolerance);
+
+            return TrainModel(Iterations, indexer, Cutoff, useAverage);
+        }
+        #endregion
+
         #region . IsValid .
 
         protected override bool IsValid() {
@@ -235,11 +249,25 @@ namespace SharpNL.ML.Perceptron {
         #endregion
 
         #region . TrainModel .
-
+        /// <summary>
+        /// Train a model using the Perceptron algorithm.
+        /// </summary>
+        /// <param name="iterations">The number of Perceptron iterations to perform.</param>
+        /// <param name="indexer">The object which will be used for event compilation.</param>
+        /// <param name="cutoff">The number of times a predicate must occur to be used in a model.</param>
+        /// <returns>The newly trained model, which can be used immediately or saved to disk using a <see cref="IO.PerceptronModelWriter"/> object.</returns>
         public AbstractModel TrainModel(int iterations, IDataIndexer indexer, int cutoff) {
             return TrainModel(iterations, indexer, cutoff, true);
         }
 
+        /// <summary>
+        /// Train a model using the Perceptron algorithm.
+        /// </summary>
+        /// <param name="iterations">The number of Perceptron iterations to perform.</param>
+        /// <param name="indexer">The object which will be used for event compilation.</param>
+        /// <param name="cutoff">The number of times a predicate must occur to be used in a model.</param>
+        /// <param name="useAverage"></param>
+        /// <returns>The newly trained model, which can be used immediately or saved to disk using a <see cref="IO.PerceptronModelWriter"/> object.</returns>
         public AbstractModel TrainModel(int iterations, IDataIndexer indexer, int cutoff, bool useAverage) {
             Display("Incorporating indexed data for training...");
 
@@ -271,10 +299,8 @@ namespace SharpNL.ML.Perceptron {
 
             Display("...done.");
 
-            return new PerceptronModel(
-                Array.ConvertAll(finalParameters, input => (Context)input), 
-                predLabels, 
-                outcomeLabels);
+            // ReSharper disable once CoVariantArrayConversion
+            return new PerceptronModel(finalParameters, predLabels, outcomeLabels);
         }
 
         #endregion
@@ -326,9 +352,10 @@ namespace SharpNL.ML.Perceptron {
                     param[pi].SetParameter(aoi, 0.0);
             }
 
-            var evalParams = new EvalParameters(param, numOutcomes)                ;
+            // ReSharper disable once CoVariantArrayConversion
+            var evalParams = new EvalParameters(param, numOutcomes);
 
-            /** Stores the sum of parameter values of each predicate over many iterations. */
+            // Stores the sum of parameter values of each predicate over many iterations.
             var summedParams = new MutableContext[numPreds];
             if (useAverage) {
                 for (var pi = 0; pi < numPreds; pi++) {
@@ -355,6 +382,9 @@ namespace SharpNL.ML.Perceptron {
                     stepSize *= 1 - stepSizeDecrease;
 
                 DisplayIteration(i);
+
+                if (Monitor != null && Monitor.Token.CanBeCanceled)
+                    Monitor.Token.ThrowIfCancellationRequested();
 
                 var numCorrect = 0;
 

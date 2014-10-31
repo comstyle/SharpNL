@@ -36,6 +36,11 @@ namespace SharpNL.Tests.ML {
             public IMaxentModel Train(IObjectStream<Event> events) {
                 return null;
             }
+
+            public IMaxentModel Train(Monitor monitor, IObjectStream<Event> events) {
+                return null;
+            }
+
             public void Init(TrainingParameters parameters, Dictionary<string, string> reportMap) { }
         }
         

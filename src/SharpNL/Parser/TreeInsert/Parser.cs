@@ -430,66 +430,101 @@ namespace SharpNL.Parser.TreeInsert {
         #endregion
 
         #region + Train .
+        /// <summary>
+        /// Trains a parser model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="rules">The head rules.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <returns>The trained <see cref="ParserModel"/> object.</returns>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static ParserModel Train(
+            string languageCode,
+            IObjectStream<Parse> samples,
+            AbstractHeadRules rules,
+            TrainingParameters parameters) {
 
-        public static ParserModel Train(string languageCode,
-            IObjectStream<Parse> parseSamples, AbstractHeadRules rules, TrainingParameters mlParams) {
+            return Train(languageCode, samples, rules, parameters, null);
+        }
+
+        /// <summary>
+        /// Trains a parser model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="rules">The head rules.</param>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The trained <see cref="ParserModel"/> object.</returns>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static ParserModel Train(
+            string languageCode,
+            IObjectStream<Parse> samples, 
+            AbstractHeadRules rules, 
+            TrainingParameters parameters,
+            Monitor monitor) {
+
             var manifestInfoEntries = new Dictionary<string, string>();
 
             System.Diagnostics.Debug.Print("Building dictionary");
 
-            var dictionary = BuildDictionary(parseSamples, rules, mlParams);
+            var dictionary = BuildDictionary(samples, rules, parameters);
 
-            parseSamples.Reset();
+            samples.Reset();
 
             // tag
             var posModel = POSTaggerME.Train(
                 languageCode,
-                new PosSampleStream(parseSamples),
-                mlParams.GetNamespace("tagger"),
-                new POSTaggerFactory());
+                new PosSampleStream(samples),
+                parameters.GetNamespace("tagger"),
+                new POSTaggerFactory(), monitor);
 
-            parseSamples.Reset();
+            samples.Reset();
 
             // chunk
             var chunkModel = ChunkerME.Train(
                 languageCode,
-                new ChunkSampleStream(parseSamples),
-                mlParams.GetNamespace("chunker"),
-                new ChunkerFactory());
+                new ChunkSampleStream(samples),
+                parameters.GetNamespace("chunker"),
+                new ChunkerFactory(), monitor);
 
-            parseSamples.Reset();
+            samples.Reset();
 
             // build
             System.Diagnostics.Debug.Print("Training builder");
-            var bes = new ParserEventStream(parseSamples, rules, ParserEventTypeEnum.Build, dictionary);
+            var bes = new ParserEventStream(samples, rules, ParserEventTypeEnum.Build, dictionary);
             var buildReportMap = new Dictionary<string, string>();
-            var buildTrainer = TrainerFactory.GetEventTrainer(mlParams.GetNamespace("build"), buildReportMap);
+            var buildTrainer = TrainerFactory.GetEventTrainer(parameters.GetNamespace("build"), buildReportMap, monitor);
 
             var buildModel = buildTrainer.Train(bes);
 
             Chunking.Parser.MergeReportIntoManifest(manifestInfoEntries, buildReportMap, "build");
 
-            parseSamples.Reset();
+            samples.Reset();
 
             // check
             System.Diagnostics.Debug.Print("Training checker");
-            var kes = new ParserEventStream(parseSamples, rules, ParserEventTypeEnum.Check);
+            var kes = new ParserEventStream(samples, rules, ParserEventTypeEnum.Check);
             var checkReportMap = new Dictionary<string, string>();
 
-            var checkTrainer = TrainerFactory.GetEventTrainer(mlParams.GetNamespace("check"), checkReportMap);
+            var checkTrainer = TrainerFactory.GetEventTrainer(parameters.GetNamespace("check"), checkReportMap, monitor);
 
             var checkModel = checkTrainer.Train(kes);
 
             Chunking.Parser.MergeReportIntoManifest(manifestInfoEntries, checkReportMap, "check");
 
-            parseSamples.Reset();
+            samples.Reset();
 
             // attach
             System.Diagnostics.Debug.Print("Training attacher");
-            var attachEvents = new ParserEventStream(parseSamples, rules, ParserEventTypeEnum.Attach);
+            var attachEvents = new ParserEventStream(samples, rules, ParserEventTypeEnum.Attach);
             var attachReportMap = new Dictionary<string, string>();
 
-            var attachTrainer = TrainerFactory.GetEventTrainer(mlParams.GetNamespace("attach"), attachReportMap);
+            var attachTrainer = TrainerFactory.GetEventTrainer(parameters.GetNamespace("attach"), attachReportMap, monitor);
 
             var attachModel = attachTrainer.Train(attachEvents);
 
@@ -507,31 +542,55 @@ namespace SharpNL.Parser.TreeInsert {
                 manifestInfoEntries);
         }
 
-        public static ParserModel Train(
-            string languageCode,
-            IObjectStream<Parse> parseSamples, 
-            AbstractHeadRules rules, 
-            int iterations,
-            int cut) {
+        /// <summary>
+        /// Trains a parser model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="rules">The head rules.</param>
+        /// <param name="iterations">The number of training iterations.</param>
+        /// <param name="cutoff">The min number of times a feature must be seen.</param>
+        /// <returns>The trained <see cref="ParserModel"/> object.</returns>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static ParserModel Train(string languageCode, IObjectStream<Parse> samples, AbstractHeadRules rules,
+            int iterations, int cutoff) {
+
+            return Train(languageCode, samples, rules, iterations, cutoff, null);
+        }
+
+        /// <summary>
+        /// Trains a parser model with the given parameters.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="samples">The data samples.</param>
+        /// <param name="rules">The head rules.</param>
+        /// <param name="iterations">The number of training iterations.</param>
+        /// <param name="cutoff">The min number of times a feature must be seen.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The trained <see cref="ParserModel"/> object.</returns>
+        /// <exception cref="System.NotSupportedException">Trainer type is not supported.</exception>
+        public static ParserModel Train(string languageCode, IObjectStream<Parse> samples, AbstractHeadRules rules, int iterations, int cutoff, Monitor monitor) {
+
             var param = new TrainingParameters();
 
-            param.Set("dict", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
+            param.Set("dict", Parameters.Cutoff, cutoff.ToString(CultureInfo.InvariantCulture));
 
-
-            param.Set("tagger", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
+            param.Set("tagger", Parameters.Cutoff, cutoff.ToString(CultureInfo.InvariantCulture));
             param.Set("tagger", Parameters.Iterations, iterations.ToString(CultureInfo.InvariantCulture));
 
-
-            param.Set("chunker", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
+            param.Set("chunker", Parameters.Cutoff, cutoff.ToString(CultureInfo.InvariantCulture));
             param.Set("chunker", Parameters.Iterations, iterations.ToString(CultureInfo.InvariantCulture));
 
-            param.Set("check", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
+            param.Set("check", Parameters.Cutoff, cutoff.ToString(CultureInfo.InvariantCulture));
             param.Set("check", Parameters.Iterations, iterations.ToString(CultureInfo.InvariantCulture));
 
-            param.Set("build", Parameters.Cutoff, cut.ToString(CultureInfo.InvariantCulture));
+            param.Set("build", Parameters.Cutoff, cutoff.ToString(CultureInfo.InvariantCulture));
             param.Set("build", Parameters.Iterations, iterations.ToString(CultureInfo.InvariantCulture));
 
-            return Train(languageCode, parseSamples, rules, param);
+            return Train(languageCode, samples, rules, param, monitor);
         }
 
         #endregion

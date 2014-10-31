@@ -20,10 +20,10 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
+
 using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
@@ -52,9 +52,30 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
         /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
-        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff) : this(eventStream, cutoff, true) { }
+        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff) : this(null, eventStream, cutoff, true) { }
 
-        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort) {
+        /// <summary>
+        /// Two argument constructor for DataIndexer.
+        /// </summary>
+        /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
+        /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
+        /// <param name="sort">if set to <c>true</c> [sort].</param>
+        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort)
+            : this(null, eventStream, cutoff, sort) {
+            
+        }
+
+        /// <summary>
+        /// Two argument constructor for DataIndexer.
+        /// </summary>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the evaluation messages or it can cancel the indexing operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
+        /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
+        /// <param name="sort">if set to <c>true</c> [sort].</param>
+        public TwoPassDataIndexer(Monitor monitor, IObjectStream<Event> eventStream, int cutoff, bool sort) : base(monitor) {
             this.eventStream = eventStream;
             this.cutoff = cutoff;
             this.sort = sort;           
@@ -62,8 +83,8 @@ namespace SharpNL.ML.Model {
 
         protected override void PerformIndexing() {
 
-            Console.Out.WriteLine("Indexing events using cutoff of " + cutoff);
-            Console.Out.WriteLine("\tComputing event counts...");
+            Display("Indexing events using cutoff of " + cutoff);
+            Display("\tComputing event counts...");
 
             var fileName = Path.GetTempFileName();
             var predicateIndex = new Dictionary<string, int>();
@@ -73,24 +94,24 @@ namespace SharpNL.ML.Model {
                 var writer = new StreamWriter(new UnclosableStream(file), Encoding.UTF8);
                 int numEvents = ComputeEventCounts(writer, predicateIndex);
 
-                Console.Out.WriteLine("done. " + numEvents + " events");
+                Display("done. " + numEvents + " events");
 
                 file.Seek(0, SeekOrigin.Begin);
 
-                Console.Out.WriteLine("\tIndexing...");
+                Display("\tIndexing...");
                 var fes = new FileEventStream(file);
 
-                List<ComparableEvent> eventsToCompare = Index(fes, predicateIndex);
+                var eventsToCompare = Index(fes, predicateIndex);
 
                 file.Close();
 
-                Console.Out.WriteLine("done.");
+                Display("done.");
 
-                Console.Out.WriteLine(sort ? "Sorting and merging events..." : "Collecting events...");
+                Display(sort ? "Sorting and merging events..." : "Collecting events...");
 
                 SortAndMerge(eventsToCompare, sort);
 
-                Console.Out.WriteLine("Done indexing.");
+                Display("Done indexing.");
             }
         }
 
@@ -112,13 +133,16 @@ namespace SharpNL.ML.Model {
 
             var predicateSet = new HashSet<string>();
 
-            //var predicateSet = new SortedSet<string>(Comparer<string>.Create((a, b) => 
-            //    a.hashCode().CompareTo(b.hashCode())));
-
             Event ev;
             while ((ev = eventStream.Read()) != null) {
+
+                if (Monitor != null && Monitor.Token.CanBeCanceled)
+                    Monitor.Token.ThrowIfCancellationRequested();
+
                 eventCount++;
+
                 eventStore.Write(FileEventStream.ToLine(ev));
+
                 Update(ev.Context, predicateSet, counter, cutoff);
             }
 
@@ -130,7 +154,9 @@ namespace SharpNL.ML.Model {
                     predicatesInOut.Add(e.Current, index);
                 } 
             }
+            eventStore.Flush();
             eventStore.Close();
+
             return eventCount;
         }
 
@@ -151,6 +177,9 @@ namespace SharpNL.ML.Model {
             while ((ev = indexEventStream.Read()) != null) {
                 int ocID;
 
+                if (Monitor != null && Monitor.Token.CanBeCanceled)
+                    Monitor.Token.ThrowIfCancellationRequested();
+
                 if (map.ContainsKey(ev.Outcome)) {
                     ocID = map[ev.Outcome];
                 } else {
@@ -158,6 +187,7 @@ namespace SharpNL.ML.Model {
                     map[ev.Outcome] = ocID;
                 }
 
+                // ReSharper disable once LoopCanBeConvertedToQuery
                 foreach (var pred in ev.Context) {
                     if (predicateIndex.ContainsKey(pred)) {
                         indexedContext.Add(predicateIndex[pred]);
@@ -172,7 +202,8 @@ namespace SharpNL.ML.Model {
                     }
                     eventsToCompare.Add(new ComparableEvent(ocID, cons));
                 } else {
-                    Console.Error.WriteLine("Dropped event {0}:{1}", ev.Outcome, ev.Context.ToDisplay());
+                    if (Monitor != null)
+                        Monitor.OnWarning(string.Format("Dropped event {0}:{1}", ev.Outcome, ev.Context.ToDisplay()));
                 }
                 indexedContext.Clear();
             }

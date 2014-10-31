@@ -43,15 +43,15 @@ namespace SharpNL.ML {
             BuiltInTrainers[PerceptronTrainer.PerceptronValue] = typeof (PerceptronTrainer);
         }
 
-        private static T CreateCustomTrainer<T>(string type) {
+        private static T CreateCustomTrainer<T>(string type, Monitor monitor) {
             if (CustomTrainers.ContainsKey(type)) {
-                return (T) Activator.CreateInstance(CustomTrainers[type]);
+                return (T)Activator.CreateInstance(CustomTrainers[type], monitor);
             }
             return default(T);
         }
-        private static T CreateBuiltinTrainer<T> (string type) {
+        private static T CreateBuiltinTrainer<T> (string type, Monitor monitor) {
             if (BuiltInTrainers.ContainsKey(type)) {
-                return (T) Activator.CreateInstance(BuiltInTrainers[type]);
+                return (T) Activator.CreateInstance(BuiltInTrainers[type], monitor);
                 
             }
             return default(T);
@@ -59,22 +59,32 @@ namespace SharpNL.ML {
 
         #region . GetEventTrainer .
 
-        public static IEventTrainer GetEventTrainer(TrainingParameters trainParams, Dictionary<string, string> reportMap) {
+        /// <summary>
+        /// Gets the event trainer.
+        /// </summary>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="reportMap">The report map.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The <see cref="IEventTrainer"/> trainer object.</returns>
+        public static IEventTrainer GetEventTrainer(TrainingParameters parameters, Dictionary<string, string> reportMap, Monitor monitor) {
 
-            string algorithm = trainParams.Get(TrainingParameters.AlgorithmParam);
+            var algorithm = parameters.Get(TrainingParameters.AlgorithmParam);
 
             if (algorithm == null) {
-                AbstractEventTrainer trainer = new GIS();
-                trainer.Init(trainParams, reportMap);
+                AbstractEventTrainer trainer = new GIS(monitor);
+                trainer.Init(parameters, reportMap);
                 return trainer;
             }
 
-            var trainerType = GetTrainerType(trainParams);
+            var trainerType = GetTrainerType(parameters);
             if (trainerType.HasValue && trainerType.Value == TrainerType.EventModelTrainer) {
                 var type = GetTrainer(algorithm);
 
-                var trainer = (IEventTrainer) Activator.CreateInstance(type);
-                trainer.Init(trainParams, reportMap);
+                var trainer = (IEventTrainer) Activator.CreateInstance(type, monitor);
+                trainer.Init(parameters, reportMap);
                 return trainer;
             }
 
@@ -85,22 +95,31 @@ namespace SharpNL.ML {
 
         #region . GetEventModelSequenceTrainer .
 
-        public static IEventModelSequenceTrainer GetEventModelSequenceTrainer(
-            TrainingParameters trainParams,
-            Dictionary<string, string> reportMap) {
+        /// <summary>
+        /// Gets the event model sequence trainer.
+        /// </summary>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="reportMap">The report map.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The <see cref="IEventModelSequenceTrainer"/> trainer object.</returns>
+        /// <exception cref="System.InvalidOperationException">Trainer type couldn't be determined!</exception>
+        public static IEventModelSequenceTrainer GetEventModelSequenceTrainer(TrainingParameters parameters, Dictionary<string, string> reportMap, Monitor monitor) {
 
-            var trainerType = trainParams.Get(Parameters.Algorithm);
+            var trainerType = parameters.Get(Parameters.Algorithm);
             if (!string.IsNullOrEmpty(trainerType)) {
                 if (BuiltInTrainers.ContainsKey(trainerType)) {
-                    var trainer = CreateBuiltinTrainer<IEventModelSequenceTrainer>(trainerType);
-                    trainer.Init(trainParams, reportMap);
+                    var trainer = CreateBuiltinTrainer<IEventModelSequenceTrainer>(trainerType, monitor);
+                    trainer.Init(parameters, reportMap);
                     return trainer;
                 }
 
                 if (CustomTrainers.ContainsKey(trainerType)) {
                     var type = CustomTrainers[trainerType];
-                    var trainer2 = (IEventModelSequenceTrainer)Activator.CreateInstance(type);
-                    trainer2.Init(trainParams, reportMap);
+                    var trainer2 = (IEventModelSequenceTrainer)Activator.CreateInstance(type, monitor);
+                    trainer2.Init(parameters, reportMap);
                     return trainer2;
                 }
             }
@@ -110,11 +129,20 @@ namespace SharpNL.ML {
 
         #endregion
 
-
         #region . GetSequenceModelTrainer .
 
-        public static ISequenceTrainer GetSequenceModelTrainer(TrainingParameters parameters,
-            Dictionary<string, string> reportMap) {
+        /// <summary>
+        /// Gets the sequence model trainer.
+        /// </summary>
+        /// <param name="parameters">The machine learnable parameters.</param>
+        /// <param name="reportMap">The report map.</param>
+        /// <param name="monitor">
+        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.
+        /// </param>
+        /// <returns>The <see cref="ISequenceTrainer"/> trainer object.</returns>
+        /// <exception cref="System.InvalidOperationException">Trainer type couldn't be determined!</exception>
+        public static ISequenceTrainer GetSequenceModelTrainer(TrainingParameters parameters, Dictionary<string, string> reportMap, Monitor monitor) {
 
             var trainerType = parameters.Get(AbstractTrainer.ALGORITHM_PARAM);
 
@@ -122,10 +150,10 @@ namespace SharpNL.ML {
 
             if (trainerType != null) {
                 if (BuiltInTrainers.ContainsKey(trainerType)) {
-                    trainer = CreateBuiltinTrainer<ISequenceTrainer>(trainerType);
+                    trainer = CreateBuiltinTrainer<ISequenceTrainer>(trainerType, monitor);
                 }
                 if (CustomTrainers.ContainsKey(trainerType)) {
-                    trainer = CreateCustomTrainer<ISequenceTrainer>(trainerType);
+                    trainer = CreateCustomTrainer<ISequenceTrainer>(trainerType, monitor);
                 }
             } 
 

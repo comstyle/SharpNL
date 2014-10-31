@@ -34,24 +34,36 @@ namespace SharpNL.Formats.Ad {
         private bool isBox;
 
         private readonly bool safeParse;
+        private readonly Monitor monitor;
 
+        public AdSentenceStream(IObjectStream<string> samples) : base(samples) { }
+
+        public AdSentenceStream(IObjectStream<string> samples, Monitor monitor) : base(samples) {
+            this.monitor = monitor;
+        }
         public AdSentenceStream(IObjectStream<string> samples, bool safeParse) : base(samples) {
             this.safeParse = safeParse;
         }
+        public AdSentenceStream(IObjectStream<string> samples, bool safeParse, Monitor monitor) : base(samples) {
+            this.safeParse = safeParse;
+            this.monitor = monitor;
+        }
 
         /// <summary>
-        /// Returns the next object. Calling this method repeatedly until it returns ,
-        /// null will return each object from the underlying source exactly once.
+        /// Returns the valid <see cref="AdSentence"/> object. 
         /// </summary>
         /// <returns>
-        /// The next object or null to signal that the stream is exhausted.
+        /// Calling this method repeatedly until it returns, <c>null</c> will return each object from the underlying source exactly once.
         /// </returns>
         public override AdSentence Read() {
+            
+            retry:
 
             var sb = new StringBuilder();
             var sentenceStarted = false;
 
             while (true) {
+                AdSentence sentence;
                 var line = Samples.Read();
                 if (line != null) {
 
@@ -82,12 +94,16 @@ namespace SharpNL.Formats.Ad {
                     }
 
                     if (!sentenceStarted && sb.Length > 0) {
-                        return AdSentenceParser.Parse(sb.ToString(), paraID, isTitle, isBox, safeParse);
+                        if (AdSentenceParser.TryParse(out sentence, sb.ToString(), paraID, isTitle, isBox, safeParse, monitor)) {
+                            return sentence;
+                        }
+
+                        goto retry; // invalid sentence, so we try again...
                     }
                 } else {
                     // handle end of file
-                    if (sentenceStarted && sb.Length > 0) {
-                        return AdSentenceParser.Parse(sb.ToString(), paraID, isTitle, isBox, safeParse);
+                    if (sentenceStarted && sb.Length > 0 && AdSentenceParser.TryParse(out sentence, sb.ToString(), paraID, isTitle, isBox, safeParse, monitor)) {
+                        return sentence;
                     }
                     return null;
                 }
