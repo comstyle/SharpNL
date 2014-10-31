@@ -58,25 +58,6 @@ namespace SharpNL.Tests {
         }
 
         [Test]
-        public void TestAllIndexOf() {
-            var values = new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-            var found = values.AllIndexOf(1, 5, 9);
-
-            Assert.NotNull(found);
-            Assert.AreEqual(3, found.Length);
-
-            Assert.AreEqual(1, found[0]);
-            Assert.AreEqual(5, found[1]);
-            Assert.AreEqual(9, found[2]);
-
-            found = values.AllIndexOf(85, 99);
-
-            Assert.NotNull(found);
-            Assert.AreEqual(0, found.Length);
-        }
-
-        [Test]
         public void StringBuilderIndexOf() {
             // name of the song that I was listening when I create the function :)
             var sb = new StringBuilder("Blue Pilots Project - Million Clouds");
