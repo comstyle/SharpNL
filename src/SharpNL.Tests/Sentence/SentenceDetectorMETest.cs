@@ -50,6 +50,7 @@ namespace SharpNL.Tests.Sentence {
             }
         }
 
+        /*
         [Test]
         public void TestSentenceDetectorBosque() {
             using (var file = Tests.OpenFile("/opennlp/tools/sentdetect/Bosque_CP_8.0.sd")) {
@@ -66,7 +67,7 @@ namespace SharpNL.Tests.Sentence {
 
                 Assert.NotNull(model);
             }
-        }
+        } */
 
         [Test]
         public void TestWithOpenNLPModel() {
