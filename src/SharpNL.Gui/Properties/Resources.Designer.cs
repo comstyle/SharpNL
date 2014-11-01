@@ -149,6 +149,16 @@ namespace SharpNL.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap brick_go {
+            get {
+                object obj = ResourceManager.GetObject("brick_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  Select the data file....
         /// </summary>
         internal static string btnSentData_Select {
@@ -190,9 +200,29 @@ namespace SharpNL.Gui.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap computer_go {
+            get {
+                object obj = ResourceManager.GetObject("computer_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cup {
             get {
                 object obj = ResourceManager.GetObject("cup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap disk {
+            get {
+                object obj = ResourceManager.GetObject("disk", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -227,6 +257,15 @@ namespace SharpNL.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The task node {0} was ignored in the project because it is not recognized by the GUI..
+        /// </summary>
+        internal static string ErrorUnknownTask {
+            get {
+                return ResourceManager.GetString("ErrorUnknownTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap filter {
@@ -242,6 +281,16 @@ namespace SharpNL.Gui.Properties {
         internal static System.Drawing.Bitmap folder_page {
             get {
                 object obj = ResourceManager.GetObject("folder_page", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap folder_wrench {
+            get {
+                object obj = ResourceManager.GetObject("folder_wrench", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -468,15 +517,6 @@ namespace SharpNL.Gui.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chunk.
-        /// </summary>
-        internal static string ProjectNodeChunk {
-            get {
-                return ResourceManager.GetString("ProjectNodeChunk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Recognize entities.
         /// </summary>
         internal static string ProjectNodeEntityRecognize {
@@ -500,24 +540,6 @@ namespace SharpNL.Gui.Properties {
         internal static string ProjectNodeOutputs {
             get {
                 return ResourceManager.GetString("ProjectNodeOutputs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parse.
-        /// </summary>
-        internal static string ProjectNodeParse {
-            get {
-                return ResourceManager.GetString("ProjectNodeParse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tagger.
-        /// </summary>
-        internal static string ProjectNodePOSTag {
-            get {
-                return ResourceManager.GetString("ProjectNodePOSTag", resourceCulture);
             }
         }
         
@@ -549,6 +571,15 @@ namespace SharpNL.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Train Input.
+        /// </summary>
+        internal static string ProjectNodeTrainInput {
+            get {
+                return ResourceManager.GetString("ProjectNodeTrainInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WebGet.
         /// </summary>
         internal static string ProjectNodeWebGet {
@@ -567,11 +598,56 @@ namespace SharpNL.Gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chunk.
+        /// </summary>
+        internal static string ProjectTaskChunk {
+            get {
+                return ResourceManager.GetString("ProjectTaskChunk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parse.
+        /// </summary>
+        internal static string ProjectTaskParse {
+            get {
+                return ResourceManager.GetString("ProjectTaskParse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tagger.
+        /// </summary>
+        internal static string ProjectTaskPOSTag {
+            get {
+                return ResourceManager.GetString("ProjectTaskPOSTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Model File.
+        /// </summary>
+        internal static string ProjectTaskSaveModelFile {
+            get {
+                return ResourceManager.GetString("ProjectTaskSaveModelFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Detect sentences.
         /// </summary>
-        internal static string ProjectTaskSentenceDetect {
+        internal static string ProjectTaskSD {
             get {
-                return ResourceManager.GetString("ProjectTaskSentenceDetect", resourceCulture);
+                return ResourceManager.GetString("ProjectTaskSD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Train SD Model.
+        /// </summary>
+        internal static string ProjectTaskSDTrain {
+            get {
+                return ResourceManager.GetString("ProjectTaskSDTrain", resourceCulture);
             }
         }
         
@@ -581,6 +657,15 @@ namespace SharpNL.Gui.Properties {
         internal static string ProjectTaskTokenize {
             get {
                 return ResourceManager.GetString("ProjectTaskTokenize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Train Tokenizer Model.
+        /// </summary>
+        internal static string ProjectTaskTokenizeTrain {
+            get {
+                return ResourceManager.GetString("ProjectTaskTokenizeTrain", resourceCulture);
             }
         }
         

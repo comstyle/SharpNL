@@ -60,6 +60,29 @@ namespace SharpNL.Gui {
 
         #endregion
 
+        #region . GetProperty .
+        /// <summary>
+        /// Gets the property value with the specified name. If the property cannot be found the <paramref name="defaultValue"/> is returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj">The object.</param>
+        /// <param name="name">The property name.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>T.</returns>
+        internal static T GetProperty<T>(this object obj, string name, T defaultValue) {
+            if (obj == null)
+                return defaultValue;
+
+            var type = obj.GetType();
+
+            var p = type.GetProperty(name, typeof(T));
+            if (p != null)
+                return (T)p.GetValue(obj);
+
+            return defaultValue;
+        }
+        #endregion
+
 
     }
 }

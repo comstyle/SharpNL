@@ -54,6 +54,7 @@ namespace SharpNL.Gui.Forms {
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAddTextFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddTextInput = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAddTrainInput = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddWebPage = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuProjectRefresh = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,11 +74,16 @@ namespace SharpNL.Gui.Forms {
             this.mnuSDTrain = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddTokenizer = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTokTokenize = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuIO = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuIOSaveModel = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddNodeTextFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddNodeTextInput = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAddNodeTrainInput = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddNodeWebPage = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuTokTrain = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -150,32 +156,35 @@ namespace SharpNL.Gui.Forms {
             this.imageList.Images.SetKeyName(1, "project_error");
             this.imageList.Images.SetKeyName(2, "model");
             this.imageList.Images.SetKeyName(3, "model_error");
-            this.imageList.Images.SetKeyName(4, "model_warning");
-            this.imageList.Images.SetKeyName(5, "models");
-            this.imageList.Images.SetKeyName(6, "models_error");
-            this.imageList.Images.SetKeyName(7, "models_warning");
-            this.imageList.Images.SetKeyName(8, "textfile");
-            this.imageList.Images.SetKeyName(9, "web");
-            this.imageList.Images.SetKeyName(10, "task");
-            this.imageList.Images.SetKeyName(11, "task_error");
-            this.imageList.Images.SetKeyName(12, "task_warning");
-            this.imageList.Images.SetKeyName(13, "tasks");
-            this.imageList.Images.SetKeyName(14, "tasks_error");
-            this.imageList.Images.SetKeyName(15, "tasks_warning");
-            this.imageList.Images.SetKeyName(16, "nodes");
-            this.imageList.Images.SetKeyName(17, "nodes_error");
-            this.imageList.Images.SetKeyName(18, "nodes_warning");
-            this.imageList.Images.SetKeyName(19, "sd");
-            this.imageList.Images.SetKeyName(20, "console");
-            this.imageList.Images.SetKeyName(21, "error");
-            this.imageList.Images.SetKeyName(22, "outputs");
-            this.imageList.Images.SetKeyName(23, "tokenize");
-            this.imageList.Images.SetKeyName(24, "entity_recognize");
-            this.imageList.Images.SetKeyName(25, "chunk");
-            this.imageList.Images.SetKeyName(26, "postag");
-            this.imageList.Images.SetKeyName(27, "textinput");
-            this.imageList.Images.SetKeyName(28, "parse");
-            this.imageList.Images.SetKeyName(29, "document");
+            this.imageList.Images.SetKeyName(4, "model_save");
+            this.imageList.Images.SetKeyName(5, "model_warning");
+            this.imageList.Images.SetKeyName(6, "models");
+            this.imageList.Images.SetKeyName(7, "models_error");
+            this.imageList.Images.SetKeyName(8, "models_warning");
+            this.imageList.Images.SetKeyName(9, "textfile");
+            this.imageList.Images.SetKeyName(10, "web");
+            this.imageList.Images.SetKeyName(11, "task");
+            this.imageList.Images.SetKeyName(12, "task_error");
+            this.imageList.Images.SetKeyName(13, "task_warning");
+            this.imageList.Images.SetKeyName(14, "tasks");
+            this.imageList.Images.SetKeyName(15, "tasks_error");
+            this.imageList.Images.SetKeyName(16, "tasks_warning");
+            this.imageList.Images.SetKeyName(17, "nodes");
+            this.imageList.Images.SetKeyName(18, "nodes_error");
+            this.imageList.Images.SetKeyName(19, "nodes_warning");
+            this.imageList.Images.SetKeyName(20, "sd");
+            this.imageList.Images.SetKeyName(21, "console");
+            this.imageList.Images.SetKeyName(22, "error");
+            this.imageList.Images.SetKeyName(23, "outputs");
+            this.imageList.Images.SetKeyName(24, "tokenize");
+            this.imageList.Images.SetKeyName(25, "entity_recognize");
+            this.imageList.Images.SetKeyName(26, "chunk");
+            this.imageList.Images.SetKeyName(27, "postag");
+            this.imageList.Images.SetKeyName(28, "textinput");
+            this.imageList.Images.SetKeyName(29, "parse");
+            this.imageList.Images.SetKeyName(30, "document");
+            this.imageList.Images.SetKeyName(31, "train");
+            this.imageList.Images.SetKeyName(32, "train_input");
             // 
             // propertyGrid
             // 
@@ -312,6 +321,7 @@ namespace SharpNL.Gui.Forms {
             resources.ApplyResources(this.toolStop, "toolStop");
             this.toolStop.Image = global::SharpNL.Gui.Properties.Resources.stop;
             this.toolStop.Name = "toolStop";
+            this.toolStop.Click += new System.EventHandler(this.toolStop_Click);
             // 
             // mnuProject
             // 
@@ -330,6 +340,7 @@ namespace SharpNL.Gui.Forms {
             this.toolStripMenuItem3,
             this.mnuAddTextFile,
             this.mnuAddTextInput,
+            this.mnuAddTrainInput,
             this.mnuAddWebPage});
             this.mnuAdd.Image = global::SharpNL.Gui.Properties.Resources.add;
             this.mnuAdd.Name = "mnuAdd";
@@ -360,6 +371,13 @@ namespace SharpNL.Gui.Forms {
             this.mnuAddTextInput.Name = "mnuAddTextInput";
             resources.ApplyResources(this.mnuAddTextInput, "mnuAddTextInput");
             this.mnuAddTextInput.Click += new System.EventHandler(this.mnuAddTextInput_Click);
+            // 
+            // mnuAddTrainInput
+            // 
+            this.mnuAddTrainInput.Image = global::SharpNL.Gui.Properties.Resources.computer_go;
+            this.mnuAddTrainInput.Name = "mnuAddTrainInput";
+            resources.ApplyResources(this.mnuAddTrainInput, "mnuAddTrainInput");
+            this.mnuAddTrainInput.Click += new System.EventHandler(this.mnuAddTrainInput_Click);
             // 
             // mnuAddWebPage
             // 
@@ -395,7 +413,9 @@ namespace SharpNL.Gui.Forms {
             this.mnuAddParsing,
             this.mnuAddPOS,
             this.mnuAddSD,
-            this.mnuAddTokenizer});
+            this.mnuAddTokenizer,
+            this.toolStripMenuItem2,
+            this.mnuIO});
             this.mnuTask.Name = "mnuTask";
             resources.ApplyResources(this.mnuTask, "mnuTask");
             this.mnuTask.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTask_Opening);
@@ -489,11 +509,13 @@ namespace SharpNL.Gui.Forms {
             this.mnuSDTrain.Image = global::SharpNL.Gui.Properties.Resources.computer;
             this.mnuSDTrain.Name = "mnuSDTrain";
             resources.ApplyResources(this.mnuSDTrain, "mnuSDTrain");
+            this.mnuSDTrain.Click += new System.EventHandler(this.mnuSDTrain_Click);
             // 
             // mnuAddTokenizer
             // 
             this.mnuAddTokenizer.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuTokTokenize});
+            this.mnuTokTokenize,
+            this.mnuTokTrain});
             this.mnuAddTokenizer.Image = global::SharpNL.Gui.Properties.Resources.text_allcaps;
             this.mnuAddTokenizer.Name = "mnuAddTokenizer";
             resources.ApplyResources(this.mnuAddTokenizer, "mnuAddTokenizer");
@@ -504,6 +526,26 @@ namespace SharpNL.Gui.Forms {
             this.mnuTokTokenize.Name = "mnuTokTokenize";
             resources.ApplyResources(this.mnuTokTokenize, "mnuTokTokenize");
             this.mnuTokTokenize.Click += new System.EventHandler(this.mnuTokTokenize_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            resources.ApplyResources(this.toolStripMenuItem2, "toolStripMenuItem2");
+            // 
+            // mnuIO
+            // 
+            this.mnuIO.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuIOSaveModel});
+            this.mnuIO.Image = global::SharpNL.Gui.Properties.Resources.folder_wrench;
+            this.mnuIO.Name = "mnuIO";
+            resources.ApplyResources(this.mnuIO, "mnuIO");
+            // 
+            // mnuIOSaveModel
+            // 
+            this.mnuIOSaveModel.Image = global::SharpNL.Gui.Properties.Resources.brick_go;
+            this.mnuIOSaveModel.Name = "mnuIOSaveModel";
+            resources.ApplyResources(this.mnuIOSaveModel, "mnuIOSaveModel");
+            this.mnuIOSaveModel.Click += new System.EventHandler(this.mnuIOSaveModel_Click);
             // 
             // mnuNode
             // 
@@ -517,6 +559,7 @@ namespace SharpNL.Gui.Forms {
             this.addToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuAddNodeTextFile,
             this.mnuAddNodeTextInput,
+            this.mnuAddNodeTrainInput,
             this.mnuAddNodeWebPage});
             this.addToolStripMenuItem.Image = global::SharpNL.Gui.Properties.Resources.add;
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
@@ -536,12 +579,26 @@ namespace SharpNL.Gui.Forms {
             resources.ApplyResources(this.mnuAddNodeTextInput, "mnuAddNodeTextInput");
             this.mnuAddNodeTextInput.Click += new System.EventHandler(this.mnuAddTextInput_Click);
             // 
+            // mnuAddNodeTrainInput
+            // 
+            this.mnuAddNodeTrainInput.Image = global::SharpNL.Gui.Properties.Resources.computer_go;
+            this.mnuAddNodeTrainInput.Name = "mnuAddNodeTrainInput";
+            resources.ApplyResources(this.mnuAddNodeTrainInput, "mnuAddNodeTrainInput");
+            this.mnuAddNodeTrainInput.Click += new System.EventHandler(this.mnuAddTrainInput_Click);
+            // 
             // mnuAddNodeWebPage
             // 
             this.mnuAddNodeWebPage.Image = global::SharpNL.Gui.Properties.Resources.world;
             this.mnuAddNodeWebPage.Name = "mnuAddNodeWebPage";
             resources.ApplyResources(this.mnuAddNodeWebPage, "mnuAddNodeWebPage");
             this.mnuAddNodeWebPage.Click += new System.EventHandler(this.mnuAddNodeWebPage_Click);
+            // 
+            // mnuTokTrain
+            // 
+            this.mnuTokTrain.Image = global::SharpNL.Gui.Properties.Resources.computer;
+            this.mnuTokTrain.Name = "mnuTokTrain";
+            resources.ApplyResources(this.mnuTokTrain, "mnuTokTrain");
+            this.mnuTokTrain.Click += new System.EventHandler(this.mnuTokTrain_Click);
             // 
             // frmProject
             // 
@@ -628,5 +685,11 @@ namespace SharpNL.Gui.Forms {
         private System.Windows.Forms.ToolStripMenuItem mnuAddTextInput;
         internal System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.ToolStripMenuItem mnuAddNodeTextInput;
+        private System.Windows.Forms.ToolStripMenuItem mnuAddNodeTrainInput;
+        private System.Windows.Forms.ToolStripMenuItem mnuAddTrainInput;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem mnuIO;
+        private System.Windows.Forms.ToolStripMenuItem mnuIOSaveModel;
+        private System.Windows.Forms.ToolStripMenuItem mnuTokTrain;
     }
 }

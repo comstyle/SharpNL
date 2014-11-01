@@ -27,11 +27,19 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
+using SharpNL.Chunker;
+using SharpNL.DocumentCategorizer;
 using SharpNL.Gui.Properties;
+using SharpNL.NameFind;
+using SharpNL.Parser;
+using SharpNL.POSTag;
 using SharpNL.Project;
 using SharpNL.Project.Nodes;
 using SharpNL.Project.Tasks;
+using SharpNL.SentenceDetector;
+using SharpNL.Tokenize;
 using SharpNL.Utility.Model;
 
 using SharpNL.Gui.Viewers;
@@ -89,7 +97,7 @@ namespace SharpNL.Gui.Forms {
                 args.Task.Tag = watch;
 
                 richLog.InvokeIfRequired(() =>
-                    richLog.AppendText(string.Format("# {0} started.\n", args.Task.GetType().Name), Color.SlateGray)
+                    richLog.AppendText(string.Format("# {0} started.\n\n", args.Task.GetType().Name), Color.SlateGray)
                     );
 
             } finally {
@@ -102,7 +110,7 @@ namespace SharpNL.Gui.Forms {
                 watch.Stop();
 
                 richLog.InvokeIfRequired(() =>
-                    richLog.AppendText(string.Format("# {0} finished.\n#   Time taken: {1:c}\n", args.Task.GetType().Name, TimeSpan.FromMilliseconds(watch.ElapsedMilliseconds)), Color.SlateGray)
+                    richLog.AppendText(string.Format("\n# {0} finished.\n#   Time taken: {1:c}\n", args.Task.GetType().Name, TimeSpan.FromMilliseconds(watch.ElapsedMilliseconds)), Color.SlateGray)
                     );
 
             }
@@ -134,11 +142,11 @@ namespace SharpNL.Gui.Forms {
         private void ProjectOnException(object sender, MonitorExceptionEventArgs e) {
             richLog.InvokeIfRequired(() => {
                 tabControl.SelectTab(tabLog);
-                richLog.AppendText(e.Exception.Message + "\n", Color.Red);
+                richLog.AppendText(string.Format("An exception has been thrown in the project.\n\nInformation for nerds:\n{0}", e.Exception) + "\n", Color.Red);
             });
         }
         private void ProjectOnWarning(object sender, MonitorMessageEventArgs e) {
-            richLog.InvokeIfRequired(() => richLog.AppendText(e.Message + "\n", Color.OrangeRed));
+            richLog.InvokeIfRequired(() => richLog.AppendText(e.Message + "\n", Color.Tomato));
         }
         private void ProjectOnMessage(object sender, MonitorMessageEventArgs e) {
             richLog.InvokeIfRequired(() => richLog.AppendText("  " + e.Message.TrimStart(' ') + "\n", SystemColors.WindowText));
@@ -369,32 +377,7 @@ namespace SharpNL.Gui.Forms {
                     var found = treeNodes.Cast<TreeNode>().Any(treeNode => treeNode.Tag == pn);
                     if (!found) {
 
-                        if (pn.GetType() == typeof (TextFileNode)) {
-                            tn = new TreeNode {
-                                Text = Resources.ProjectNodeTextFile,
-                                ImageKey = @"textfile",
-                                SelectedImageKey = @"textfile",
-                                Tag = pn
-                            };
-                            
-                        } else if (pn.GetType() == typeof (WebGetNode)) {
-                            tn = new TreeNode {
-                                Text = Resources.ProjectNodeWebGet,
-                                ImageKey = @"textfile",
-                                SelectedImageKey = @"textfile",
-                                Tag = pn
-                            };
-                        } else if (pn.GetType() == typeof(TextInput)) {
-                            tn = new TreeNode {
-                                Text = Resources.ProjectNodeTextInput,
-                                ImageKey = @"textinput",
-                                SelectedImageKey = @"textinput",
-                                Tag = pn
-                            };
-                            
-                        } else {
-                            throw new InvalidOperationException();
-                        }
+                        tn = CreateProjectNode(pn);
 
                         var result = tn.Nodes.Add("outputs", Resources.ProjectNodeOutputs, "outputs", "outputs");
                         RefreshOutputs(result, pn);
@@ -421,12 +404,12 @@ namespace SharpNL.Gui.Forms {
             }
         }
 
-        private void RefreshOutputs(TreeNode treeNode, ProjectNode node) {
+        private void RefreshOutputs(TreeNode treeNode, ProjectNode projectNode) {
             var stack = new Stack();
             foreach (TreeNode n in treeNode.Nodes)
                 stack.Push(n);
 
-            foreach (var o in node.Outputs)
+            foreach (var o in projectNode.Outputs)
                 stack.Push(o);
 
             while (stack.Count > 0) {
@@ -434,7 +417,7 @@ namespace SharpNL.Gui.Forms {
 
                 var tn = item as TreeNode;
                 if (tn != null) {
-                    if (tn.Tag == null || !node.Outputs.Contains(tn.Tag))
+                    if (tn.Tag == null || !projectNode.Outputs.Contains(tn.Tag))
                         tn.Remove();
 
                     continue;
@@ -445,14 +428,8 @@ namespace SharpNL.Gui.Forms {
                         goto next;
                 }
 
-                tn = new TreeNode {
-                    Text = item.GetType().Name,
-                    ImageKey = @"document",
-                    SelectedImageKey = @"document",
-                    Tag = item
-                };
 
-                treeNode.Nodes.Add(tn);
+                treeNode.Nodes.Add(CreateOutputNode(item));
 
             next:
                 ;
@@ -488,31 +465,15 @@ namespace SharpNL.Gui.Forms {
                         }
                     }
 
-                    if (AddTreeTask(treeTasks, projectTask,
-                        typeof(SentenceDetectorTask),
-                        Resources.ProjectTaskSentenceDetect, "sd")) continue;
+                    tn = CreateTaskNode(projectTask);
 
-                    if (AddTreeTask(treeTasks, projectTask,
-                        typeof(TokenizerTask),
-                        Resources.ProjectTaskTokenize, "tokenize")) continue;
+                    if (tn != null) {
+                        tn.Tag = projectTask;
 
-                    if (AddTreeTask(treeTasks, projectTask,
-                        typeof(EntityFinderTask),
-                        Resources.ProjectNodeEntityRecognize, "entity_recognize")) continue;
-
-                    if (AddTreeTask(treeTasks, projectTask,
-                        typeof(ChunkerTask),
-                        Resources.ProjectNodeChunk, "chunk")) continue;
-
-                    if (AddTreeTask(treeTasks, projectTask,
-                        typeof(POSTagTask),
-                        Resources.ProjectNodePOSTag, "postag")) continue;
-
-                    if (AddTreeTask(treeTasks, projectTask,
-                        typeof(ParserTask),
-                        Resources.ProjectNodeParse, "parse")) continue;
-
-                    throw new InvalidOperationException();
+                        treeTasks.Nodes.Add(tn);
+                    } else {
+                        richLog.AppendText(string.Format(Resources.ErrorUnknownTask, projectTask.GetType().Name), Color.Red);
+                    }
                 }
             next:
                 ;
@@ -520,17 +481,116 @@ namespace SharpNL.Gui.Forms {
             
         }
 
-        private bool AddTreeTask(TreeNode parent, ProjectTask task, Type type, string text, string image) {
-            if (!type.IsInstanceOfType(task))
-                return false;
+        #region . CreateProjectNode .
+        private static TreeNode CreateProjectNode(ProjectNode pn) {
+            if (pn.GetType() == typeof(TextFileNode)) {
+                return new TreeNode {
+                    Text = Resources.ProjectNodeTextFile,
+                    ImageKey = @"textfile",
+                    SelectedImageKey = @"textfile",
+                    Tag = pn
+                };
 
-            parent.Nodes.Add(new TreeNode(text) {
-                ImageKey = image,
-                SelectedImageKey = image,
-                Tag = task
-            });
+            }
+            if (pn.GetType() == typeof(WebGetNode)) {
+                return new TreeNode {
+                    Text = Resources.ProjectNodeWebGet,
+                    ImageKey = @"textfile",
+                    SelectedImageKey = @"textfile",
+                    Tag = pn
+                };
+            }
+            if (pn.GetType() == typeof(TextInputNode)) {
+                return new TreeNode {
+                    Text = Resources.ProjectNodeTextInput,
+                    ImageKey = @"textinput",
+                    SelectedImageKey = @"textinput",
+                    Tag = pn
+                };
+            }
+            if (pn.GetType() == typeof(TrainInputNode)) {
+                return new TreeNode {
+                    Text = Resources.ProjectNodeTrainInput,
+                    ImageKey = @"train_input",
+                    SelectedImageKey = @"train_input",
+                    Tag = pn
+                };
+            }
 
-            return true;
+            throw new InvalidOperationException();
+        }
+        #endregion
+
+        #region . CreateOutputNode .
+        private static TreeNode CreateOutputNode(object output) {
+
+            return new TreeNode {
+                Text = output.GetType().Name,
+                ImageKey = @"document",
+                SelectedImageKey = @"document",
+                Tag = output
+            };
+        }
+        #endregion
+
+        private static TreeNode CreateTaskNode(ProjectTask task) {
+
+            if (task is SentenceDetectorTask)
+                return new TreeNode(Resources.ProjectTaskSD) {
+                    SelectedImageKey = @"sd",
+                    ImageKey = @"sd"                   
+                };
+
+            if (task is SentenceDetectorTrainTask) 
+                return new TreeNode(Resources.ProjectTaskSDTrain) {
+                    SelectedImageKey = @"train",
+                    ImageKey = @"train"  
+                };
+
+            if (task is TokenizerTask)
+                return new TreeNode(Resources.ProjectTaskTokenize) {
+                    SelectedImageKey = @"tokenize",
+                    ImageKey = @"tokenize"
+                };
+
+            if (task is TokenizerTrainTask)
+                return new TreeNode(Resources.ProjectTaskTokenizeTrain) {
+                    SelectedImageKey = @"train",
+                    ImageKey = @"train"
+                };
+
+            if (task is EntityFinderTask)
+                return new TreeNode(Resources.ProjectNodeEntityRecognize) {
+                    SelectedImageKey = @"entity_recognize",
+                    ImageKey = @"entity_recognize"
+                };
+
+            if (task is ChunkerTask)
+                return new TreeNode(Resources.ProjectTaskChunk) {
+                    SelectedImageKey = @"chunk",
+                    ImageKey = @"chunk"
+                };
+
+            if (task is POSTagTask)
+                return new TreeNode(Resources.ProjectTaskPOSTag) {
+                    SelectedImageKey = @"postag",
+                    ImageKey = @"postag"
+                };
+
+            if (task is ParserTask)
+                return new TreeNode(Resources.ProjectTaskParse) {
+                    SelectedImageKey = @"parse",
+                    ImageKey = @"parse"
+                };
+
+            if (task is ModelWriterTask)
+                return new TreeNode(Resources.ProjectTaskSaveModelFile) {
+                    SelectedImageKey = @"model_save",
+                    ImageKey = @"model_save"
+                };
+
+            // unknown task node. 
+            return null;
         }
 
         private void RefreshNodes(TreeNode treeNodes, ProjectNode node) {
@@ -562,40 +622,27 @@ namespace SharpNL.Gui.Forms {
                         }
                     }
 
-                    var sd = projectNode as TextFileNode;
-                    if (sd != null) {
-                        tn = new TreeNode {
-                            Text = Resources.ProjectNodeTextFile,
-                            ImageKey = @"textfile",
-                            SelectedImageKey = @"textfile",
-                            Tag = sd
-                        };
-                    }
+                    tn = CreateProjectNode(projectNode);
+                    
+                    var objects = tn.Nodes.Add("outputs", Resources.ProjectNodeOutputs, "outputs", "outputs");
 
-                    if (tn != null) {
-                        var objects = tn.Nodes.Add("outputs", Resources.ProjectNodeOutputs, "outputs", "outputs");
+                    RefreshOutputs(objects, projectNode);
 
-                        RefreshOutputs(objects, projectNode);
+                    var tasks = tn.Nodes.Add("tasks", Resources.ProjectNodeTasks, "tasks", "tasks");
+                    tasks.ContextMenuStrip = mnuTask;
 
-                        var tasks = tn.Nodes.Add("tasks", Resources.ProjectNodeTasks, "tasks", "tasks");
-                        tasks.ContextMenuStrip = mnuTask;
+                    RefreshTasks(tasks, projectNode);
 
-                        RefreshTasks(tasks, projectNode);
+                    var nodes = tn.Nodes.Add("nodes", Resources.ProjectNodeNodes, "nodes", "nodes");
+                    nodes.ContextMenuStrip = mnuNode;
 
-                        var nodes = tn.Nodes.Add("nodes", Resources.ProjectNodeNodes, "nodes", "nodes");
-                        nodes.ContextMenuStrip = mnuNode;
+                    RefreshNodes(nodes, projectNode);
 
-                        RefreshNodes(nodes, projectNode);
-
-                        tn.Expand();
-                    }
-
-                    if (tn == null)
-                        throw new InvalidOperationException();
+                    tn.Expand();
 
                     treeNodes.Nodes.Add(tn);
                 }
-            next:
+                next:
                 ;
             }
         }
@@ -686,9 +733,11 @@ namespace SharpNL.Gui.Forms {
             }
         }
 
-
         private void mnuAddTextInput_Click(object sender, EventArgs e) {
-            AddNode(new TextInput());
+            AddNode(new TextInputNode());
+        }
+        private void mnuAddTrainInput_Click(object sender, EventArgs e) {
+            AddNode(new TrainInputNode());
         }
         private void mnuAddNodeTextFile_Click(object sender, EventArgs e) {
             AddNode(new TextFileNode());
@@ -712,13 +761,15 @@ namespace SharpNL.Gui.Forms {
             RefreshTree();
         }
 
+
+
         private void mnuTask_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
             
         }
 
         private void mnuAddSD_DropDownOpening(object sender, EventArgs e) {
             var modelAvailable = project.Manager.Available.Contains(Models.SentenceDetector);
-
+            
             mnuSDDetect.Enabled = modelAvailable;
             mnuSDEvaluate.Enabled = modelAvailable;
         }
@@ -843,12 +894,27 @@ namespace SharpNL.Gui.Forms {
         private void mnuSDDetect_Click(object sender, EventArgs e) {
             AddTask(new SentenceDetectorTask());
         }
+        private void mnuSDTrain_Click(object sender, EventArgs e) {
+            if (SelectedNode != null) {
+                AddTask(new SentenceDetectorTrainTask(project) {
+                    Language = SelectedNode.GetProperty("Language", Thread.CurrentThread.CurrentCulture.Name)
+                });
+            }
+        }
         private void mnuEntityRecognize_Click(object sender, EventArgs e) {
             AddTask(new EntityFinderTask());
         }
         private void mnuTokTokenize_Click(object sender, EventArgs e) {
             AddTask(new TokenizerTask());
         }
+        private void mnuTokTrain_Click(object sender, EventArgs e) {
+            if (SelectedNode != null) {
+                AddTask(new TokenizerTrainTask {
+                    Language = SelectedNode.GetProperty("Language", Thread.CurrentThread.CurrentCulture.Name)
+                });
+            }           
+        }
+
         private void mnuChunkingChunk_Click(object sender, EventArgs e) {
             AddTask(new ChunkerTask());
         }
@@ -859,7 +925,7 @@ namespace SharpNL.Gui.Forms {
             AddTask(new ParserTask());
         }
 
-        private void AddTask(ProjectTask task) {
+        private T AddTask<T>(T task) where T : ProjectTask {
             var ptn = treeView.SelectedNode ?? nodProject;
 
             if (ptn.Name == "tasks")
@@ -870,6 +936,23 @@ namespace SharpNL.Gui.Forms {
                 pn.Add(task);
             }
             RefreshTree();
+
+            return task;
+        }
+
+        private ProjectNode SelectedNode {
+            get {
+                if (treeView.SelectedNode == null)
+                    return null;
+
+                if (treeView.SelectedNode.Tag is ProjectNode)
+                    return treeView.SelectedNode.Tag as ProjectNode;
+                
+                if (treeView.SelectedNode.Name == "nodes" || treeView.SelectedNode.Name == "tasks") 
+                    return treeView.SelectedNode.Parent.Tag as ProjectNode;
+
+                return null;
+            }
         }
 
         private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
@@ -885,5 +968,59 @@ namespace SharpNL.Gui.Forms {
                     : e.Label;
             }
         }
+
+        private void toolStop_Click(object sender, EventArgs e) {
+            project.Stop();
+        }
+
+        private void mnuIOSaveModel_Click(object sender, EventArgs e) {
+            if (SelectedNode != null) {
+                var type = ModelWriterTask.ModelType.None;
+
+                // automatically detect the model type ;)
+                var outputs = SelectedNode.GetTasksOutputs();
+                foreach (var output in outputs) {
+                    if (output == typeof(ChunkerModel)) {
+                        type = ModelWriterTask.ModelType.Chunker;
+                        break;
+                    }
+                    if (output == typeof (DocumentCategorizerModel)) {
+                        type = ModelWriterTask.ModelType.DocumentCategorizer;
+                        break;
+                    }
+                    if (output == typeof (TokenNameFinderModel)) {
+                        type = ModelWriterTask.ModelType.NameFinder;
+                        break;
+                    }
+                    if (output == typeof (ParserModel)) {
+                        type = ModelWriterTask.ModelType.Parser;
+                        break;
+                    }
+                    if (output == typeof (SentenceModel)) {
+                        type = ModelWriterTask.ModelType.SentenceDetector;
+                        break;
+                    }
+                    if (output == typeof (POSModel)) {
+                        type = ModelWriterTask.ModelType.PoS;
+                        break;
+                    }
+                    if (output == typeof (TokenizerModel)) {
+                        type = ModelWriterTask.ModelType.Tokenizer;
+                        break;
+                    }
+                }
+
+                var task = AddTask(new ModelWriterTask());
+
+                task.Type = type;
+            }
+            
+        }
+
+
+
+
+
+
     }
 }
