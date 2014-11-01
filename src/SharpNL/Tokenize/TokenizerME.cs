@@ -154,31 +154,30 @@ namespace SharpNL.Tokenize {
         /// </summary>
         /// <param name="samples">The samples used for the training.</param>
         /// <param name="factory">A <see cref="TokenizerFactory"/> to get resources from.</param>
-        /// <param name="mlParams">The machine learning train parameters.</param>
+        /// <param name="parameters">The machine learning train parameters.</param>
         /// <returns>The trained <see cref="TokenizerModel"/>.</returns>
-        public static TokenizerModel Train(IObjectStream<TokenSample> samples, TokenizerFactory factory, TrainingParameters mlParams) {
-            return Train(null, samples, factory, mlParams);
+        public static TokenizerModel Train(IObjectStream<TokenSample> samples, TokenizerFactory factory, TrainingParameters parameters) {
+            return Train(samples, factory, parameters, null);
         }
 
         /// <summary>
         /// Trains a model for the <see cref="TokenizerME"/>.
         /// </summary>
+        /// <param name="samples">The samples used for the training.</param>
+        /// <param name="factory">A <see cref="TokenizerFactory"/> to get resources from.</param>
+        /// <param name="parameters">The machine learning train parameters.</param>
         /// <param name="monitor">
         /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
         /// This argument can be a <c>null</c> value.
         /// </param>
-        /// <param name="samples">The samples used for the training.</param>
-        /// <param name="factory">A <see cref="TokenizerFactory"/> to get resources from.</param>
-        /// <param name="mlParams">The machine learning train parameters.</param>
         /// <returns>The trained <see cref="TokenizerModel"/>.</returns>
-        public static TokenizerModel Train(Monitor monitor, IObjectStream<TokenSample> samples, TokenizerFactory factory,
-            TrainingParameters mlParams) {
+        public static TokenizerModel Train(IObjectStream<TokenSample> samples, TokenizerFactory factory, TrainingParameters parameters, Monitor monitor) {
             var manifestInfoEntries = new Dictionary<string, string>();
 
             var eventStream = new TokSpanEventStream(samples, factory.UseAlphaNumericOptimization,
                 factory.AlphaNumericPattern, factory.ContextGenerator);
 
-            var trainer = TrainerFactory.GetEventTrainer(mlParams, manifestInfoEntries, monitor);
+            var trainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
             var model = trainer.Train(eventStream);
 
             return new TokenizerModel(model, manifestInfoEntries, factory);
