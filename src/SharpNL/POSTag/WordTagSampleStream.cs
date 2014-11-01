@@ -20,7 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.IO;
 using SharpNL.Utility;
 
@@ -29,46 +28,79 @@ namespace SharpNL.POSTag {
     /// A stream filter which reads a sentence per line which contains
     /// words and tags in word_tag format and outputs a <see cref="POSSample"/> objects.
     /// </summary>
+    /// <remarks>
+    /// The native POS Tagger training material looks like this:
+    /// <para>
+    /// <c>About_IN 10_CD Euro_NNP ,_, I_PRP reckon_VBP ._. That_DT sounds_VBZ good_JJ ._.</c>
+    /// </para>
+    /// </remarks>
     public class WordTagSampleStream : FilterObjectStream<string, POSSample> {
+
+        private readonly Monitor monitor;
+
+        #region + Constructors .
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WordTagSampleStream"/> using a <see cref="PlainTextByLineStream"/> to read the input stream.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <seealso cref="PlainTextByLineStream"/>
+        public WordTagSampleStream(Stream inputStream) : this(new PlainTextByLineStream(inputStream)) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="WordTagSampleStream"/> using 
         /// a <see cref="PlainTextByLineStream"/> to read the input stream.
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
         /// <seealso cref="PlainTextByLineStream"/>
-        public WordTagSampleStream(Stream inputStream) : this(new PlainTextByLineStream(inputStream)) {}
-
+        public WordTagSampleStream(Stream inputStream, Monitor monitor) : this(new PlainTextByLineStream(inputStream)) {
+            this.monitor = monitor;
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="WordTagSampleStream"/> using the
         /// <see cref="T:IObjectStream{string}"/> as sample reader.
         /// </summary>
         /// <param name="samples">The samples.</param>
-        public WordTagSampleStream(IObjectStream<string> samples) : base(samples) {}
-
+        public WordTagSampleStream(IObjectStream<string> samples) : base(samples) { }
         /// <summary>
-        /// Returns the next object. Calling this method repeatedly until it returns ,
+        /// Initializes a new instance of the <see cref="WordTagSampleStream"/> using the
+        /// <see cref="T:IObjectStream{string}"/> as sample reader.
+        /// </summary>
+        /// <param name="samples">The samples.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        public WordTagSampleStream(IObjectStream<string> samples, Monitor monitor) : base(samples) {
+            this.monitor = monitor;
+        }
+
+        #endregion
+
+        #region . Read .
+        /// <summary>
+        /// Returns the next object. Calling this method repeatedly until it returns,
         /// null will return each object from the underlying source exactly once.
         /// </summary>
         /// <returns>
         /// The next object or null to signal that the stream is exhausted.
         /// </returns>
         public override POSSample Read() {
-            retry:
-            string sentence = Samples.Read();
+        retry:
 
-            if (sentence != null) {
-                POSSample sample;
-                try {
-                    sample = POSSample.Parse(sentence);
-                } catch (Exception) {
-                    // TODO: implement a better logger
-                    Console.Error.WriteLine("Error during parsing, ignoring sentence: " + sentence);
-                    goto retry;
-                }
-                return sample;
+            var sentence = Samples.Read();
+            if (sentence == null)
+                return null;
+
+            POSSample sample;
+            try {
+                sample = POSSample.Parse(sentence);
+            } catch {
+                if (monitor != null)
+                    monitor.OnWarning("Error during parsing, ignoring sentence: " + sentence);
+
+                goto retry;
             }
-
-            return null;
+            return sample;
         }
+        #endregion
+
     }
 }
