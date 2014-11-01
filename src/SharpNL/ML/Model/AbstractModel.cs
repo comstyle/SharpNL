@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
     /// <summary>
@@ -33,6 +34,8 @@ namespace SharpNL.ML.Model {
         protected readonly IndexHashTable<string> map;
 
         protected readonly string[] outcomeNames;
+
+        internal TrainingInfo info;
 
         #region + Constructors .
 

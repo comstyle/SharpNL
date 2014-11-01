@@ -40,10 +40,12 @@ namespace SharpNL.ML {
         private TrainingParameters trainParams;
         private Dictionary<string, string> reportMap;
 
+        protected readonly TrainingInfo info;
+
         protected AbstractTrainer(Monitor monitor) {
             Monitor = monitor;
+            info = new TrainingInfo();
         }
-        
 
         #region + Properties .
 

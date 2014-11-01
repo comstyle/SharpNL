@@ -23,6 +23,7 @@
 using System;
 using System.Reflection;
 using System.Security.Permissions;
+using System.Text;
 using SharpNL.Utility;
 using Ver = SharpNL.Utility.Version;
 using Version = System.Version;
@@ -73,6 +74,28 @@ namespace SharpNL {
         public static TypeResolver TypeResolver { get; private set; }
         #endregion
 
+        #endregion
+
+        #region . GetModelComment .
+        /// <summary>
+        /// Gets the model comment.
+        /// </summary>
+        /// <param name="info">The information.</param>
+        /// <returns>The comment.</returns>
+        internal static string GetModelComment(TrainingInfo info) {
+            var sb = new StringBuilder();
+
+            if (info != null) {
+                sb.AppendLine(info.Value);
+                sb.AppendLine();
+            }
+
+            sb.AppendFormat(
+                "This model was trained using SharpNL [ {0} ]\n" +
+                "https://github.com/knuppe/SharpNL", Version);
+
+            return sb.ToString();
+        }
         #endregion
 
         #region . CreateInstance .

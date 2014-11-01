@@ -38,6 +38,8 @@ namespace SharpNL.Utility {
         public const string UseAverage = "UseAverage";
         public const string UseSkippedAveraging = "UseSkippedAveraging";
 
+        public const string Threads = "Threads";
+
         public static class Algorithms {
 
             public const string Perceptron = "PERCEPTRON";

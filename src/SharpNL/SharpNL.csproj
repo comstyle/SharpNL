@@ -162,6 +162,7 @@
     <Compile Include="Utility\Model\ModelInfo.cs" />
     <Compile Include="Utility\Model\ModelInfoEventArgs.cs" />
     <Compile Include="Utility\TextPosition.cs" />
+    <Compile Include="Utility\TrainingInfo.cs" />
     <Compile Include="Utility\TypeClassAttribute.cs" />
     <Compile Include="Utility\SegmenterObjectStream.cs" />
     <Compile Include="Utility\TypeResolver.cs" />

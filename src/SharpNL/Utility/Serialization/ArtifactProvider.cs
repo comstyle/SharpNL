@@ -24,6 +24,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
+using SharpNL.ML.Model;
 using SharpNL.Utility.Model;
 
 namespace SharpNL.Utility.Serialization {
@@ -327,10 +328,19 @@ namespace SharpNL.Utility.Serialization {
             }
 
             var zip = new ZipOutputStream(outputStream);
+
+            foreach (var artifact in artifactMap) {
+                var model = artifact.Value as AbstractModel;
+                if (model != null && model.info != null) {
+                    zip.SetComment(Library.GetModelComment(model.info));
+                    break;
+                }
+            }
+
             foreach (var artifact in artifactMap) {
 
                 zip.PutNextEntry(new ZipEntry(artifact.Key));
-               
+
                 // TODO: Remove the old artifact serialization method
                 var serializer = GetArtifactSerializer(artifact.Key, artifact.Value);
                 if (serializer != null) {

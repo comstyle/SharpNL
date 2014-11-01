@@ -26,6 +26,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpNL.ML.MaxEntropy.IO;
+using SharpNL.Utility;
 
 namespace SharpNL.ML.MaxEntropy {
     using Model;
@@ -93,6 +94,11 @@ namespace SharpNL.ML.MaxEntropy {
         private int[] numTimesEventsSeen;
 
         /// <summary>
+        /// Records the last iteration accuracy.
+        /// </summary>
+        private double lastAccuracy;
+
+        /// <summary>
         /// The number of times a predicate occurred in the training data.
         /// </summary>
         private int[] predicateCounts;
@@ -143,6 +149,11 @@ namespace SharpNL.ML.MaxEntropy {
         /// </summary>
         private readonly Monitor monitor;
 
+        /// <summary>
+        /// The training information.
+        /// </summary>
+        private readonly TrainingInfo info;
+
         private int[] threadNumEvents;
         private int[] threadNumCorrect;
         private double[] threadLoglikelihood;
@@ -154,6 +165,8 @@ namespace SharpNL.ML.MaxEntropy {
         public GISTrainer() {
             Smoothing = false;
             SmoothingObservation = 0.1;
+
+            info = new TrainingInfo();
         }
 
         /// <summary>
@@ -167,6 +180,16 @@ namespace SharpNL.ML.MaxEntropy {
         #endregion
 
         #region + Properties .
+
+        #region . TrainingInfo .
+        /// <summary>
+        /// Gets the training information.
+        /// </summary>
+        /// <value>The training information.</value>
+        public TrainingInfo TrainingInfo {
+            get { return info; }
+        }
+        #endregion
 
         #region . Smoothing .
         /// <summary>
@@ -200,7 +223,6 @@ namespace SharpNL.ML.MaxEntropy {
         #endregion
 
         #region . NextIteration .
-
         /// <summary>
         /// Compute one iteration of GIS and return the log-likelihood.
         /// </summary>
@@ -283,13 +305,12 @@ namespace SharpNL.ML.MaxEntropy {
                 }
             }
 
+            lastAccuracy = ((double) numCorrect/numEvents);
 
             Display(string.Format("{0,-5} loglikelihood = {1,-20:0.00000000000} {2,20:0.00000000000}", 
                 iteration, 
-                loglikelihood, 
-                ((double)numCorrect / numEvents)));
-
-            //Display(". loglikelihood=" + loglikelihood + "\t" + ((double)numCorrect / numEvents) + "\n");
+                loglikelihood,
+                lastAccuracy));
 
             return loglikelihood;
         }
@@ -319,6 +340,8 @@ namespace SharpNL.ML.MaxEntropy {
 
             Display("Performing " + iterations + " iterations.\n");
 
+            info.Append("  Number of Iterations: {0}\n", iterations);
+
             for (var i = 1; i <= iterations; i++) {
                 var currLL = NextIteration(i, correctionConstant);
                 if (i > 1) {
@@ -334,6 +357,8 @@ namespace SharpNL.ML.MaxEntropy {
                 }
                 prevLL = currLL;
             }
+            
+            info.Append("  Final Log-likelihood: {0}  {1}\n", prevLL, lastAccuracy);
 
             // kill a bunch of these big objects now that we don't need them
             observedExpects = null;
@@ -464,11 +489,12 @@ namespace SharpNL.ML.MaxEntropy {
         /// <returns>The newly trained model, which can be used immediately or saved to disk using an <see cref="GISModelWriter"/> object.</returns>
         public GISModel TrainModel(int iterations, IDataIndexer di, IPrior modelPrior, int modelCutoff, int threads) {
 
-            if (threads <= 0) {
+            if (threads <= 0)
                 throw new ArgumentOutOfRangeException("threads", threads, @"Threads must be at least one or greater.");
-            }
 
             modelExpects = new MutableContext[threads][];
+
+            info.Append("Trained using GIS algorithm.\n\n");
 
             // Executes the data indexer
             di.Execute();
@@ -482,7 +508,6 @@ namespace SharpNL.ML.MaxEntropy {
             numTimesEventsSeen = di.GetNumTimesEventsSeen();
             numUniqueEvents = contexts.Length;
             prior = modelPrior;
-
 
             // determine the correction constant and its inverse
             double correctionConstant = 0;
@@ -512,6 +537,10 @@ namespace SharpNL.ML.MaxEntropy {
             predLabels = di.GetPredLabels();
             prior.SetLabels(outcomeLabels, predLabels);
             numPreds = predLabels.Length;
+
+            info.Append("Number of Event Tokens: {0}\n", numUniqueEvents);
+            info.Append("    Number of Outcomes: {0}\n", numOutcomes);
+            info.Append("  Number of Predicates: {0}\n", numPreds);
 
             Display("\tNumber of Event Tokens: " + numUniqueEvents);
             Display("\t    Number of Outcomes: " + numOutcomes);
@@ -620,13 +649,13 @@ namespace SharpNL.ML.MaxEntropy {
             FindParameters(iterations, correctionConstant);
 
             /*************** Create and return the model ******************/
+
             // To be compatible with old models the correction constant is always 1
-            return new GISModel(
-                Array.ConvertAll(param, input => (Context)input),
-                predLabels,
-                outcomeLabels,
-                1, 
-                evalParams.CorrectionParam);
+
+            // ReSharper disable once CoVariantArrayConversion
+            return new GISModel(param, predLabels, outcomeLabels, 1, evalParams.CorrectionParam) {
+                info = TrainingInfo
+            };
         }
 
         #endregion

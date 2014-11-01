@@ -38,15 +38,6 @@ namespace SharpNL.ML.Perceptron {
             ModelType = ModelType.Perceptron;
         }
 
-#if DEBUG
-        [Obsolete("predLabels are not used for anything here.")]
-        public PerceptronModel(Context[] param, string[] predLabels, IndexHashTable<String> map, string[] outcomeNames)
-            : base(param, predLabels, map, outcomeNames) {
-
-            ModelType = ModelType.Perceptron;
-        }
-#endif
-
         public PerceptronModel(Context[] parameters, string[] predLabels, string[] outcomeNames, int correctionConstant,
             double correctionParam) : base(parameters, predLabels, outcomeNames, correctionConstant, correctionParam) {
 

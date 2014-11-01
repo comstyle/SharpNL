@@ -155,7 +155,7 @@ namespace SharpNL.ML.Perceptron {
             set {
                 if (value < 0)
                     throw new ArgumentOutOfRangeException("value", value, @"Tolerance must be a positive number.");
-
+                    
                 tolerance = value;
             }
         }
@@ -257,6 +257,8 @@ namespace SharpNL.ML.Perceptron {
         public AbstractModel TrainModel(int iterations, IDataIndexer indexer, int cutoff, bool useAverage) {
             Display("Incorporating indexed data for training...");
 
+            info.Append("Trained using Perceptron algorithm.\n\n");
+
             // Executes the data indexer
             indexer.Execute();
 
@@ -275,6 +277,10 @@ namespace SharpNL.ML.Perceptron {
 
             Display("\ndone.\n");
 
+            info.Append("Number of Event Tokens: {0}\n" +
+                        "    Number of Outcomes: {1}\n" +
+                        "  Number of Predicates: {2}\n", numEvents, numOutcomes, numPreds);
+
             Display("\tNumber of Event Tokens: " + numUniqueEvents);
             Display("\t    Number of Outcomes: " + numOutcomes);
             Display("\t  Number of Predicates: " + numPreds);
@@ -286,7 +292,9 @@ namespace SharpNL.ML.Perceptron {
             Display("\ndone.\n");
 
             // ReSharper disable once CoVariantArrayConversion
-            return new PerceptronModel(finalParameters, predLabels, outcomeLabels);
+            return new PerceptronModel(finalParameters, predLabels, outcomeLabels) {
+                info = info
+            };
         }
 
         #endregion
@@ -314,10 +322,14 @@ namespace SharpNL.ML.Perceptron {
             }
             var trainingAccuracy = (double) numCorrect/numEvents;
 
+            info.Append("        Correct Events: {0}\n" +
+                        "          Total Events: {1}\n" +
+                        "              Accuracy: {2}\n", numCorrect, numEvents, trainingAccuracy);
+
             Display("\nPerceptron training complete:\n");
-            Display("   Correct Events : " + numCorrect);
-            Display("     Total Events : " + numEvents);
-            Display("         Accuracy : " + trainingAccuracy);            
+            Display("\t Correct Events : " + numCorrect);
+            Display("\t   Total Events : " + numEvents);
+            Display("\t       Accuracy : " + trainingAccuracy);            
         }
 
 
@@ -326,6 +338,9 @@ namespace SharpNL.ML.Perceptron {
         #region . FindParameters .
 
         private MutableContext[] FindParameters(int iterations, bool useAverage) {
+
+            info.Append("  Number of Iterations: {0}\n", iterations);
+
             Display("\nPerforming " + iterations + " iterations.\n");
 
             var allOutcomesPattern = new int[numOutcomes];

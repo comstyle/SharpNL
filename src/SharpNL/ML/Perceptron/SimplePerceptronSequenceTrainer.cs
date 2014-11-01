@@ -54,6 +54,8 @@ namespace SharpNL.ML.Perceptron {
         private int numPreds;
         private int numSequences;
 
+        private double trainingAccuracy;
+
         /** List of outcomes for each event i, in context[i]. */
         private Dictionary<string, int> oMap;
         private string[] outcomeLabels;
@@ -67,7 +69,7 @@ namespace SharpNL.ML.Perceptron {
         private ISequenceStream sequenceStream;
         private int[][][] updates;
         private bool useAverage;
-
+        
         #region + Constructors .
 
         /// <summary>
@@ -102,17 +104,13 @@ namespace SharpNL.ML.Perceptron {
         #region . FindParameters .
 
         private void FindParameters() {
-            Display("Performing " + iterations + " iterations.\n");
-            for (var i = 1; i <= iterations; i++) {
-                if (i < 10)
-                    Display("  " + i + ":  ");
-                else if (i < 100)
-                    Display(" " + i + ":  ");
-                else
-                    Display(i + ":  ");
+            info.Append("  Number of Iterations: {0}\n", iterations);
 
+            Display("Performing " + iterations + " iterations.\n");
+
+            for (var i = 1; i <= iterations; i++)
                 NextIteration(i);
-            }
+            
             TrainingStats(useAverage ? averageParams : param);
         }
 
@@ -122,6 +120,7 @@ namespace SharpNL.ML.Perceptron {
 
         private void NextIteration(int iteration) {
             iteration--; //move to 0-based index
+
             var numCorrect = 0;
             var oei = 0;
             var si = 0;
@@ -129,10 +128,8 @@ namespace SharpNL.ML.Perceptron {
             for (var oi = 0; oi < numOutcomes; oi++) {
                 featureCounts[oi] = new Dictionary<string, float>();
             }
-            var model = new PerceptronModel(
-                Array.ConvertAll(param, input => (Context) input),
-                pMap,
-                outcomeLabels);
+            // ReSharper disable once CoVariantArrayConversion
+            var model = new PerceptronModel(param, pMap, outcomeLabels);
 
             sequenceStream.Reset();
 
@@ -174,7 +171,6 @@ namespace SharpNL.ML.Perceptron {
                     }
 
                     //evaluation feature count computation
-                    //System.err.print("test: ");for (int ei=0;ei<taggerEvents.length;ei++) {System.err.print(" "+taggerEvents[ei].getOutcome());} System.err.println();
                     foreach (var taggerEvent in taggerEvents) {
                         var contextStrings = taggerEvent.Context;
                         var values = taggerEvent.Values;
@@ -216,10 +212,9 @@ namespace SharpNL.ML.Perceptron {
                             }
                         }
                     }
-                    model = new PerceptronModel(
-                        Array.ConvertAll(param, input => (Context) input),
-                        pMap,
-                        outcomeLabels);
+                    // ReSharper disable once CoVariantArrayConversion
+                    model = new PerceptronModel(param, pMap, outcomeLabels);
+
                 }
                 si++;
             }
@@ -243,7 +238,14 @@ namespace SharpNL.ML.Perceptron {
                     }
                 }
             }
-            Display(string.Format(". ({0}/{1}) {2}", numCorrect, numEvents, (double) numCorrect/numEvents));
+
+            trainingAccuracy = (double) numCorrect/numEvents;
+
+            Display(string.Format("{0,-4} {1} of {2} - {3}",
+                iteration,
+                numCorrect,
+                numEvents,
+                trainingAccuracy));
         }
 
         #endregion
@@ -280,6 +282,8 @@ namespace SharpNL.ML.Perceptron {
             iterations = trainIterations;
             useAverage = trainUseAverage;
             sequenceStream = trainStream;
+
+            info.Append("Trained using Perceptron Sequence algorithm.\n\n");
 
             var di = new OnePassDataIndexer(new SequenceStreamEventStream(trainStream), cutoff, false);
 
@@ -324,6 +328,10 @@ namespace SharpNL.ML.Perceptron {
             // done.
             Display("done.\n");
 
+            info.Append("Number of Event Tokens: {0}\n" +
+                        "    Number of Outcomes: {1}\n" +
+                        "  Number of Predicates: {2}\n", numEvents, numOutcomes, numPreds);
+
             Display("\tNumber of Event Tokens: " + numEvents);
             Display("\t    Number of Outcomes: " + numOutcomes);
             Display("\t  Number of Predicates: " + numPreds);
@@ -354,19 +362,17 @@ namespace SharpNL.ML.Perceptron {
             Display("...done.");
 
             /*************** Create and return the model ******************/
-            var updatedPredLabels = predLabels;
 
-            if (trainUseAverage) {
-                return new PerceptronModel(
-                    Array.ConvertAll(averageParams, input => (Context) input),
-                    updatedPredLabels,
-                    outcomeLabels);
-            }
+            // ReSharper disable CoVariantArrayConversion
+            if (trainUseAverage)
+                return new PerceptronModel(averageParams, predLabels, outcomeLabels) {
+                    info = info
+                };
 
-            return new PerceptronModel(
-                Array.ConvertAll(param, input => (Context) input),
-                updatedPredLabels,
-                outcomeLabels);
+            return new PerceptronModel(param, predLabels, outcomeLabels) {               
+                info = info
+            };
+            // ReSharper restore CoVariantArrayConversion
         }
 
         #endregion
