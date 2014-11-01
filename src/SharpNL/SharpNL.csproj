@@ -45,6 +45,7 @@
     <Compile Include="Formats\Ad\AdContractionNameSampleStream.cs" />
     <Compile Include="Formats\Ad\AdNameSampleStream.cs" />
     <Compile Include="Formats\Ad\AdPosSampleStream.cs" />
+    <Compile Include="Formats\Ad\AdTokenSampleStream.cs" />
     <Compile Include="Formats\Ad\PortugueseContractionUtility.cs" />
     <Compile Include="ModelType.cs" />
     <Compile Include="Chunker\ChunkerCrossValidator.cs" />
