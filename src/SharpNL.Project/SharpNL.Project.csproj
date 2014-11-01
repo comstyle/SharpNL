@@ -41,12 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Design\EncodingConverter.cs" />
+    <Compile Include="Design\XmlFileNameEditor.cs" />
     <Compile Include="Design\LanguageConverter.cs" />
     <Compile Include="Design\NodeModelConverter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeStatus.cs" />
     <Compile Include="Nodes\TextFileNode.cs" />
-    <Compile Include="Nodes\TextInput.cs" />
+    <Compile Include="Nodes\TextInputNode.cs" />
+    <Compile Include="Nodes\TrainInputNode.cs" />
     <Compile Include="Nodes\WebGetNode.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectException.cs" />
@@ -58,10 +61,14 @@
     <Compile Include="TaskException.cs" />
     <Compile Include="Tasks\ChunkerTask.cs" />
     <Compile Include="Tasks\EntityFinder.cs" />
+    <Compile Include="Tasks\ModelWriterTask.cs" />
     <Compile Include="Tasks\ParserTask.cs" />
     <Compile Include="Tasks\POSTagTask.cs" />
     <Compile Include="Tasks\SentenceDetectorTask.cs" />
+    <Compile Include="Tasks\SentenceDetectorTrainTask.cs" />
     <Compile Include="Tasks\TokenizerTask.cs" />
+    <Compile Include="Tasks\TokenizerTrainTask.cs" />
+    <Compile Include="Tasks\TrainTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpNL\SharpNL.csproj">

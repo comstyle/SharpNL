@@ -9,7 +9,7 @@ using SharpNL.Text;
 using SharpNL.Utility;
 
 namespace SharpNL.Project.Nodes {
-    public class TextInput : ProjectNode {
+    public class TextInputNode : ProjectNode {
 
         #region + Properties .
 
@@ -18,7 +18,7 @@ namespace SharpNL.Project.Nodes {
         /// Gets the language of this file.
         /// </summary>
         /// <value>The language of this file.</value>
-        [TypeConverter(typeof(LanguageConverter))]
+        [Description("Specifies the language which is being processed."), TypeConverter(typeof(LanguageConverter))]
         public string Language { get; set; }
         #endregion
 

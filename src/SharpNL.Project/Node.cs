@@ -81,6 +81,7 @@ namespace SharpNL.Project {
         /// Gets or sets the object that contains data about the node.
         /// </summary>
         /// <value>An <see cref="object"/> that contains data about the node. The default is <c>null</c>.</value>
+        [Browsable(false)]
         public object Tag { get; set; }
         #endregion
 

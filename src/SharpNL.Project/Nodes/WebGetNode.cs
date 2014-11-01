@@ -71,7 +71,7 @@ namespace SharpNL.Project.Nodes {
         /// Gets or sets the website language.
         /// </summary>
         /// <value>The website language.</value>
-        [TypeConverter(typeof(LanguageConverter))]
+        [Description("Specifies the language which is being processed."), TypeConverter(typeof(LanguageConverter))]
         public string Language { get; set; }
         #endregion
 

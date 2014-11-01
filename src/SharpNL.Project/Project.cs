@@ -208,7 +208,7 @@ namespace SharpNL.Project {
         /// </summary>
         /// <value><c>true</c> if this instance has changed; otherwise, <c>false</c>.</value>
         /// <remarks>When this property is set to <c>true</c>, the <see cref="Modified"/> event is rised.</remarks>
-        [Description("Indicates whether the project has changed.")]
+        [Description("Indicates whether the project has changed."), ReadOnly(true)]
         public bool IsDirty {
             get { return isDirty; }
             set {
@@ -240,6 +240,16 @@ namespace SharpNL.Project {
         /// <value><c>true</c> if this project is untitled; otherwise, <c>false</c>.</value>
         public bool IsUntitled {
             get { return string.IsNullOrEmpty(Name); }
+        }
+        #endregion
+
+        #region . IsLoading .
+        /// <summary>
+        /// Gets a value indicating whether this instance is loading.
+        /// </summary>
+        /// <value><c>true</c> if this instance is loading; otherwise, <c>false</c>.</value>
+        internal bool IsLoading {
+            get { return loading; }
         }
         #endregion
 
@@ -508,9 +518,6 @@ namespace SharpNL.Project {
         /// <returns><c>true</c> if the project can be executed; otherwise, <c>false</c>.</returns>
         public bool Validate() {
             problems.Clear();
-            
-            if (manager.Count == 0)
-                problems.Add(new ProjectProblem(this, "The project has no model."));
             
             if (nodes.Count == 0)
                 problems.Add(new ProjectProblem(this, "The project has nothing to execute."));

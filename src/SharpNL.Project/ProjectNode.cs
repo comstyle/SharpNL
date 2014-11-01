@@ -215,8 +215,6 @@ namespace SharpNL.Project {
         #endregion
 
         #region . Execute .
-
-
         /// <summary>
         /// Executes the specified node.
         /// </summary>
@@ -284,6 +282,25 @@ namespace SharpNL.Project {
             }
 
             return default(T);
+        }
+        #endregion
+
+        #region . GetTasksOutputs .
+        /// <summary>
+        /// Gets all outputs types from the node tasks.
+        /// </summary>
+        /// <returns>A list of output types from the task in this node.</returns>
+        public List<Type> GetTasksOutputs() {
+            var list = new List<Type>();
+
+            foreach (var task in tasks) {
+                foreach (var output in task.Output) {
+                    if (!list.Contains(output))
+                        list.Add(output);
+                }
+            }
+
+            return list;
         }
         #endregion
 
@@ -375,6 +392,19 @@ namespace SharpNL.Project {
         }
         #endregion
 
+        #region . UpdateOutput .
+        /// <summary>
+        /// Updates the output in the project node.
+        /// </summary>
+        /// <param name="output">The output to be updated.</param>
+        internal void UpdateOutput(object output) {
+            if (output == null)
+                return;
+
+            if (!outputs.Contains(output))
+                outputs.Add(output);
+        }
+        #endregion
 
     }
 }

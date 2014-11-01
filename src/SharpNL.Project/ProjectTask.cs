@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml;
+using SharpNL.ML.Model;
 using SharpNL.Utility;
 
 namespace SharpNL.Project {
@@ -38,7 +39,17 @@ namespace SharpNL.Project {
             taskTypes = new Dictionary<string, Type>();
 
             var list = typeof(ProjectTask).GetSubclasses(true);
-            foreach (var type in list) {
+            foreach (var type in list) 
+                AddTaskType(type);
+           
+        }
+
+        private static void AddTaskType(Type type) {
+            if (type.IsAbstract) {
+                var list = type.GetSubclasses(true);
+                foreach (var child in list)
+                    AddTaskType(child);
+            } else {
                 taskTypes.Add(type.Namespace == "SharpNL.Project.Tasks" ? type.Name : type.FullName, type);
             }
         }
@@ -132,7 +143,13 @@ namespace SharpNL.Project {
         internal void Run() {
             try {
                 Project.OnTaskStarted(this);
-                Execute();
+                var outputs = Execute();
+                if (outputs == null || outputs.Length <= 0) 
+                    return;
+
+                foreach (var output in outputs)
+                    Parent.UpdateOutput(output);
+
             } catch (Exception ex) {
                 throw new TaskException(this, "An error occurred during the task execution.", ex);
             } finally {
