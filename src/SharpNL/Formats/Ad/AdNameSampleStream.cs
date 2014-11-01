@@ -64,12 +64,12 @@ namespace SharpNL.Formats.Ad {
         private int textIdMeta2 = -1;
         private string textMeta2 = string.Empty;
 
-        private static readonly Regex AmaMetaRegex;
-        private static readonly Regex CieMetaRegex;
-        private static readonly Regex LitMetaRegex;
-        private static readonly Regex tagPattern;
-        private static readonly Regex alphanumericPattern;
-        private static readonly Regex hyphenPattern;
+        internal static readonly Regex AmaMetaRegex;
+        internal static readonly Regex CieMetaRegex;
+        internal static readonly Regex LitMetaRegex;
+        internal static readonly Regex tagPattern;
+        internal static readonly Regex alphanumericPattern;
+        internal static readonly Regex hyphenPattern;
 
         private static readonly IReadOnlyDictionary<string, string> mapNER;
 
@@ -577,7 +577,7 @@ namespace SharpNL.Formats.Ad {
 
         #endregion
 
-        private enum Type {
+        internal enum Type {
             None,
             Lit,
             Cie,

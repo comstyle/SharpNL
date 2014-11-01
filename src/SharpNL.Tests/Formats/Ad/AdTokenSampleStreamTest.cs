@@ -26,36 +26,64 @@ using NUnit.Framework;
 using SharpNL.Formats.Ad;
 using SharpNL.Formats.Convert;
 using SharpNL.Tokenize;
+using SharpNL.Utility;
 
 namespace SharpNL.Tests.Formats.Ad {
     [TestFixture]
     internal class AdTokenSampleStreamTest {
 
-        private List<TokenSample> samples;
+        private const string sampleFile = "opennlp/tools/formats/ad.sample";
+
+        private List<TokenSample> samplesFromConvert;
+        private List<TokenSample> samplesFromStream;
 
         [TestFixtureSetUp]
         public void Setup() {
             var dict = new DetokenizationDictionary(Tests.OpenFile("opennlp/tools/tokenize/latin-detokenizer.xml"));
             var stream = new NameToTokenSampleStream(
                 new DictionaryDetokenizer(dict),
-                new AdNameSampleStream(Tests.OpenFile("opennlp/tools/formats/ad.sample"), Encoding.UTF8, true, false));
+                new AdNameSampleStream(Tests.OpenFile(sampleFile), Encoding.UTF8, true, false));
 
-            samples = new List<TokenSample>();
+            samplesFromConvert = new List<TokenSample>();
 
             TokenSample sample;
+
             while ((sample = stream.Read()) != null) {
-                samples.Add(sample);               
+                samplesFromConvert.Add(sample);               
+            }
+
+            samplesFromStream = new List<TokenSample>();
+
+            var sampleStream = new AdTokenSampleStream(
+                new PlainTextByLineStream(Tests.OpenFile(sampleFile)), 
+                new DictionaryDetokenizer(dict),
+                true, false);
+
+
+            while ((sample = sampleStream.Read()) != null) {
+                samplesFromStream.Add(sample);
             }
         }
 
         [Test]
         public void TestSimpleCount() {           
-            Assert.AreEqual(AdParagraphStreamTest.NumSentences, samples.Count);
+            Assert.AreEqual(AdParagraphStreamTest.NumSentences, samplesFromConvert.Count);
+
+            Assert.AreEqual(samplesFromConvert.Count, samplesFromStream.Count);
         }
 
         [Test]
         public void TestSentences() {
-            Assert.True(samples[5].Text.Contains("ofereceu-me"));
+            Assert.True(samplesFromConvert[5].Text.Contains("ofereceu-me"));
+        }
+
+        [Test]
+        public void TestSamplesFromStream() {
+            Assert.AreEqual(samplesFromConvert.Count, samplesFromStream.Count);
+
+            for (var i = 0; i < samplesFromConvert.Count; i++) {
+                Assert.AreEqual(samplesFromConvert[i], samplesFromStream[i]);
+            }          
         }
 
 

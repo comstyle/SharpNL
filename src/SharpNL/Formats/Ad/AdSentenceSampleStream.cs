@@ -102,8 +102,7 @@ namespace SharpNL.Formats.Ad {
                     return null;
                 }
             }
-
-
+            
             var document = new StringBuilder();
             var sentences = new List<Span>();
 

@@ -38,7 +38,7 @@ namespace SharpNL.Formats.Convert {
         }
 
         /// <summary>
-        /// Returns the next object. Calling this method repeatedly until it returns ,
+        /// Returns the next object. Calling this method repeatedly until it returns,
         /// null will return each object from the underlying source exactly once.
         /// </summary>
         /// <returns>
@@ -47,10 +47,9 @@ namespace SharpNL.Formats.Convert {
         public override TokenSample Read() {
             var sample = Samples.Read();
 
-            if (sample == null)
-                return null;
-
-            return new TokenSample(detokenizer, sample.Sentence);
+            return sample != null
+                ? new TokenSample(detokenizer, sample.Sentence)
+                : null;
         }
     }
 }
