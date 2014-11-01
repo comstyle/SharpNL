@@ -28,7 +28,7 @@ using SharpNL.Utility;
 
 namespace SharpNL.Formats.Ad {
     /// <summary>
-    /// This class reads the <see cref="POSSample"/>s from the given <see cref="T:IObjectStream{POSSample}"/>
+    /// This class reads the <see cref="POSSample"/>s from the given <see cref="T:IObjectStream{string}"/>
     /// using floresta Sita(c)tica Arvores Deitadas corpus which can be used by the maxent library for training.
     /// </summary>
     public class AdPosSampleStream : IObjectStream<POSSample> {
