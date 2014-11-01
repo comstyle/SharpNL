@@ -179,7 +179,7 @@ namespace SharpNL.Formats.Ad {
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <param name="encoding">The text encoding used to read the stream.</param>
-        /// <param name="splitHyphenatedTokens">if set to <c>true</c> hyphenated tokens will be separated: "carros-monstro" &gt; "carros" Hyphen "monstro".</param>
+        /// <param name="splitHyphenatedTokens">if set to <c>true</c> hyphenated tokens will be separated: "carros-monstro" &gt; "carros" "-" "monstro".</param>
         /// <param name="safeParse">if set to <c>true</c> the invalid data in the file will be skipped.</param>
         /// <exception cref="System.ArgumentNullException">
         /// <paramref name="inputStream"/>
