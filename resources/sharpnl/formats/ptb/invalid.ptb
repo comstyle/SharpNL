@@ -1,0 +1,12 @@
+﻿# Header
+#
+# End of header
+
+#valid
+(one (a (b B)(c C)))
+
+#invalid
+(two ()(222222(
+
+#valid (without a empty line at the end)
+(three (x X))

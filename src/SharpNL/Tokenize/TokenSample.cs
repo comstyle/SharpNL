@@ -177,7 +177,7 @@ namespace SharpNL.Tokenize {
 
         #region . IsMergeToRight .
 
-        private static bool IsMergeToRight(DetokenizationOperation operation) {
+        internal static bool IsMergeToRight(DetokenizationOperation operation) {
             return operation == DetokenizationOperation.MergeToRight ||
                    operation == DetokenizationOperation.MergeBoth;
         }
@@ -186,7 +186,7 @@ namespace SharpNL.Tokenize {
 
         #region . IsMergeToLeft .
 
-        private static bool IsMergeToLeft(DetokenizationOperation operation) {
+        internal static bool IsMergeToLeft(DetokenizationOperation operation) {
             return operation == DetokenizationOperation.MergeToLeft ||
                    operation == DetokenizationOperation.MergeBoth;
         }

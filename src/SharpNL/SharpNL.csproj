@@ -44,6 +44,16 @@
     <Compile Include="Formats\Ad\AdPosSampleStream.cs" />
     <Compile Include="Formats\Ad\AdTokenSampleStream.cs" />
     <Compile Include="Formats\Ad\PortugueseContractionUtility.cs" />
+    <Compile Include="Formats\Ptb\IResolver.cs" />
+    <Compile Include="Formats\Ptb\Lang\DefaultResolver.cs" />
+    <Compile Include="Formats\Ptb\Lang\pt\Resolver.cs" />
+    <Compile Include="Formats\Ptb\PtbNode.cs" />
+    <Compile Include="Formats\Ptb\PtbParseSampleStream.cs" />
+    <Compile Include="Formats\Ptb\PtbPosSampleStream.cs" />
+    <Compile Include="Formats\Ptb\PtbSentenceSampleStream.cs" />
+    <Compile Include="Formats\Ptb\PtbStreamReader.cs" />
+    <Compile Include="Formats\Ptb\PtbSampleStream.cs" />
+    <Compile Include="Formats\Ptb\PtbTokenSampleStream.cs" />
     <Compile Include="ModelType.cs" />
     <Compile Include="Chunker\ChunkerCrossValidator.cs" />
     <Compile Include="Chunker\ChunkerEvaluator.cs" />

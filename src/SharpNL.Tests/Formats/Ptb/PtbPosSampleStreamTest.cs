@@ -20,22 +20,32 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Tokenize {
-    /// <summary>A Detokenizer merges tokens back to their untokenized representation.</summary>
-    public interface IDetokenizer {
-        /// <summary>Detokenizes the specified tokens.</summary>
-        /// <param name="tokens">The tokens to detokenize.</param>
-        /// <returns>The merge operations to detokenize the input tokens.</returns>
-        DetokenizationOperation[] Detokenize(string[] tokens);
+using NUnit.Framework;
 
+using SharpNL.Formats.Ptb;
+using SharpNL.Utility;
 
+namespace SharpNL.Tests.Formats.Ptb {
+    [TestFixture]
+    internal class PtbPosSampleStreamTest {
         /// <summary>
-        /// Detokenize the input tokens into a String. Tokens which are connected without a space in 
-        /// between can be separated by a split marker.
+        /// Test the <see cref="PtbParseSampleStream"/> with the OpenNLP parser.
         /// </summary>
-        /// <param name="tokens">The token which should be concatenated.</param>
-        /// <param name="splitMarker">The split marker or <c>null</c>.</param>
-        /// <returns>The detokenized string.</returns>
-        string Detokenize(string[] tokens, string splitMarker);
+        [Test]
+        public void TestSamples() {
+
+            using (
+                var reader = new PtbStreamReader("en",
+                    new PlainTextByLineStream(Tests.OpenFile("/opennlp/tools/parser/test.parse")), false, null)) {
+
+                var stream = new PtbPosSampleStream(reader);
+
+                var p1 = stream.Read();
+                var p2 = stream.Read();
+
+                Assert.AreEqual("At_IN your_PRP$ age_NN ,_, Jackie_NNP ,_, you_PRP ought_MD to_TO know_VB that_IN you_PRP ca_MD n't_RB make_VB soup_NN without_IN turning_VBG up_RP the_DT flame_NN ._.", p1.ToString());
+                Assert.AreEqual("A_DT few_JJ hours_NNS later_RB ,_, the_DT stock_NN market_NN dropped_VBD 190_CD points_NNS ._.", p2.ToString());
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -177,6 +178,9 @@
     <Compile Include="Formats\Conll03NameSampleStreamTest.cs" />
     <Compile Include="Formats\Muc\DocumentSplitterStreamTest.cs" />
     <Compile Include="Formats\Muc\SgmlParserTest.cs" />
+    <Compile Include="Formats\Ptb\PtbParseSampleStreamTest.cs" />
+    <Compile Include="Formats\Ptb\PtbPosSampleStreamTest.cs" />
+    <Compile Include="Formats\Ptb\PtbStreamReaderTest.cs" />
     <Compile Include="ML\MaxEnt\MaxentPrepAttachTest.cs" />
     <Compile Include="ML\MaxEnt\RealValueModelTest.cs" />
     <Compile Include="ML\MaxEnt\ScaleDoesntMatterTest.cs" />

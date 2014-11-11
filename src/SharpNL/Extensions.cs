@@ -142,6 +142,21 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . First .
+        /// <summary>
+        /// Returns the first element of a list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of source.</typeparam>
+        /// <param name="list">The list.</param>
+        /// <returns>The first element in the specified list.</returns>
+        public static T First<T>(this IList<T> list) {
+            if (list == null || list.Count == 0)
+                return default(T);
+
+            return list[0];
+        }
+        #endregion
+
         #region . GetKey .
         /// <summary>
         /// Gets the element key by the first element that are equals to the specified <paramref name="value"/>,
@@ -261,6 +276,21 @@ namespace SharpNL {
                 }
             }
             return -1;
+        }
+        #endregion
+
+        #region . Last .
+        /// <summary>
+        /// Returns the last element of a list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements of source.</typeparam>
+        /// <param name="list">The list.</param>
+        /// <returns>The last element in the specified list.</returns>
+        public static T Last<T>(this IList<T> list) {
+            if (list == null || list.Count == 0)
+                return default(T);
+
+            return list[list.Count - 1];
         }
         #endregion
 
