@@ -10,11 +10,16 @@
 
 > [How to contribute](contributing.md)
 
+## Main differences to the original component
+
+> Pure C#, there is no need to run a virtual machine :stuck_out_tongue_winking_eye:
+> The heavy operations (like training) can be monitored and canceled.
+> Some file formats were revamped/improved (Ad and Penn Treebank).
+> The command line tool will not be ported (I'm working in a GUI/IDE to the library)
+
 ## Warning
 
 > At the moment, there is no published version, the port seems to be going well but I don't have any ETA for the first release. 
-
-> I'm making changes that can break your code... Wait a stable version to avoid problems!
 
 So far the project has ~24,210 lines of code!
 
@@ -22,16 +27,17 @@ So far the project has ~24,210 lines of code!
 
 > Implement the best library of natural language processing in C#, which means:
 > - Be as lightweight as possible
-> - Be fully compatible with the OpenNLP library
+> - Be fully compatible with the OpenNLP library (done!)
 
-and, perhaps one day be compatible with Standord NLP =)
 
-## Current tasks
+## TODO
 
-> - Port the OpenNLP Library ~98% done (The alpha version is almost ready).
+> - Port the OpenNLP Library ~99% done (The alpha version is almost ready).
 > - Improve usability of the library (Good progress so far)
-> - Improve the portuguese recognition - [CoGrOO] Project already found some good answer on how to do this.
-> - Create a GUI/IDE (WiP)
+> - Run a Profiler to reduce memory and cpu utilization.
+> - Create a GUI/IDE (WiP - No ETA for the GUI)
+> - Ensure that the library is compatible with Mono.
+> - I might implement the Bikel’s parser in the future.
 
 ## Support
 
