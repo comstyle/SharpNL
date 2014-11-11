@@ -43,7 +43,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestWithoutNameTypes() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentences.txt")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file, "ISO-8859-1"));
                 var expectedNames = new[] {
                     "Alan McKennedy", "Julie", "Marie Clara",
                     "Stefanie Schmidt", "Mike", "Stefanie Schmidt", "George", "Luise",
@@ -93,7 +93,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void TestWithoutNameTypeAndInvalidData1() {
-            var sampleStream = new NameSampleDataStream(new GenericObjectStream<string>(
+            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
                 "<START> <START> Name <END>"));
 
             sampleStream.Read();
@@ -101,7 +101,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void TestWithoutNameTypeAndInvalidData2() {
-            var sampleStream = new NameSampleDataStream(new GenericObjectStream<string>(
+            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
                 "<START> Name <END> <END>"));
 
             sampleStream.Read();
@@ -110,7 +110,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void TestWithoutNameTypeAndInvalidData3() {
-            var sampleStream = new NameSampleDataStream(new GenericObjectStream<string>(
+            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
                 "<START> <START> Person <END> Street <END>"));
 
             sampleStream.Read();
@@ -118,7 +118,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void TestWithNameTypeAndInvalidData1() {
-            var sampleStream = new NameSampleDataStream(new GenericObjectStream<string>(
+            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
                 "<START:> Name <END>"));
 
             sampleStream.Read();
@@ -126,7 +126,7 @@ namespace SharpNL.Tests.NameFind {
 
         [Test, ExpectedException(typeof(InvalidOperationException))]
         public void TestWithNameTypeAndInvalidData2() {
-            var sampleStream = new NameSampleDataStream(new GenericObjectStream<string>(
+            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
                 "<START:street> <START:person> Name <END> <END>"));
 
             sampleStream.Read();
@@ -135,7 +135,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestWithNameTypes() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/voa1.train")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file, "ISO-8859-1"));
                 var names = new Dictionary<string, List<string>>();
                 var spans = new Dictionary<string, List<Span>>();
 
@@ -264,7 +264,7 @@ namespace SharpNL.Tests.NameFind {
             trainingData.Append("d\n");
 
             var untokenizedLineStream = new PlainTextByLineStream(new StringReader(trainingData.ToString()));
-            var trainingStream = new NameSampleDataStream(untokenizedLineStream);
+            var trainingStream = new NameSampleStream(untokenizedLineStream);
 
             Assert.False(trainingStream.Read().ClearAdaptiveData);
             Assert.False(trainingStream.Read().ClearAdaptiveData);
@@ -276,7 +276,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestHtmlNameSampleParsing() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/html1.train")) {
-                var ds = new NameSampleDataStream(new PlainTextByLineStream(file));
+                var ds = new NameSampleStream(new PlainTextByLineStream(file));
 
                 NameSample ns = ds.Read();
 

@@ -60,7 +60,7 @@ namespace SharpNL.Tests.NameFind {
         public void TestNameFinder() {
 
             using (var file = Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentences.txt")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file, "ISO-8859-1"));
 
                 var param = new TrainingParameters();
                 param.Set(Parameters.Iterations, "70");
@@ -121,7 +121,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestNameFinderWithTypes() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/AnnotatedSentencesWithTypes.txt")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file, "ISO-8859-1"));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file, "ISO-8859-1"));
 
                 var param = new TrainingParameters();
                 param.Set(Parameters.Iterations, "70");
@@ -166,7 +166,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestOnlyWithNames() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/OnlyWithNames.train")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file));
 
                 var param = new TrainingParameters();
                 param.Set(Parameters.Iterations, "70");
@@ -199,7 +199,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestOnlyWithNamesWithTypes() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/OnlyWithNamesWithTypes.train")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file));
 
                 var param = new TrainingParameters();
                 param.Set(Parameters.Iterations, "70");
@@ -237,7 +237,7 @@ namespace SharpNL.Tests.NameFind {
         public void TestOnlyWithEntitiesWithTypes() {
 
             using (var file = Tests.OpenFile("opennlp/tools/namefind/OnlyWithEntitiesWithTypes.train")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file));
 
                 var param = new TrainingParameters();
                 param.Set(Parameters.Iterations, "70");
@@ -269,7 +269,7 @@ namespace SharpNL.Tests.NameFind {
         [Test]
         public void TestNameFinderWithMultipleTypes() {
             using (var file = Tests.OpenFile("opennlp/tools/namefind/voa1.train")) {
-                var sampleStream = new NameSampleDataStream(new PlainTextByLineStream(file));
+                var sampleStream = new NameSampleStream(new PlainTextByLineStream(file));
 
                 var param = new TrainingParameters();
                 param.Set(Parameters.Iterations, "70");
