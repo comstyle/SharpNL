@@ -27,7 +27,7 @@
 namespace SharpNL.Tokenize.Language.pt {
 
     /// <summary>
-    /// Represents a portugues tokenizer factory.
+    /// Represents a portuguese tokenizer factory.
     /// </summary>
     public class PtTokenizerFactory : Tokenize.TokenizerFactory {
         /// <summary>

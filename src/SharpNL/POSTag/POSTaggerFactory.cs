@@ -22,11 +22,9 @@
 
 using System;
 using System.Collections.Generic;
-using SharpNL.Dictionary;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 using SharpNL.Utility.Serialization;
-using Dic = SharpNL.Dictionary.Dictionary;
 
 namespace SharpNL.POSTag {
     /// <summary>
@@ -34,15 +32,13 @@ namespace SharpNL.POSTag {
     /// </summary>
     [TypeClass("opennlp.tools.postag.POSTaggerFactory")]
     public class POSTaggerFactory : BaseToolFactory {
-        private const string FactoryName = "POSTaggerFactory";
-
         internal const string TagDictionaryEntryName = "tags.tagdict";
         internal const string NgramDictionaryEntryName = "ngram.dictionary";
 
-        protected Dic dictionary;
+        protected Dictionary.Dictionary dictionary;
         protected ITagDictionary tagDictionary;
 
-        protected void Init(Dic ngramDic, ITagDictionary posDic) {
+        protected void Init(Dictionary.Dictionary ngramDic, ITagDictionary posDic) {
             dictionary = ngramDic;
             tagDictionary = posDic;
         }
@@ -50,16 +46,15 @@ namespace SharpNL.POSTag {
         #region + Properties .
 
         #region . Dictionary .
-
         /// <summary>
         /// Gets or sets ngram the dictionary.
         /// </summary>
         /// <value>The ngram dictionary.</value>
         /// <exception cref="System.InvalidOperationException">Can not set ngram dictionary while using artifact provider.</exception>
-        public Dic Dictionary {
+        public Dictionary.Dictionary Dictionary {
             get {
                 if (dictionary == null && ArtifactProvider != null) {
-                    dictionary = ArtifactProvider.GetArtifact<Dic>(NgramDictionaryEntryName);
+                    dictionary = ArtifactProvider.GetArtifact<Dictionary.Dictionary>(NgramDictionaryEntryName);
                 }
                 return dictionary;
             }
@@ -103,12 +98,11 @@ namespace SharpNL.POSTag {
         /// Gets the model from the artifact provider.
         /// </summary>
         /// <value>The model from the artifact provider..</value>
-        internal AbstractModel Model {
+        private AbstractModel Model {
             get {
-                if (ArtifactProvider != null) {
-                    return ArtifactProvider.GetArtifact<AbstractModel>(POSModel.EntryName);
-                }
-                return null;
+                return ArtifactProvider != null 
+                    ? ArtifactProvider.GetArtifact<AbstractModel>(POSModel.EntryName) 
+                    : null;
             }
         }
 
@@ -197,7 +191,7 @@ namespace SharpNL.POSTag {
                 ValidatePOSDictionary((POSDictionary) tagDicEntry, Model);
             }
 
-            dictionary = ArtifactProvider.GetArtifact<Dic>(NgramDictionaryEntryName);
+            dictionary = ArtifactProvider.GetArtifact<Dictionary.Dictionary>(NgramDictionaryEntryName);
         }
 
         #endregion

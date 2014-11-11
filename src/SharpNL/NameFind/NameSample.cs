@@ -243,7 +243,7 @@ namespace SharpNL.NameFind {
                         }
                         nameType = nameTypeFromSample;
                     }
-                } else if (parts[pi] == NameSampleDataStream.END_TAG) {
+                } else if (parts[pi] == NameSampleStream.END_TAG) {
                     if (catchingName == false) {
                         throw new InvalidOperationException("Found unexpected annotation: " +
                                                             ErrorTokenWithContext(parts, pi));
@@ -286,14 +286,14 @@ namespace SharpNL.NameFind {
                         // check if nameTypes is null, or if the nameType for this specific
                         // entity is empty. If it is, we leave the nameType blank.
                         if (name.Type == null) {
-                            result.Append(NameSampleDataStream.START_TAG).Append(' ');
+                            result.Append(NameSampleStream.START_TAG).Append(' ');
                         } else {
-                            result.Append(NameSampleDataStream.START_TAG_PREFIX).Append(name.Type).Append("> ");
+                            result.Append(NameSampleStream.START_TAG_PREFIX).Append(name.Type).Append("> ");
                         }
                     }
 
                     if (name.End == tokenIndex) {
-                        result.Append(NameSampleDataStream.END_TAG).Append(' ');
+                        result.Append(NameSampleStream.END_TAG).Append(' ');
                     }
                 }
 
@@ -306,7 +306,7 @@ namespace SharpNL.NameFind {
 
             foreach (var name in Names) {
                 if (name.End == Sentence.Length) {
-                    result.Append(' ').Append(NameSampleDataStream.END_TAG);
+                    result.Append(' ').Append(NameSampleStream.END_TAG);
                 }
             }
 
