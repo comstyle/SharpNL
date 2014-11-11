@@ -68,7 +68,6 @@
     <Compile Include="Chunker\DefaultChunkerSequenceValidator.cs" />
     <Compile Include="Chunker\IChunker.cs" />
     <Compile Include="Chunker\IChunkerContextGenerator.cs" />
-    <Compile Include="CSharp\CovariantIListAdapter.cs" />
     <Compile Include="Dictionary\Attributes.cs" />
     <Compile Include="Dictionary\Dictionary.cs" />
     <Compile Include="Dictionary\Entry.cs" />
@@ -253,7 +252,7 @@
     <Compile Include="NameFind\NameFinderME.cs" />
     <Compile Include="NameFind\NameFinderSequenceValidator.cs" />
     <Compile Include="NameFind\NameSample.cs" />
-    <Compile Include="NameFind\NameSampleDataStream.cs" />
+    <Compile Include="NameFind\NameSampleStream.cs" />
     <Compile Include="NameFind\NameSampleSequenceStream.cs" />
     <Compile Include="NameFind\TokenNameFinderEvaluator.cs" />
     <Compile Include="NameFind\TokenNameFinderFactory.cs" />
