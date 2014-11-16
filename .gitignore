@@ -101,3 +101,4 @@ UpgradeLog*.htm
 
 Thumbs.db
 *.csproj.DotSettings
+*.userprefs
