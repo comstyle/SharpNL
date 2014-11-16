@@ -28,7 +28,6 @@ using System.Xml;
 using SharpNL.Chunker;
 using SharpNL.Project.Design;
 using SharpNL.Text;
-using SharpNL.Utility;
 
 namespace SharpNL.Project.Tasks {
     /// <summary>
@@ -108,7 +107,7 @@ namespace SharpNL.Project.Tasks {
             int count = 0;
             foreach (var sentence in doc.Sentences) {
                 var tokens = sentence.Tokens;
-                var tokStr = TextUtils.TokensToString(tokens);
+                var tokStr = tokens.ToTokenArray();
                 var tags = new string[tokens.Count];
                 for (var i = 0; i < tokens.Count; i++) {
                     tags[i] = tokens[i].POSTag;

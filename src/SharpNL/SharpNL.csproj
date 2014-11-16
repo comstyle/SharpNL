@@ -489,7 +489,6 @@
     <Compile Include="Utility\Serialization\LazyArtifact.cs" />
     <Compile Include="Utility\Span.cs" />
     <Compile Include="Utility\StringList.cs" />
-    <Compile Include="Utility\TextUtils.cs" />
     <Compile Include="Utility\ToolFactoryManager.cs" />
     <Compile Include="Utility\TrainingParameters.cs" />
     <Compile Include="Utility\Version.cs" />

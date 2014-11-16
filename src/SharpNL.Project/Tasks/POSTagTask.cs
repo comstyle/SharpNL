@@ -116,6 +116,7 @@ namespace SharpNL.Project.Tasks {
                 double[] probs;
 
                 var tokens = TextUtils.TokensToString(sentence.Tokens);
+                var tokens = sentence.Tokens.ToTokenArray();
 
                 lock (tagger) {
                     tags = tagger.Tag(tokens);

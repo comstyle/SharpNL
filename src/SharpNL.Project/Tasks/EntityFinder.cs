@@ -109,7 +109,7 @@ namespace SharpNL.Project.Tasks {
 
                 Span[] spans;
 
-                var tokens = TextUtils.TokensToString(sentence.Tokens);
+                var tokens = sentence.Tokens.ToTokenArray();
                 lock (nameFinder) {
                     spans = nameFinder.Find(tokens);
                 }

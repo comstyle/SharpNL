@@ -29,6 +29,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Security.Permissions;
 using System.Text;
+using SharpNL.Text;
 
 namespace SharpNL {
     /// <summary>
@@ -479,6 +480,21 @@ namespace SharpNL {
         }
         internal static string ToDisplay(this List<string> list) {
             return list.ToArray().ToDisplay();
+        }
+        #endregion
+
+        #region . ToTokenArray .
+        /// <summary>
+        /// Gets a array of tokens from the token collection.
+        /// </summary>
+        /// <param name="tokens">The tokens.</param>
+        /// <returns>The token array.</returns>
+        public static string[] ToTokenArray(this IReadOnlyList<IToken> tokens) {
+            var items = new string[tokens.Count];
+            for (var i = 0; i < tokens.Count; i++) {
+                items[i] = tokens[i].Lexeme;
+            }
+            return items;
         }
         #endregion
 
