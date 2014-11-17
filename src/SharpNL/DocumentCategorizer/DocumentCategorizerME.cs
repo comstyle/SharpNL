@@ -29,22 +29,34 @@ namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Maximum entropy implementation of <see cref="IDocumentCategorizer"/>.
     /// </summary>
+    /// <example>
+    /// This example shows how to use the <see cref="DocumentCategorizerME"/>.
+    /// <code>
+    /// var tokens = new[] { "This", "is", "a", "sample", "text", "." };
+    /// var model = new DocumentCategorizerModel(new FileStream("modelfile.bin", FileMode.Open));
+    /// var categorizer = new DocumentCategorizerME(model);
+    /// 
+    /// double[] outcomes = categorizer.Categorize(tokens);
+    /// string category = categorizer.GetBestCategory(outcomes);
+    /// 
+    /// </code>
+    /// </example>
     public class DocumentCategorizerME : IDocumentCategorizer {
 
         private readonly DocumentCategorizerModel model;
         private readonly DocumentCategorizerContextGenerator cg;
 
-        /// <summary>
-        /// The default feature generator
-        /// </summary>
-        public static IFeatureGenerator DefaultFeatureGenerator;
+        
+        #region + Constructors .
 
+        /// <summary>
+        /// Initializes static members of the <see cref="DocumentCategorizerME"/> class.
+        /// </summary>
         static DocumentCategorizerME() {
             DefaultFeatureGenerator = new BagOfWordsFeatureGenerator();
-            
+
         }
 
-        #region + Constructors .
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentCategorizerME"/> with a document categorizer model.
         /// The default feature generation will be used.
@@ -63,6 +75,13 @@ namespace SharpNL.DocumentCategorizer {
 
         #region + Properties .
 
+        #region . DefaultFeatureGenerator .
+        /// <summary>
+        /// Gets or sets the default feature generator.
+        /// </summary>
+        public static IFeatureGenerator DefaultFeatureGenerator { get; set; }
+        #endregion
+
         #region . NumberOfCategories .
         /// <summary>
         /// Gets the number of categories.
@@ -79,17 +98,18 @@ namespace SharpNL.DocumentCategorizer {
         /// <summary>
         /// Categorizes the specified text.
         /// </summary>
-        /// <param name="text">The text.</param>
-        /// <returns>System.Double[].</returns>
-        public double[] Categorize(string[] text) {
-            return Categorize(text, null);
+        /// <param name="tokens">The text.</param>
+        /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
+        public double[] Categorize(string[] tokens) {
+            return Categorize(tokens, null);
         }
 
         /// <summary>
         /// Categorizes the specified document.
         /// </summary>
-        /// <param name="document">The document.</param>
-        /// <returns>System.Double[].</returns>
+        /// <param name="document">The document string.</param>
+        /// <returns>A double array containing the outcomes.</returns>
+        /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
         public double[] Categorize(string document) {
             return Categorize(model.Factory.Tokenizer.Tokenize(document), null);
         }
@@ -97,19 +117,20 @@ namespace SharpNL.DocumentCategorizer {
         /// <summary>
         /// Categorizes the specified text with extra informations.
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name="tokens">The sentence tokens.</param>
         /// <param name="extraInformation">The extra information.</param>
-        /// <returns>System.Double[].</returns>
-        public double[] Categorize(string[] text, Dictionary<string, object> extraInformation) {
-            return model.MaxentModel.Eval(cg.GetContext(text, extraInformation));
+        /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
+        public double[] Categorize(string[] tokens, Dictionary<string, object> extraInformation) {
+            return model.MaxentModel.Eval(cg.GetContext(tokens, extraInformation));
         }
 
         /// <summary>
         /// Categorizes the specified document with extra information.
         /// </summary>
-        /// <param name="document">The document.</param>
+        /// <param name="document">The document string.</param>
         /// <param name="extraInformation">The extra information.</param>
-        /// <returns>System.Double[].</returns>
+        /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
+        /// <remarks>The document string will be tokenized by the tokenizer specified in the factory.</remarks>
         public double[] Categorize(string document, Dictionary<string, object> extraInformation) {
             return Categorize(model.Factory.Tokenizer.Tokenize(document), extraInformation);
         }
@@ -197,12 +218,11 @@ namespace SharpNL.DocumentCategorizer {
         /// <param name="text">text the input text to classify.</param>
         /// <returns>The dictionary with the categories with the scores.</returns>
         public Dictionary<string, double> ScoreMap(string text) {
-            var count = NumberOfCategories;
-            var categories = Categorize(text);
-            var list = new Dictionary<string, double>(count);
-            for (var i = 0; i < count; i++) {
+            var outcomes = Categorize(text);
+            var list = new Dictionary<string, double>(outcomes.Length);
+            for (var i = 0; i < list.Count; i++) {
                 var cat = GetCategory(i);
-                list.Add(cat, categories[GetIndex(cat)]);
+                list.Add(cat, outcomes[GetIndex(cat)]);
             }
 
             return list;

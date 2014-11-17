@@ -31,24 +31,24 @@ namespace SharpNL.DocumentCategorizer {
         /// <summary>
         /// Categorizes the specified text.
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name="tokens">The tokens.</param>
         /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
-        double[] Categorize(string[] text);
+        double[] Categorize(string[] tokens);
 
         /// <summary>
         /// Categorizes the specified document.
         /// </summary>
-        /// <param name="document">The document.</param>
+        /// <param name="document">The document string.</param>
         /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
         double[] Categorize(string document);
 
         /// <summary>
         /// Categorizes the specified text with extra informations.
         /// </summary>
-        /// <param name="text">The text.</param>
+        /// <param name="tokens">The tokens.</param>
         /// <param name="extraInformation">The extra information.</param>
         /// <returns>An array of the probabilities for each of the different outcomes, all of which sum to 1.</returns>
-        double[] Categorize(string[] text, Dictionary<string, object> extraInformation);
+        double[] Categorize(string[] tokens, Dictionary<string, object> extraInformation);
 
 
         /// <summary>
@@ -78,8 +78,6 @@ namespace SharpNL.DocumentCategorizer {
         /// </summary>
         /// <value>The number of categories.</value>
         int NumberOfCategories { get; }
-
-        
 
         /// <summary>
         /// Returns a map in which the key is the category name and the value is the score.
