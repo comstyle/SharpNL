@@ -4,24 +4,14 @@
 
 > An awesome and independent reimplementation of the [Apache OpenNLP] software library in C#
 
-## Request
+## Main differences to the original OpenNLP
 
-> I need someone else to help test what we have so far, because a mistake can go unnoticed, and honestly I do not like bugs in my code :)
+> - Pure C#, there is no need to run a virtual machine :stuck_out_tongue_winking_eye:
+> - Was built from scratch by hand, without any assist tool in order to maximize the synergy with .net technology. 
+> - There are [analyzers](https://github.com/knuppe/SharpNL/wiki/Analyzers) that help a lot the implementation and abstraction of this library.  
+> - The heavy operations (like training) can be monitored and cancelled.
+> - Some file formats were revamped/improved (Ad and Penn Treebank).
 
-> [How to contribute](contributing.md)
-
-## Main differences to the original component
-
-> Pure C#, there is no need to run a virtual machine :stuck_out_tongue_winking_eye:
-> The heavy operations (like training) can be monitored and canceled.
-> Some file formats were revamped/improved (Ad and Penn Treebank).
-> The command line tool will not be ported (I'm working in a GUI/IDE to the library)
-
-## Warning
-
-> At the moment, there is no published version, the port seems to be going well but I don't have any ETA for the first release. 
-
-So far the project has ~24,210 lines of code!
 
 ## Goals
 
@@ -34,10 +24,10 @@ So far the project has ~24,210 lines of code!
 
 > - Port the OpenNLP Library ~99% done (The alpha version is almost ready).
 > - Improve usability of the library (Good progress so far)
-> - Run a Profiler to reduce memory and cpu utilization.
-> - Create a GUI/IDE (WiP - No ETA for the GUI)
+> - Run a Profiler to reduce memory and CPU utilization.
 > - Ensure that the library is compatible with Mono.
-> - I might implement the Bikel’s parser in the future.
+
+> [How to contribute](contributing.md)
 
 ## Support
 

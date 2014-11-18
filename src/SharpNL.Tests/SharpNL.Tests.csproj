@@ -218,7 +218,6 @@
     <Compile Include="POSTag\POSSampleTest.cs" />
     <Compile Include="POSTag\POSTaggerMETest.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Project\ProjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sentence\DefaultEndOfSentenceScannerTest.cs" />
     <Compile Include="Sentence\SentenceDetectorEvaluatorTest.cs" />
