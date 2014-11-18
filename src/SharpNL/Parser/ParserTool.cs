@@ -29,7 +29,10 @@ using SharpNL.Text;
 using SharpNL.Utility;
 
 namespace SharpNL.Parser {
-    public class ParserTool {
+    /// <summary>
+    /// A helper tool to create the Parse objects that will be parsed by a implemented <see cref="IParser"/> object.
+    /// </summary>
+    public static class ParserTool {
         private static readonly Regex untokenizedParentPattern1;
         private static readonly Regex untokenizedParentPattern2;
 
@@ -38,6 +41,20 @@ namespace SharpNL.Parser {
             untokenizedParentPattern2 = new Regex("([({)}])([^ ])", RegexOptions.Compiled);
         }
 
+        /// <summary>
+        /// Parses the specified <see cref="ISentence"/> object using a given <paramref name="parser"/>.
+        /// </summary>
+        /// <param name="sentence">The sentence to be parsed.</param>
+        /// <param name="parser">The parser.</param>
+        /// <param name="numParses">The number parses. Usually 1.</param>
+        /// <returns>An array with the parsed results.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="sentence"/>
+        /// or
+        /// <paramref name="parser"/>
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">numParses</exception>
+        /// <exception cref="System.InvalidOperationException">The sentence is not tokenized.</exception>
         public static Parse[] ParseLine(ISentence sentence, IParser parser, int numParses) {
             if (sentence == null)
                 throw new ArgumentNullException("sentence");
