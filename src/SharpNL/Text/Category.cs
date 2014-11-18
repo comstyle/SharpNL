@@ -20,30 +20,23 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
-
 namespace SharpNL.Text {
     /// <summary>
-    /// Represents a text document which can be several sentences, a sentence or even a single word.
+    /// Represents a category.
     /// </summary>
-    public interface IDocument {
-        /// <summary>
-        /// Gets the document text.
-        /// </summary>
-        /// <value>The document text.</value>
-        string Text { get; }
+    public class Category : ICategory {
 
         /// <summary>
-        /// Gets the language of this document.
+        /// Gets or sets the category name.
         /// </summary>
-        /// <value>The language of this document.</value>
-        string Language { get; }
+        /// <value>The category name string.</value>
+        public string Name { get; set; }
 
         /// <summary>
-        /// Gets the document sentences.
+        /// Gets or sets the category probability.
         /// </summary>
-        /// <value>The document sentences.</value>
-        IReadOnlyList<ISentence> Sentences { get; set; }
+        /// <value>The category probability.</value>
+        public double Probability { get; set; }
 
     }
 }

@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Collections.Generic;
 using SharpNL.Utility;
 
 namespace SharpNL.Text {
@@ -50,6 +51,32 @@ namespace SharpNL.Text {
         /// Prevents a default instance of the <see cref="DefaultTextFactory"/> class from being created.
         /// </summary>
         private DefaultTextFactory() { }
+        #endregion
+
+        #region . CreateCategory .
+        /// <summary>
+        /// Creates the <see cref="ICategory"/> object.
+        /// </summary>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="dict">The scored dictionary of categories.</param>
+        /// <returns>The new <see cref="ICategory"/> object or a <c>null</c> value if the category is invalid or should be ignored.</returns>
+        public ICategory CreateCategory(ISentence sentence, Dictionary<string, double> dict) {
+            var key = string.Empty;
+            var prob = double.MinValue;
+            foreach (var pair in dict) {
+                if (prob >= pair.Value)
+                    continue;
+
+                prob = pair.Value;
+                key = pair.Key;
+            }
+
+            // returns the category with the highest probability.
+            return new Category {
+                Name = key,
+                Probability = dict[key]
+            };
+        }
         #endregion
 
         #region . CreateChunk .

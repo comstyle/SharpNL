@@ -21,6 +21,7 @@
 //  
 
 using SharpNL.Utility;
+using System.Collections.Generic;
 
 namespace SharpNL.Text {
 
@@ -29,13 +30,23 @@ namespace SharpNL.Text {
     /// </summary>
     public interface ITextFactory {
 
+        #region . CreateCategory .
+        /// <summary>
+        /// Creates the <see cref="ICategory"/> object.
+        /// </summary>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="dict">The scored dictionary of categories.</param>
+        /// <returns>The new <see cref="ICategory"/> object or a <c>null</c> value if the category is invalid or should be ignored.</returns>
+        ICategory CreateCategory(ISentence sentence, Dictionary<string, double> dict);
+        #endregion
+
         #region . CreateChunk .
         /// <summary>
         /// Creates the <see cref="IChunk"/> object.
         /// </summary>
         /// <param name="sentence">The sentence.</param>
         /// <param name="span">The chunk span.</param>
-        /// <returns>The <see cref="IChunk"/> representation.</returns>
+        /// <returns>The created <see cref="IChunk"/> object or a <c>null</c> value if the chunk is invalid or not needed.</returns>
         IChunk CreateChunk(ISentence sentence, Span span);
         #endregion
 
@@ -45,7 +56,7 @@ namespace SharpNL.Text {
         /// </summary>
         /// <param name="language">The language.</param>
         /// <param name="text">The text.</param>
-        /// <returns>The created <see cref="IDocument"/> object.</returns>
+        /// <returns>The created <see cref="IDocument"/> object or a <c>null</c> value if the document is invalid or not needed.</returns>
         IDocument CreateDocument(string language, string text);
         #endregion
 
@@ -55,7 +66,7 @@ namespace SharpNL.Text {
         /// </summary>
         /// <param name="sentence">The sentence where the entity is present.</param>
         /// <param name="span">The entity span.</param>
-        /// <returns>The new <see cref="IEntity"/> object.</returns>
+        /// <returns>The new <see cref="IEntity"/> object or a <c>null</c> value if the entity should be ignored.</returns>
         IEntity CreateEntity(ISentence sentence, Span span);
         #endregion
 
@@ -65,12 +76,11 @@ namespace SharpNL.Text {
         /// </summary>
         /// <param name="span">The sentence span.</param>
         /// <param name="document">The document.</param>
-        /// <returns>The created <see cref="ISentence" /> object.</returns>
+        /// <returns>The created <see cref="ISentence" /> object or a <c>null</c> value if the sentence should be skipped.</returns>
         ISentence CreateSentence(Span span, IDocument document);
         #endregion
 
         #region . CreateToken .
-
         /// <summary>
         /// Creates an token object.
         /// </summary>
@@ -78,9 +88,9 @@ namespace SharpNL.Text {
         /// <param name="end">The end position.</param>
         /// <param name="lexeme">The lexeme.</param>
         /// <param name="probability">The token probability</param>
-        /// <returns>The created <see cref="IToken"/> object.</returns>
+        /// <returns>The created <see cref="IToken"/> object or a <c>null</c> value if the token is invalid or should be ignored.</returns>
         IToken CreateToken(int start, int end, string lexeme, double probability);
         #endregion
-
+        
     }
 }

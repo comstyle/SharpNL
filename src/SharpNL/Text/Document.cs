@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -90,13 +89,34 @@ namespace SharpNL.Text {
         public string Language { get; private set; }
         #endregion
 
-        #region . PoS .
+        #region . IsChunked .
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Document"/> has the Part-of-Speech parsed.
+        /// Gets a value indicating whether this document is chunked.
         /// </summary>
-        /// <value><c>true</c> if this document has PoS parsed; otherwise, <c>false</c>.</value>
-        [Description("Determines if the document has the Part-of-Speech parsed.")]
-        public bool PoS {
+        /// <value><c>true</c> if this document is chunked; otherwise, <c>false</c>.</value>
+        public bool IsChunked {
+            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Chunks != null; }
+        }
+        #endregion
+
+        #region . IsParsed .
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Document"/> is parsed.
+        /// </summary>
+        /// <value><c>true</c> if parsed; otherwise, <c>false</c>.</value>
+        [Description("Determines if the document is parsed.")]
+        public bool IsParsed {
+            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Parse != null; } 
+        }
+        #endregion
+
+        #region . IsTagged .
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Document"/> has the Part-of-Speech tagged.
+        /// </summary>
+        /// <value><c>true</c> if this document has PoS tagged; otherwise, <c>false</c>.</value>
+        [Description("Determines if the document has the Part-of-Speech tagged.")]
+        public bool IsTagged {
             get {
                 if (Sentences == null || Sentences.Count == 0)
                     return false;
@@ -114,14 +134,14 @@ namespace SharpNL.Text {
         }
         #endregion
 
-        #region . Parsed .
+        #region . IsTokenized .
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Document"/> is parsed.
+        /// Gets a value indicating whether this <see cref="Document"/> is tokenized.
         /// </summary>
-        /// <value><c>true</c> if parsed; otherwise, <c>false</c>.</value>
-        [Description("Determines if the document is parsed.")]
-        public bool Parsed {
-            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Parse != null; } 
+        /// <value><c>true</c> if tokenized; otherwise, <c>false</c>.</value>
+        [Description("Determines if the sentences in the document are tokenized.")]
+        public bool IsTokenized {
+            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Tokens != null; }
         }
         #endregion
 
@@ -150,16 +170,6 @@ namespace SharpNL.Text {
         /// <value>The document text.</value>
         [Description("The document text.")]
         public string Text { get; private set; }
-        #endregion
-
-        #region . Tokenized .
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="Document"/> is tokenized.
-        /// </summary>
-        /// <value><c>true</c> if tokenized; otherwise, <c>false</c>.</value>
-        public bool Tokenized {
-            get { return Sentences != null && Sentences.Count > 0 && Sentences[0].Tokens != null; }
-        }
         #endregion
 
         #endregion

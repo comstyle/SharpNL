@@ -31,6 +31,14 @@ namespace SharpNL.Text {
 
         #region + Properties .
 
+        #region . Tokens .
+        /// <summary>
+        /// Gets the sentence categories.
+        /// </summary>
+        /// <value>The sentence categories.</value>
+        IReadOnlyList<ICategory> Categories { get; set; }
+        #endregion
+
         #region . Chunks .
         /// <summary>
         /// Gets the sentence chunks.
@@ -60,7 +68,7 @@ namespace SharpNL.Text {
         /// Gets the sentence entities.
         /// </summary>
         /// <value>The sentence entities.</value>
-        IReadOnlyList<IEntity> Entities { get; }
+        IReadOnlyList<IEntity> Entities { get; set; }
         #endregion
 
         #region . Length .
@@ -95,20 +103,20 @@ namespace SharpNL.Text {
         string Text { get; }
         #endregion
 
+        #region . TagProbability .
+        /// <summary>
+        /// Gets the part-of-speech tagging probability.
+        /// </summary>
+        /// <value>The part-of-speech tagging probability.</value>
+        double TagProbability { get; set; }
+        #endregion
+
         #region . Tokens .
         /// <summary>
         /// Gets the sentence tokens.
         /// </summary>
         /// <value>The sentence tokens.</value>
         IReadOnlyList<IToken> Tokens { get; set; }
-        #endregion
-
-        #region . TokensProbabilty .
-        /// <summary>
-        /// Gets the tokens probability.
-        /// </summary>
-        /// <value>The tokens probability.</value>
-        double TokensProbability { get; set; }
         #endregion
 
         #endregion

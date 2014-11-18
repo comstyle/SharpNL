@@ -20,7 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -33,6 +32,7 @@ namespace SharpNL.Text {
     /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class Sentence : ISentence {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Sentence"/> class.
         /// </summary>
@@ -57,6 +57,22 @@ namespace SharpNL.Text {
 
             Document = document;
         }
+
+        #region . Categories .
+        /// <summary>
+        /// Gets the sentence categories.
+        /// </summary>
+        /// <value>The sentence categories.</value>
+        public IReadOnlyList<Category> Categories { get; set; }
+        IReadOnlyList<ICategory> ISentence.Categories {
+            get { return Categories; }
+            set {
+                Categories = value != null
+                    ? value.Cast<Category>().ToList().AsReadOnly()
+                    : null;
+            }
+        }
+        #endregion
 
         #region + Chunks .
         /// <summary>
@@ -96,7 +112,7 @@ namespace SharpNL.Text {
         /// Gets the sentence entities.
         /// </summary>
         /// <value>The sentence entities.</value>
-        public IReadOnlyList<IEntity> Entities { get; internal set; }
+        public IReadOnlyList<IEntity> Entities { get; set; }
         #endregion
 
         #region . Length .
@@ -171,7 +187,7 @@ namespace SharpNL.Text {
         /// Gets the tokens probability.
         /// </summary>
         /// <value>The tokens probability.</value>
-        public double TokensProbability { get; set; }
+        public double TagProbability { get; set; }
 
         #endregion
 
@@ -186,12 +202,6 @@ namespace SharpNL.Text {
         /// <remarks>The startIndex parameter is zero-based.</remarks>
         public string Substring(int startIndex, int length) {
             return Text.Substring(startIndex, length);
-        }
-        #endregion
-
-        #region . SetParse .
-        internal void SetParse(Parse parse) {
-            Parse = parse;
         }
         #endregion
 
