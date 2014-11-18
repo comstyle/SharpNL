@@ -34,6 +34,10 @@ namespace SharpNL {
         /// </summary>
         Chunker,
         /// <summary>
+        /// The document categorizer model.
+        /// </summary>
+        DocumentCategorizer,
+        /// <summary>
         /// Represents a tokenizer model.
         /// </summary>
         Tokenizer,

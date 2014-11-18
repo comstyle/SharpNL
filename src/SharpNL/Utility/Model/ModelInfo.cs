@@ -25,6 +25,7 @@ using System.ComponentModel;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using SharpNL.Chunker;
+using SharpNL.DocumentCategorizer;
 using SharpNL.NameFind;
 using SharpNL.Parser;
 using SharpNL.POSTag;
@@ -41,18 +42,30 @@ namespace SharpNL.Utility.Model {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelInfo"/> class, which provides information about the model.
         /// </summary>
-        /// <param name="fileName">Name of the file.</param>
-        /// <exception cref="System.IO.FileNotFoundException">The specified file does not exist.</exception>
-        /// <exception cref="InvalidFormatException">Invalid model format.</exception>
-        public ModelInfo(string fileName) {
-            File = new FileInfo(fileName);
-            if (!File.Exists)
-                throw new FileNotFoundException("The specified file does not exist.", fileName);
+        /// <param name="fileName">The model filename.</param>
+        /// <exception cref="System.IO.FileNotFoundException">The specified model file does not exist.</exception>
+        /// <exception cref="InvalidFormatException">Unable to load the specified model file.</exception>
+        public ModelInfo(string fileName) : this(new FileInfo(fileName)) { }
 
-            Name = Path.GetFileNameWithoutExtension(File.Name);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelInfo"/> class.
+        /// </summary>
+        /// <param name="fileInfo">The model file info.</param>
+        /// <exception cref="System.ArgumentNullException">fileInfo</exception>
+        /// <exception cref="System.IO.FileNotFoundException">The specified model file does not exist.</exception>
+        /// <exception cref="InvalidFormatException">Unable to load the specified model file.</exception>
+        public ModelInfo(FileInfo fileInfo) {
+            if (fileInfo == null)
+                throw new ArgumentNullException("fileInfo");
+
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("The specified model file does not exist.", fileInfo.FullName);
+
+            File = fileInfo;
+            Name = Path.GetFileNameWithoutExtension(fileInfo.Name);
 
             try {
-                using (var zip = new ZipInputStream(new FileStream(fileName, FileMode.Open, FileAccess.Read))) {
+                using (var zip = new ZipInputStream(fileInfo.OpenRead())) {
                     ZipEntry entry;
                     while ((entry = zip.GetNextEntry()) != null) {
                         if (entry.Name == ArtifactProvider.MANIFEST_ENTRY) {
@@ -66,7 +79,7 @@ namespace SharpNL.Utility.Model {
                     zip.Close();
                 }
             } catch (Exception ex) {
-                throw new InvalidFormatException("Invalid model format.", ex);
+                throw new InvalidFormatException("Unable to load the specified model file.", ex);
             }
         }
 
@@ -103,6 +116,8 @@ namespace SharpNL.Utility.Model {
                 switch (Manifest[ArtifactProvider.ComponentNameEntry]) {
                     case "ChunkerME":
                         return Models.Chunker;
+                    case "DocumentCategorizerME":
+                        return Models.DocumentCategorizer;
                     case "NameFinderME":
                         return Models.NameFind;
                     case "Parser":
@@ -166,16 +181,18 @@ namespace SharpNL.Utility.Model {
                 switch (ModelType) {
                     case Models.Chunker:
                         return typeof (ChunkerModel);
+                    case Models.DocumentCategorizer:
+                        return typeof (DocumentCategorizerModel);
+                    case Models.NameFind:
+                        return typeof(TokenNameFinderModel);
+                    case Models.Parser:
+                        return typeof(ParserModel);
+                    case Models.POSTag:
+                        return typeof(POSModel);
+                    case Models.SentenceDetector:
+                        return typeof(SentenceModel);
                     case Models.Tokenizer:
                         return typeof (TokenizerModel);
-                    case Models.NameFind:
-                        return typeof (TokenNameFinderModel);
-                    case Models.Parser:
-                        return typeof (ParserModel);
-                    case Models.POSTag:
-                        return typeof (POSModel);
-                    case Models.SentenceDetector:
-                        return typeof (SentenceModel);
                 }
                 return null;
             }
@@ -201,6 +218,8 @@ namespace SharpNL.Utility.Model {
                 switch (ModelType) {
                     case Models.Chunker:
                         return new ChunkerModel(file);
+                    case Models.DocumentCategorizer:
+                        return new DocumentCategorizerModel(file);
                     case Models.Tokenizer:
                         return new TokenizerModel(file);
                     case Models.NameFind:
@@ -218,7 +237,6 @@ namespace SharpNL.Utility.Model {
                 }
             }          
         }
-
         #endregion
 
 
