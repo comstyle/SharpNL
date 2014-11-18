@@ -20,12 +20,16 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System.Diagnostics;
 using SharpNL.Utility;
 
 namespace SharpNL.Parser {
     /// <summary>
     /// Class used to hold constituents when reading parses.
     /// </summary>
+#if DEBUG
+    [DebuggerDisplay("{Label} - {Span}")]
+#endif
     public class Constituent {
 
         /// <summary>

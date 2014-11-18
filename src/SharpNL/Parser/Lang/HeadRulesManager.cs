@@ -43,7 +43,7 @@ namespace SharpNL.Parser.Lang {
         }
 
         public static AbstractHeadRules Deserialize(string languageCode, Stream inputStream) {
-            return new HeadRules(new StreamReader(inputStream, Encoding.UTF8));
+            return new en.HeadRules(new StreamReader(inputStream, Encoding.UTF8));
             /*
             switch (languageCode) {
                 case "pt":

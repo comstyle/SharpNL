@@ -79,6 +79,9 @@ namespace SharpNL.Parser {
         /// <param name="probability">The probability of this parse.</param>
         /// <param name="headIndex">The token index of the head of this parse.</param>
         public Parse(string text, Span span, string type, double probability, int headIndex) {
+            if (span == null)
+                throw new ArgumentNullException("span");
+
             Text = text;
             Span = span;
             Type = type;
@@ -783,7 +786,13 @@ namespace SharpNL.Parser {
 
         #region . GetType .
 
-        private static string GetType(string rest) {
+        internal static string GetType(string rest, bool useFunctionTags) {
+            if (rest.StartsWith("\u00AB")) // « (left-pointing double angle quotation mark)
+                return "\u00AB";
+
+            if (rest.StartsWith("\u00BB")) // »	(right-pointing double angle quotation mark)
+                return "\u00BB";
+
             if (rest.StartsWith("-LCB-"))
                 return "-LCB-";
 
@@ -805,19 +814,19 @@ namespace SharpNL.Parser {
             if (rest.StartsWith("-NONE-"))
                 return "-NONE-";
 
-            var typeMatcher = typePattern.Match(rest);
-            if (typeMatcher.Success) {
-                var type = typeMatcher.Groups[1].Value;
-                if (UseFunctionTags) {
-                    var funMatcher = funTypePattern.Match(rest);
-                    if (funMatcher.Success) {
-                        var ftag = funMatcher.Groups[1].Value;
-                        type = type + "-" + ftag;
-                    }
-                }
+            var match = typePattern.Match(rest);
+            if (!match.Success)
+                return null;
+
+            var type = match.Groups[1].Value;
+
+            if (!useFunctionTags)
                 return type;
-            }
-            return null;
+
+            match = funTypePattern.Match(rest);
+            return match.Success
+                ? type + "-" + match.Groups[1].Value
+                : type;
         }
 
         #endregion
@@ -857,12 +866,11 @@ namespace SharpNL.Parser {
         /// The string containing the token for the specified portion of the parse string or
         /// null if the portion of the parse string does not represent a token.
         /// </returns>
-        private static string GetToken(string rest) {
-            var tokenMatcher = tokenPattern.Match(rest);
-            if (tokenMatcher.Success) {
-                return DecodeToken(tokenMatcher.Groups[1].Value);
-            }
-            return null;
+        internal static string GetToken(string rest) {
+            var match = tokenPattern.Match(rest);
+            return match.Success 
+                ? DecodeToken(match.Groups[1].Value) 
+                : null;
         }
 
         #endregion
@@ -939,7 +947,7 @@ namespace SharpNL.Parser {
                 var c = parse[ci];
                 if (c == '(') {
                     var rest = parse.Substring(ci + 1);
-                    var type = GetType(rest);
+                    var type = GetType(rest, UseFunctionTags);
                     if (type == null) {
                         throw new InvalidFormatException("Null type for: " + rest);
                     }

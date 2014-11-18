@@ -74,9 +74,9 @@ namespace SharpNL.Parser {
 
             if (parse != null) {
                 var chunks = GetInitialChunks(parse);
-                var toks = new List<String>();
-                var tags = new List<String>();
-                var preds = new List<String>();
+                var toks = new List<string>();
+                var tags = new List<string>();
+                var preds = new List<string>();
                 for (int ci = 0, cl = chunks.Length; ci < cl; ci++) {
                     var c = chunks[ci];
                     if (c.IsPosTag) {
