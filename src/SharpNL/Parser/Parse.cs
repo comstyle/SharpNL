@@ -62,9 +62,9 @@ namespace SharpNL.Parser {
         /// Initializes static members of the <see cref="Parse"/>.
         /// </summary>
         static Parse() {
-            typePattern = new Regex("^([^ =-]+)", RegexOptions.Compiled);
+            typePattern = new Regex("^([^ )=-]+)", RegexOptions.Compiled);
 
-            funTypePattern = new Regex("^[^ =-]+-([^ =-]+)", RegexOptions.Compiled);
+            funTypePattern = new Regex("^[^ )=-]+-([^ )=-]+)", RegexOptions.Compiled);
 
             tokenPattern = new Regex("^[^ ()]+ ([^ ()]+)\\s*\\)", RegexOptions.Compiled);
         }
