@@ -211,7 +211,7 @@ namespace SharpNL.DocumentCategorizer {
         }
         #endregion
 
-        #region . ScoreMap .
+        #region + ScoreMap .
         /// <summary>
         /// Returns a map in which the key is the category name and the value is the score.
         /// </summary>
@@ -227,6 +227,23 @@ namespace SharpNL.DocumentCategorizer {
 
             return list;
         }
+
+        /// <summary>
+        /// Returns a map in which the key is the category name and the value is the score.
+        /// </summary>
+        /// <param name="tokens">The sentence tokens to classify.</param>
+        /// <returns>The dictionary with the categories with the scores.</returns>
+        public Dictionary<string, double> ScoreMap(string[] tokens) {
+            var outcomes = Categorize(tokens);
+            var list = new Dictionary<string, double>(outcomes.Length);
+            for (var i = 0; i < list.Count; i++) {
+                var cat = GetCategory(i);
+                list.Add(cat, outcomes[GetIndex(cat)]);
+            }
+
+            return list;
+        }
+
         #endregion
 
         #region . SortedScoreMap .

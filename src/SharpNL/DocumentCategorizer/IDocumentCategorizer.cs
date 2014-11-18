@@ -87,6 +87,13 @@ namespace SharpNL.DocumentCategorizer {
         Dictionary<string, double> ScoreMap(string text);
 
         /// <summary>
+        /// Returns a map in which the key is the category name and the value is the score.
+        /// </summary>
+        /// <param name="tokens">The sentence tokens to classify.</param>
+        /// <returns>The dictionary with the categories with the scores.</returns>
+        Dictionary<string, double> ScoreMap(string[] tokens);
+            
+        /// <summary>
         /// Returns a map with the score as a key in ascending order.
         /// </summary>
         /// <param name="text">Text the input text to classify.</param>
