@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,6 +38,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chunker\ChunkerAnalyzer.cs" />
+    <Compile Include="DocumentCategorizer\DocumentCategorizerAnalyzer.cs" />
+    <Compile Include="NameFind\NameFinderAnalyzer.cs" />
+    <Compile Include="Parser\ParserAnalyzer.cs" />
+    <Compile Include="POSTag\POSTaggerAnalyzer.cs" />
+    <Compile Include="Text\Category.cs" />
+    <Compile Include="Text\Extensions.cs" />
+    <Compile Include="Text\ICategory.cs" />
+    <Compile Include="Tokenize\TokenizerAnalyzer.cs" />
+    <Compile Include="Analyzer\AbstractAnalyzer.cs" />
+    <Compile Include="Analyzer\AggregateAnalyzer.cs" />
+    <Compile Include="Analyzer\AnalyzerException.cs" />
+    <Compile Include="Analyzer\IAnalyzer.cs" />
     <Compile Include="Dictionary\DictionaryBase.cs" />
     <Compile Include="Formats\Ad\AdContractionNameSampleStream.cs" />
     <Compile Include="Formats\Ad\AdNameSampleStream.cs" />
@@ -138,6 +151,7 @@
     <Compile Include="MonitorExceptionEventArgs.cs" />
     <Compile Include="MonitorMessageEventArgs.cs" />
     <Compile Include="Parser\IHeadRules.cs" />
+    <Compile Include="SentenceDetector\SentenceDetectorAnalyzer.cs" />
     <Compile Include="Text\DefaultTextFactory.cs" />
     <Compile Include="Text\Entity.cs" />
     <Compile Include="Text\IEntity.cs" />
