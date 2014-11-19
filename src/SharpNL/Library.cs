@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Permissions;
 using System.Text;
@@ -33,6 +34,9 @@ namespace SharpNL {
     /// Represents the SharpNL library.
     /// </summary>
     public static class Library {
+        private static readonly object syncLock = new object();
+        private static List<Type> knownTypes;
+
         /// <summary>
         /// Initializes static members of the SharpNL library.
         /// </summary>
@@ -41,7 +45,16 @@ namespace SharpNL {
 
             OpenNLPVersion = new Ver(1, 5, 3, false);
 
-            RegistersAllTheThings();
+            LoadKnownTypes();
+
+            TypeResolver = new TypeResolver();
+           
+            foreach (var type in knownTypes) {
+                var attr = type.GetCustomAttribute<TypeClassAttribute>(false);
+                if (attr != null) {
+                    TypeResolver.Register(attr.Name, type);
+                }
+            }
         }
 
         #region + Properties .
@@ -76,6 +89,39 @@ namespace SharpNL {
 
         #endregion
 
+        #region . CreateInstance .
+        internal static object CreateInstance(Type type) {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            var instance = type.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
+            if (instance != null)
+                return instance.GetValue(null);
+
+            return Activator.CreateInstance(type);
+        }
+        internal static T CreateInstance<T>(Type type) {
+            return (T)CreateInstance(type);
+        }
+        #endregion
+
+        #region . GetKnownTypes .
+        /// <summary>
+        /// Gets the known types that inherits the given <paramref name="baseType"/>.
+        /// </summary>
+        /// <param name="baseType">The base type.</param>
+        internal static IEnumerable<Type> GetKnownTypes(Type baseType) {
+            // this lock is not released until the last yield is processed.
+            lock (syncLock) {
+                foreach (var type in knownTypes) {
+                    if (type.IsSubclassOf(baseType)) {
+                        yield return type;
+                    }
+                }
+            }
+        }
+        #endregion
+
         #region . GetModelComment .
         /// <summary>
         /// Gets the model comment.
@@ -98,66 +144,43 @@ namespace SharpNL {
         }
         #endregion
 
-        #region . CreateInstance .
-        internal static object CreateInstance(Type type) {
-            if (type == null)
-                throw new ArgumentNullException("type");
+        #region . CurrentTimeMillis .
+        internal static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-            var instance = type.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
-            if (instance != null)
-                return instance.GetValue(null);
-
-            return Activator.CreateInstance(type);
-        }
-        internal static T CreateInstance<T>(Type type) {
-            return (T)CreateInstance(type);
-        }
-        #endregion
-
-        #region . RegistersAllTheThings .
         /// <summary>
-        /// Registers all the things \o/ \o/ \o/
+        /// Currents the current time in millis.
         /// </summary>
-        private static void RegistersAllTheThings() {
-            // have you smiled today? No? :/
-            // Life is too short, then smile (=
-
-            // lets come back to the "serious" stuff! maybe... #lol
-
-            TypeResolver = new TypeResolver();
-
-            RegisterTheTypes();
+        /// <returns>System.Int64.</returns>
+        internal static long CurrentTimeMillis() {
+            return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }
         #endregion
 
-        #region . RegisterTheTypes .
-
+        #region . LoadKnownTypes .
+        /// <summary>
+        /// Loads the known types from the assemblies in the current application domain.
+        /// </summary>
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        private static void RegisterTheTypes() {
-            // TODO: Make this loader be faster
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies) {
-                var modules = assembly.GetModules();
-                foreach (var module in modules) {
-                    var types = module.GetTypes();
-                    foreach (var type in types) {
-                        var attr = type.GetCustomAttribute<TypeClassAttribute>(false);
-                        if (attr != null) {
-                            TypeResolver.Register(attr.Name, type);                           
+        internal static void LoadKnownTypes() {
+            lock (syncLock) {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                knownTypes = new List<Type>();
+                foreach (var assembly in assemblies) {
+                    var modules = assembly.GetModules();
+                    foreach (var module in modules) {
+                        try {
+                            knownTypes.AddRange(module.GetTypes());
+                        } catch (ReflectionTypeLoadException e) {
+                            foreach (var type in e.Types) {
+                                if (type != null)
+                                    knownTypes.Add(type);
+                            }
                         }
                     }
                 }
             }
         }
-
         #endregion
 
-        #region . Millis .
-        internal static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        internal static long CurrentTimeMillis() {
-            return (long) (DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
-        }
-        #endregion
     }
 }

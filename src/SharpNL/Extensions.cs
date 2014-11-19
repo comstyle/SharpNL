@@ -537,34 +537,5 @@ namespace SharpNL {
         }
         #endregion
 
-        #region . GetSubclasses .
-        /// <summary>
-        /// Gets a list containing all subclasses for the given type.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <param name="checkDefaultConstructor">if set to <c>true</c> will be included only the types that have a default constructor.</param>
-        /// <returns>A list containing all subclasses for the given type.</returns>
-        [PermissionSet(SecurityAction.Demand, Name="FullTrust")]
-        internal static List<Type> GetSubclasses(this Type input, bool checkDefaultConstructor) {
-            var list = new List<Type>();
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies) {
-                var modules = assembly.GetModules();
-                foreach (var module in modules) {
-                    var types = module.GetTypes();
-                    foreach (var type in types) {
-                        if (type.IsSubclassOf(input)) {
-                            if (checkDefaultConstructor && !type.HasDefaultConstructor())
-                                continue;
-                            
-                            list.Add(type);
-                        }
-                    }
-                }
-            }
-            return list;
-        }
-        #endregion
-        
     }
 }

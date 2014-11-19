@@ -71,8 +71,7 @@ namespace SharpNL.Utility.FeatureGen {
             factories = new Dictionary<string, XmlFeatureGeneratorFactory>();
 
             // auto load the factories ;)
-            var items = typeof (XmlFeatureGeneratorFactory).GetSubclasses(true);
-            foreach (var type in items) {
+            foreach (var type in Library.GetKnownTypes(typeof(XmlFeatureGeneratorFactory))) {
                 var factory = (XmlFeatureGeneratorFactory) Activator.CreateInstance(type);
                 factories.Add(factory.Name, factory);
             }

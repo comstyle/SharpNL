@@ -94,27 +94,35 @@ namespace SharpNL.Utility {
         #endregion
 
         #region . LoadToolFactories .
+        /// <summary>
+        /// Loads the tool factories from the current application domain.
+        /// </summary>
+        /// <param name="forceReload">
+        /// if set to <c>true</c> the known types will be refreshed from the current 
+        /// application domain. The default value is <c>false</c>.
+        /// </param>
+        /// <remarks>
+        /// Use the <paramref name="forceReload"/> only when is extreme necessary.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void LoadToolFactories() {
+        public static void LoadToolFactories(bool forceReload = false) {
+            if (forceReload)
+                Library.LoadKnownTypes();
+
             lock (syncLock) {
                 toolFactories.Clear();
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var assembly in assemblies) {
-                    var modules = assembly.GetModules();
-                    foreach (var module in modules) {
-                        var types = module.GetTypes();
-                        foreach (var type in types) {
-                            if (type.IsSubclassOf(typeof(BaseToolFactory)) && type.HasDefaultConstructor()) {
-                                using (var factory = (BaseToolFactory)Activator.CreateInstance(type)) {
-                                    if (!toolFactories.ContainsKey(factory.Name)) {
-                                        toolFactories[factory.Name] = type;
-                                    } else {
-                                        Console.Error.WriteLine("The tool factory \"{0}\" is already registered.", factory.Name);
-                                    }
-                                }
-                            }
+                foreach (var type in Library.GetKnownTypes(typeof(BaseToolFactory))) {
+
+                    if (!type.HasDefaultConstructor())
+                        continue;
+
+                    using (var factory = (BaseToolFactory)Activator.CreateInstance(type)) {
+                        if (!toolFactories.ContainsKey(factory.Name)) {
+                            toolFactories[factory.Name] = type;
+                        } else {
+                            Console.Error.WriteLine("The tool factory \"{0}\" is already registered.", factory.Name);
                         }
-                    }
+                    }                   
                 }
                 IsFactoriesLoaded = true;
             }
