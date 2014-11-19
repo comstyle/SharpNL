@@ -78,6 +78,31 @@ namespace SharpNL.Formats.Ptb {
         }
         #endregion
 
+        #region . IsChunk .
+        /// <summary>
+        /// Gets a value indicating whether all children nodes are tagged as part of speech or if this node has no children
+        /// and is tagged as part of speech.
+        /// </summary>
+        /// <value><c>true</c> if this node is a chunk node; otherwise, <c>false</c>.</value>
+        public bool IsChunk {
+            get {
+                return HasChildren 
+                    ? Children.All(child => child.IsPosTag) 
+                    : IsPosTag;
+            }
+        }
+        #endregion
+
+        #region . IsPosTag .
+        /// <summary>
+        /// Gets a value indicating whether this node is tagged as part of speech.
+        /// </summary>
+        /// <value><c>true</c> if this node is tagged as part of speech; otherwise, <c>false</c>.</value>
+        public bool IsPosTag {
+            get { return Token != null && Type != "-NONE-"; }
+        }
+        #endregion
+        
         #region . Span .
         /// <summary>
         /// Gets or sets the node span.
