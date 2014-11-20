@@ -107,7 +107,7 @@ namespace SharpNL.NameFind {
                 var model = NameFinderME.Train(
                     languageCode,
                     type,
-                    factory != null ? samples : new DocumentToNameSampleStream(trainingSampleStream),
+                    new DocumentToNameSampleStream(trainingSampleStream),
                     parameters,
                     factory);
 
