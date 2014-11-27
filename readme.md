@@ -4,28 +4,28 @@
 
 > An awesome and independent reimplementation of the [Apache OpenNLP] software library in C#
 
-## Main differences to the original OpenNLP
+## Main features/characteristics
 
-> - Pure C#, there is no need to run a virtual machine :stuck_out_tongue_winking_eye:
-> - Was built from scratch by hand, without any assist tool in order to maximize the synergy with .net technology. 
+> - Fully C# managed NET 4.5 library
+> - Fully compatible with the OpenNLP models.
+> - Was built from scratch by hand, without any assist tool in order to maximize the synergy with .net technology.
 > - There are [analyzers](https://github.com/knuppe/SharpNL/wiki/Analyzers) that help a lot the implementation and abstraction of this library.  
 > - The heavy operations (like training) can be monitored and cancelled.
 > - Some file formats were revamped/improved (Ad and Penn Treebank).
-
+> - The deprecated methods from OpenNLP were not ported!
+> - English inflection tools.
 
 ## Goals
 
 > Implement the best library of natural language processing in C#, which means:
 > - Be as lightweight as possible
-> - Be fully compatible with the OpenNLP library (done!)
-
+> - Have a good set of tools available in a single library
 
 ## TODO
 
-> - Port the OpenNLP Library ~99% done (The alpha version is almost ready).
-> - Improve usability of the library (Good progress so far)
 > - Run a Profiler to reduce memory and CPU utilization.
 > - Ensure that the library is compatible with Mono.
+> - WordNet integration
 
 > [How to contribute](contributing.md)
 
