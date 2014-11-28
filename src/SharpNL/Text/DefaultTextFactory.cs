@@ -32,12 +32,36 @@ namespace SharpNL.Text {
     /// </summary>
     public sealed class DefaultTextFactory : ITextFactory {
 
+        #region + Properties .
+
+        #region . DefaultWordNet .
+        /// <summary>
+        /// Gets or sets the default WordNet instance.
+        /// </summary>
+        /// <value>The default WordNet instance. The default value is <c>null</c>.</value>
+        public static WordNet.WordNet DefaultWordNet { get; set; }
+        #endregion
+
         #region . Instance .
         /// <summary>
         /// Gets the <see cref="DefaultTextFactory"/> instance.
         /// </summary>
         /// <value>The <see cref="DefaultTextFactory"/> instance.</value>
         public static DefaultTextFactory Instance { get; private set; }
+        #endregion
+
+        #region . WordNet .
+        /// <summary>
+        /// Gets the WordNet instance.
+        /// </summary>
+        /// <returns>Always return the value of the <see cref="DefaultWordNet"/> property.</returns>
+        public WordNet.WordNet WordNet {
+            get {
+                return DefaultWordNet;
+            }
+        }
+        #endregion
+
         #endregion
 
         #region + Constructors .
@@ -100,7 +124,7 @@ namespace SharpNL.Text {
             if (s != null)
                 return CreateChunk(s, span);
 
-            throw new NotSupportedException("The sentence type " + sentence.GetType().Name + " is not supported.");
+            throw new NotSupportedException("The sentence type " + sentence.GetType().Name + " is not supported by " + GetType().Name + ".");
         }
         #endregion
 
@@ -168,27 +192,34 @@ namespace SharpNL.Text {
             if (d != null)
                 return CreateSentence(span, (Document)document);
 
-            throw new NotSupportedException("The sentence type " + document.GetType().Name + " is not supported.");
+            throw new NotSupportedException("The document type " + document.GetType().Name + " is not supported.");
         }
         #endregion
 
         #region . CreateToken .
-
         /// <summary>
         /// Creates an token object.
         /// </summary>
-        /// <param name="start">The start position.</param>
-        /// <param name="end">The end position.</param>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="span">The token span.</param>
         /// <param name="lexeme">The lexeme.</param>
-        /// <param name="probability">The token probability.</param>
-        /// <returns>The created <see cref="IToken"/> object.</returns>
-        public Token CreateToken(int start, int end, string lexeme, double probability) {
-            return new Token(start, end, lexeme) {
-                Probability = probability
+        /// <returns>The created <see cref="IToken" /> object.</returns>
+        public Token CreateToken(Sentence sentence, Span span, string lexeme) {
+            return new Token(span.Start, span.End, lexeme) {
+                Probability = span.Probability,
+                WordNet = WordNet
             };
         }
-        IToken ITextFactory.CreateToken(int start, int end, string lexeme, double probability) {
-            return CreateToken(start, end, lexeme, probability);
+
+        IToken ITextFactory.CreateToken(ISentence sentence, Span span, string lexeme) {
+            if (sentence == null)
+                throw new ArgumentNullException("sentence");
+
+            var s = sentence as Sentence;
+            if (s != null)
+                return CreateToken(s, span, lexeme);
+
+            throw new NotSupportedException("The sentence type " + sentence.GetType().Name + " is not supported.");
         }
         #endregion
 

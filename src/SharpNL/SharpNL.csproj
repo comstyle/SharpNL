@@ -510,6 +510,14 @@
     <Compile Include="Utility\TrainingParameters.cs" />
     <Compile Include="Utility\Version.cs" />
     <Compile Include="Utility\UnclosableStream.cs" />
+    <Compile Include="WordNet\IWordNetProvider.cs" />
+    <Compile Include="WordNet\LexicographerFileName.cs" />
+    <Compile Include="WordNet\Providers\WordNetFileProvider.cs" />
+    <Compile Include="WordNet\Providers\WordNetMemoryProvider.cs" />
+    <Compile Include="WordNet\SynSet.cs" />
+    <Compile Include="WordNet\WordNetPos.cs" />
+    <Compile Include="WordNet\SynSetRelation.cs" />
+    <Compile Include="WordNet\WordNet.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

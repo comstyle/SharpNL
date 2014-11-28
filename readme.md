@@ -14,6 +14,7 @@
 > - Some file formats were revamped/improved (Ad and Penn Treebank).
 > - The deprecated methods from OpenNLP were not ported!
 > - English inflection tools.
+> - WordNet 3.0 integration.
 
 ## Goals
 
@@ -25,7 +26,6 @@
 
 > - Run a Profiler to reduce memory and CPU utilization.
 > - Ensure that the library is compatible with Mono.
-> - WordNet integration
 
 > [How to contribute](contributing.md)
 

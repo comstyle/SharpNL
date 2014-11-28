@@ -128,6 +128,17 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . EnsureContainsKey .
+        public static void EnsureContainsKey<K, V>(this Dictionary<K, V> dictionary, K key, Type valueType) {
+            dictionary.EnsureContainsKey(key, valueType, null);
+        }
+        public static void EnsureContainsKey<K, V>(this Dictionary<K, V> dictionary, K key, Type valueType, params object[] constructorParameters) {
+            if (!dictionary.ContainsKey(key)) {
+                dictionary.Add(key, (V)(Activator.CreateInstance(valueType, constructorParameters)));
+            }
+        }
+        #endregion
+
         #region . Fill .
 
         /// <summary>

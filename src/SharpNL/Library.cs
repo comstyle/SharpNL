@@ -112,9 +112,13 @@ namespace SharpNL {
         /// <param name="baseType">The base type.</param>
         internal static IEnumerable<Type> GetKnownTypes(Type baseType) {
             // this lock is not released until the last yield is processed.
+            var i = baseType.IsInterface;
             lock (syncLock) {
                 foreach (var type in knownTypes) {
-                    if (type.IsSubclassOf(baseType)) {
+                    if (i) {
+                        if (type.IsAssignableFrom(baseType))
+                            yield return type;
+                    } else if (type.IsSubclassOf(baseType)) {
                         yield return type;
                     }
                 }

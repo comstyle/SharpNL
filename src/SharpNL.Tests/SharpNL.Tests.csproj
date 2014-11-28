@@ -257,6 +257,7 @@
     <Compile Include="Utility\ToolFactoryManagerTest.cs" />
     <Compile Include="Utility\TypeResolverTest.cs" />
     <Compile Include="Utility\VersionTest.cs" />
+    <Compile Include="WordNet\WordNetTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

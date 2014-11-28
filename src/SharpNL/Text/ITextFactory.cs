@@ -20,7 +20,10 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+
 using SharpNL.Utility;
+using SharpNL.WordNet;
+
 using System.Collections.Generic;
 
 namespace SharpNL.Text {
@@ -84,13 +87,22 @@ namespace SharpNL.Text {
         /// <summary>
         /// Creates an token object.
         /// </summary>
-        /// <param name="start">The start position.</param>
-        /// <param name="end">The end position.</param>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="span">The span.</param>
         /// <param name="lexeme">The lexeme.</param>
-        /// <param name="probability">The token probability</param>
-        /// <returns>The created <see cref="IToken"/> object or a <c>null</c> value if the token is invalid or should be ignored.</returns>
-        IToken CreateToken(int start, int end, string lexeme, double probability);
+        /// <returns>The created <see cref="IToken" /> object or a <c>null</c> value if the token is invalid or should be ignored.</returns>
+        IToken CreateToken(ISentence sentence, Span span, string lexeme);
         #endregion
-        
+
+        #region . WordNet .
+
+        /// <summary>
+        /// Gets the WordNet instance.
+        /// </summary>
+        /// <returns>A WordNet instance or a <c>null</c> value if the WordNet is not necessary.</returns>
+        WordNet.WordNet WordNet { get; }
+
+        #endregion
+
     }
 }
