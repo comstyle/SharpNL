@@ -218,6 +218,36 @@ namespace SharpNL.Utility {
         }
         #endregion
 
+        #region . IsOverlapping .
+        /// <summary>
+        /// Determines whether the any of the specified spans is overlapping.
+        /// </summary>
+        /// <param name="spans">The spans to check.</param>
+        /// <returns><c>true</c> if the one of the specified spans is overlapping with another span; otherwise, <c>false</c>.</returns>
+        /// <exception cref="System.ArgumentNullException"><paramref name="spans"/>.</exception>
+        public static bool IsOverlapping(Span[] spans) {
+            if (spans == null)
+                throw new ArgumentNullException("spans");
+
+            if (spans.Length <= 1)
+                return false;
+
+            var list = new List<Span>(spans);
+            list.Sort();
+
+            var index = 0;
+            Span lastSpan = null;
+
+            while (index < list.Count) {
+                if (lastSpan != null && lastSpan.Intersects(list[index]))
+                    return true;
+
+                lastSpan = list[index];
+                index++;
+            }
+            return false;
+        }
+        #endregion
         #region . Equals .
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
