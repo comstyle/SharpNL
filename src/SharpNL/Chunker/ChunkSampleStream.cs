@@ -30,13 +30,17 @@ namespace SharpNL.Chunker {
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Data format is specified on the conll page:
-    /// <see href="http://www.cnts.ua.ac.be/conll2000/chunking/">http://www.cnts.ua.ac.be/conll2000/chunking/</see>
+    /// Data format is specified on the conll page: <br />
+    /// <see href="http://www.cnts.ua.ac.be/conll2000/chunking/" />
     /// </para>
     /// </remarks>
     public class ChunkSampleStream : FilterObjectStream<string, ChunkSample> {
         private int lineNum;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkSampleStream"/> class.
+        /// </summary>
+        /// <param name="samples">The samples.</param>
         public ChunkSampleStream(IObjectStream<string> samples) : base(samples) {
             lineNum = 0;
         }

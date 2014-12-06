@@ -158,7 +158,7 @@ namespace SharpNL.Formats.Ad {
         /// <param name="node">The node to be processed.</param>
         /// <param name="sentence">The sentence tokens we got so far.</param>
         /// <param name="names">The names we got so far.</param>
-        private void Process(AdNode node, List<String> sentence, List<Span> names) {
+        private void Process(AdNode node, List<string> sentence, List<Span> names) {
             if (node == null) return;
 
             foreach (var element in node.Elements) {
@@ -174,7 +174,7 @@ namespace SharpNL.Formats.Ad {
 
         #region . ProcessLeaf .
 
-        private void ProcessLeaf(AdLeaf leaf, List<String> sentence, List<Span> names) {
+        private void ProcessLeaf(AdLeaf leaf, List<string> sentence, List<Span> names) {
             if (leaf == null)
                 return;
 
@@ -261,7 +261,7 @@ namespace SharpNL.Formats.Ad {
                     monitor.Token.ThrowIfCancellationRequested();
 
                 var root = paragraph.Root;
-                var sentence = new List<String>();
+                var sentence = new List<string>();
                 var names = new List<Span>();
 
                 Process(root, sentence, names);

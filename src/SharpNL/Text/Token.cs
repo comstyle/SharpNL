@@ -26,7 +26,8 @@ using SharpNL.WordNet;
 
 namespace SharpNL.Text {
     /// <summary>
-    /// Represents a token, which is a word, its lemma, its morphological posTag and the position of it in the sentence.
+    /// Represents a token, which is a word, its lemma, its morphological posTag and the 
+    /// position of it in the sentence.
     /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class Token : IToken {
@@ -174,7 +175,7 @@ namespace SharpNL.Text {
 
         #endregion
 
-        #region + Equals
+        #region + Equals .
         /// <summary>
         /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:Token"/>.
         /// </summary>

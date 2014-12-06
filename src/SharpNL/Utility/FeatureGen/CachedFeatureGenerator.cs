@@ -72,10 +72,10 @@ namespace SharpNL.Utility.FeatureGen {
         /// <param name="index">The index of the token which is currently being processed.</param>
         /// <param name="previousOutcomes">The outcomes for the tokens prior to the specified index.</param>
         public void CreateFeatures(List<string> features, string[] tokens, int index, string[] previousOutcomes) {
-            List<String> cacheFeatures;
+            List<string> cacheFeatures;
 
             if (tokens == prevTokens) {
-                cacheFeatures = (List<String>)contextsCache.Get(index);
+                cacheFeatures = (List<string>)contextsCache.Get(index);
 
                 if (cacheFeatures != null) {
                     NumberOfCacheHits++;

@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpNL.Text;
-using SharpNL.Tokenize;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -78,16 +77,59 @@ namespace SharpNL.Utility {
 
         #region + Constructors .
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Span"/> class using a span and its probability.
+        /// </summary>
+        /// <param name="span">The span.</param>
+        /// <param name="probability">The probability.</param>
         public Span(Span span, double probability) : this (span.Start, span.End, probability) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Span"/> class with shifted span object.
+        /// </summary>
+        /// <param name="span">The span.</param>
+        /// <param name="offset">The offset.</param>
         public Span(Span span, int offset) : this(span.Start + offset, span.End + offset, span.Type, span.Probability) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Span"/> class with the <paramref name="start"/> and <paramref name="end"/> positions.
+        /// </summary>
+        /// <param name="start">The start index position.</param>
+        /// <param name="end">The end index position.</param>
         public Span(int start, int end) : this (start, end, null, 0d) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Span"/> class with the <paramref name="start"/> and <paramref name="end"/> positions
+        /// and a probability value.
+        /// </summary>
+        /// <param name="start">The start index position.</param>
+        /// <param name="end">The end index position.</param>
+        /// <param name="probability">The probability.</param>
         public Span(int start, int end, double probability) : this (start, end, null, probability) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Span"/> class with the start and 
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <param name="type">The type.</param>
         public Span(int start, int end, string type) : this(start, end, type, 0d) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Span"/> class.
+        /// </summary>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="probability">The probability.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException">
+        /// The <paramref name="start"/> index must be zero or greater.
+        /// or
+        /// The <paramref name="end"/> index must be zero or greater.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// The <paramref name="start"/> index must not be larger than <paramref name="end"/> index.
+        /// </exception>
         public Span(int start, int end, string type, double probability) {
             if (start < 0) {
                 throw new ArgumentOutOfRangeException("start", @"The start index must be zero or greater.");
@@ -248,6 +290,7 @@ namespace SharpNL.Utility {
             return false;
         }
         #endregion
+
         #region . Equals .
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -498,6 +541,12 @@ namespace SharpNL.Utility {
             return items;
         }
 
+        /// <summary>
+        /// Returns the equivalent tokens from the given spans.
+        /// </summary>
+        /// <param name="spans">The spans.</param>
+        /// <param name="tokens">The tokens.</param>
+        /// <returns>System.String[].</returns>
         public static string[] SpansToStrings(Span[] spans, string[] tokens) {
 
             var items = new string[spans.Length];

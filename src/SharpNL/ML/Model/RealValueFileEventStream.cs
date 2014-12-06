@@ -26,14 +26,60 @@ using System.IO;
 using System.Text;
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a real value file event stream.
+    /// </summary>
     public class RealValueFileEventStream : FileEventStream {
+
         public RealValueFileEventStream(Stream input) : base(input) {}
+
+        public RealValueFileEventStream(Stream input, Monitor monitor) : base(input) {
+            Monitor = monitor;
+        }
+
         public RealValueFileEventStream(string fileName) : base(fileName) {}
+
+        public RealValueFileEventStream(string fileName, Monitor monitor) : base(fileName) {
+            Monitor = monitor;
+        }
+
         public RealValueFileEventStream(string fileName, Encoding encoding) : base(fileName, encoding) {}
 
-        #region . ParseContexts .
+        public RealValueFileEventStream(string fileName, Encoding encoding, Monitor monitor) : base(fileName, encoding) {
+            Monitor = monitor;
+        }
 
+        #region . Monitor .
+        /// <summary>
+        /// Gets the evaluation monitor.
+        /// </summary>
+        /// <value>The evaluation monitor.</value>
+        protected Monitor Monitor { get; private set; }
+        #endregion
+
+        #region + ParseContexts .
+        /// <summary>
+        /// Parses the specified contexts and re-populates context array with features and returns the 
+        /// values for these features. 
+        /// If all values are unspecified, then null is returned.
+        /// </summary>
+        /// <param name="contexts">The contexts.</param>
+        /// <returns>The event values.</returns>
+        /// <exception cref="System.InvalidOperationException">Negative values are not allowed: context</exception>
         public static float[] ParseContexts(string[] contexts) {
+            return ParseContexts(contexts, null);
+        }
+
+        /// <summary>
+        /// Parses the specified contexts and re-populates context array with features and returns 
+        /// the values for these features. 
+        /// If all values are unspecified, then null is returned.
+        /// </summary>
+        /// <param name="contexts">The contexts.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        /// <returns>The event values.</returns>
+        /// <exception cref="System.InvalidOperationException">Negative values are not allowed: context</exception>
+        public static float[] ParseContexts(string[] contexts, Monitor monitor) {
             var hasRealValue = false;
             var values = new float[contexts.Length];
             for (var ci = 0; ci < contexts.Length; ci++) {
@@ -44,8 +90,10 @@ namespace SharpNL.ML.Model {
                         values[ci] = float.Parse(contexts[ci].Substring(ei + 1), CultureInfo.InvariantCulture);
                     } catch (Exception) {
                         gotReal = false;
-                        // TODO: console output
-                        Console.Error.WriteLine("Unable to determine value in context:" + contexts[ci]);
+
+                        if (monitor != null)
+                            monitor.OnError("Unable to determine value in context:" + contexts[ci]);
+
                         values[ci] = 1;
                     }
                     if (gotReal) {
@@ -68,7 +116,6 @@ namespace SharpNL.ML.Model {
         #endregion
 
         #region . Read .
-
         /// <summary>
         /// Returns the next object. Calling this method repeatedly until it returns ,
         /// null will return each object from the underlying source exactly once.
@@ -78,11 +125,11 @@ namespace SharpNL.ML.Model {
         /// </returns>
         public override Event Read() {
             string line;
-            if ((line = reader.ReadLine()) != null) {
+            if ((line = Reader.ReadLine()) != null) {
                 var si = line.IndexOf(' ');
                 var outcome = line.Substring(0, si);
                 var contexts = line.Substring(si + 1).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                var values = ParseContexts(contexts);
+                var values = ParseContexts(contexts, Monitor);
                 return (new Event(outcome, contexts, values));
             }
 

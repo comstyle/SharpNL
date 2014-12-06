@@ -20,8 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
-using System.Linq;
 using SharpNL.Utility;
 using SharpNL.Utility.Evaluation;
 
@@ -34,6 +32,11 @@ namespace SharpNL.Chunker {
 
         private readonly IChunker chunker;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerEvaluator"/> class.
+        /// </summary>
+        /// <param name="chunker">The chunker.</param>
+        /// <param name="listeners">The evaluation listeners.</param>
         public ChunkerEvaluator(IChunker chunker, params IEvaluationMonitor<ChunkSample>[] listeners) : base(listeners) {
 
             this.chunker = chunker;

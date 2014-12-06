@@ -31,15 +31,47 @@ namespace SharpNL.ML.Model {
     /// </summary>
     public class ComparablePredicate : IComparable<ComparablePredicate> {
 
-        public string Name { get; private set; }
-        public int[] Outcomes { get; private set; }
-        public double[] Parameters { get; private set; }
-
+        #region . Constructor .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComparablePredicate"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="outcomes">The outcomes.</param>
+        /// <param name="parameters">The parameters.</param>
         public ComparablePredicate(string name, int[] outcomes, double[] parameters) {
             Name = name;
             Outcomes = outcomes;
             Parameters = parameters;
         }
+        #endregion
+
+        #region + Properties .
+
+        #region . Name .
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; private set; }
+        #endregion
+
+        #region . Outcomes .
+        /// <summary>
+        /// Gets the outcomes.
+        /// </summary>
+        /// <value>The outcomes.</value>
+        public int[] Outcomes { get; private set; }
+        #endregion
+
+        #region . Parameters .
+        /// <summary>
+        /// Gets the parameters.
+        /// </summary>
+        /// <value>The parameters.</value>
+        public double[] Parameters { get; private set; }
+        #endregion
+
+        #endregion
 
         #region . CompareTo .
         /// <summary>

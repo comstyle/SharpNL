@@ -37,8 +37,8 @@ namespace SharpNL.Tests.Tokenize {
             };
 
             var mlParams = new TrainingParameters();
-            mlParams.Set(TrainingParameters.IterationsParam, "100");
-            mlParams.Set(TrainingParameters.CutoffParam, "0");
+            mlParams.Set(Parameters.Iterations, "100");
+            mlParams.Set(Parameters.Cutoff, "0");
 
             return TokenizerME.Train(
                 new CollectionObjectStream<TokenSample>(samples),
@@ -50,8 +50,8 @@ namespace SharpNL.Tests.Tokenize {
             using (var data = Tests.OpenFile("/opennlp/tools/tokenize/token.train")) {
                 var samples = new TokenSampleStream(new PlainTextByLineStream(data));
                 var mlParams = new TrainingParameters();
-                mlParams.Set(TrainingParameters.IterationsParam, "100");
-                mlParams.Set(TrainingParameters.CutoffParam, "0");
+                mlParams.Set(Parameters.Iterations, "100");
+                mlParams.Set(Parameters.Cutoff, "0");
                 return TokenizerME.Train(samples, new TokenizerFactory("en", null, true), mlParams);
             }
         }

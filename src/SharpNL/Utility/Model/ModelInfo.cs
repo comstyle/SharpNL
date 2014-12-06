@@ -68,7 +68,7 @@ namespace SharpNL.Utility.Model {
                 using (var zip = new ZipInputStream(fileInfo.OpenRead())) {
                     ZipEntry entry;
                     while ((entry = zip.GetNextEntry()) != null) {
-                        if (entry.Name == ArtifactProvider.MANIFEST_ENTRY) {
+                        if (entry.Name == ArtifactProvider.ManifestEntry) {
                             Manifest = (Properties)Properties.Deserialize(new UnclosableStream(zip));
                             zip.CloseEntry();
                             break;

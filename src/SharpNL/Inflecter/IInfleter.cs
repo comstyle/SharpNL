@@ -20,8 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
-
 namespace SharpNL.Inflecter {
     /// <summary>
     /// Represents a inflector that can manipulate a string pluralization. 

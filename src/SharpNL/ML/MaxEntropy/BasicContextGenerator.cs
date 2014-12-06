@@ -32,7 +32,15 @@ namespace SharpNL.ML.MaxEntropy {
 
         private readonly string separator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicContextGenerator"/> class using a space as separator.
+        /// </summary>
         public BasicContextGenerator() : this(" ") { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicContextGenerator"/> class using a specified <paramref name="separator"/> value.
+        /// </summary>
+        /// <param name="separator">The separator.</param>
         public BasicContextGenerator(string separator) {
             this.separator = separator;
         }

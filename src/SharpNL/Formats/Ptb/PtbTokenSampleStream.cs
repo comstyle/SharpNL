@@ -25,6 +25,9 @@ using SharpNL.Tokenize;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats.Ptb {
+    /// <summary>
+    /// Represents a Penn Treebank <see cref="TokenSample"/> stream. This class cannot be inherited.
+    /// </summary>
     public sealed class PtbTokenSampleStream : PtbSampleStream<TokenSample> {
 
         private readonly IDetokenizer detokenizer;

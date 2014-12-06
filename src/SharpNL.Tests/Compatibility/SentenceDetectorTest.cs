@@ -148,8 +148,8 @@ namespace SharpNL.Tests.Compatibility {
 
                 var mlParams = new TrainingParameters();
 
-                mlParams.Set(TrainingParameters.IterationsParam, "100");
-                mlParams.Set(TrainingParameters.CutoffParam, "0");
+                mlParams.Set(Parameters.Iterations, "100");
+                mlParams.Set(Parameters.Cutoff, "0");
 
                 var sdFactory = new SentenceDetectorFactory("en", true, null, null);
                 var stream = new SentenceSampleStream(new PlainTextByLineStream(file));

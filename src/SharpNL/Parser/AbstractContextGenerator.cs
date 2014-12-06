@@ -134,7 +134,7 @@ namespace SharpNL.Parser {
 
         #region . Cons2 .
 
-        protected void Cons2(List<String> features, Cons c0, Cons c1, SortedSet<Parse> punct1s, bool bigram) {
+        protected void Cons2(List<string> features, Cons c0, Cons c1, SortedSet<Parse> punct1s, bool bigram) {
             if (punct1s != null) {
                 foreach (var p in punct1s) {
                     var punctbo = PunctBo(p, c1.index <= 0 ? c1.index - 1 : c1.index);
@@ -185,7 +185,7 @@ namespace SharpNL.Parser {
         /// <param name="trigram">Specifies whether lexical tri-gram features between these nodes should be generated.</param>
         /// <param name="bigram1">Specifies whether lexical bi-gram features between the first and second node should be generated.</param>
         /// <param name="bigram2">Specifies whether lexical bi-gram features between the second and third node should be generated.</param>
-        protected void Cons3(List<String> features, Cons c0, Cons c1, Cons c2, SortedSet<Parse> punct1s,
+        protected void Cons3(List<string> features, Cons c0, Cons c1, Cons c2, SortedSet<Parse> punct1s,
             SortedSet<Parse> punct2s, bool trigram, bool bigram1, bool bigram2) {
             //  features.add("stage=cons(0),cons(1),cons(2)");
             if (punct1s != null) {
@@ -328,7 +328,7 @@ namespace SharpNL.Parser {
         /// <param name="type">The type of the completed node.</param>
         /// <param name="punctuation">The punctuation adjacent and between the specified surrounding node.</param>
         /// <param name="features">A list to which features are added.</param>
-        protected void Surround(Parse node, int i, String type, SortedSet<Parse> punctuation, List<String> features) {
+        protected void Surround(Parse node, int i, String type, SortedSet<Parse> punctuation, List<string> features) {
             var feat = new StringBuilder();
             feat.Append("s").Append(i).Append("=");
             if (punctuation != null) {
@@ -392,7 +392,7 @@ namespace SharpNL.Parser {
         /// <param name="i">A string indicating the position of the child node.</param>
         /// <param name="type">The type of constituent being built.</param>
         /// <param name="features">List to add features to.</param>
-        protected void CheckCons(Parse child, string i, string type, List<String> features) {
+        protected void CheckCons(Parse child, string i, string type, List<string> features) {
             var feat = new StringBuilder();
             feat.Append("c")
                 .Append(i)
@@ -409,7 +409,7 @@ namespace SharpNL.Parser {
             features.Add(feat.ToString());
         }
 
-        protected void CheckCons(Parse p1, Parse p2, String type, List<String> features) {
+        protected void CheckCons(Parse p1, Parse p2, String type, List<string> features) {
             var feat = new StringBuilder();
             feat.Append("cil=")
                 .Append(type)

@@ -25,33 +25,33 @@ using System.IO;
 using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using SharpNL.ML.Model;
-using SharpNL.Utility.Model;
 
 namespace SharpNL.Utility.Serialization {
-
-    using Dic = Dictionary.Dictionary;
 
     /// <summary>
     /// Provides access to model persisted artifacts.
     /// </summary>
     public abstract class ArtifactProvider {
 
-        internal const string FACTORY_NAME = "factory";
-        internal const string MANIFEST_ENTRY = "manifest.properties";
-        internal const string MANIFEST_VERSION_PROPERTY = "Manifest-Version";
+        internal const string FactoryName = "factory";
+        internal const string ManifestEntry = "manifest.properties";
+        internal const string ManifestVersionProperty = "Manifest-Version";
 
         internal const string LanguageEntry = "Language";
-        internal const string VERSION_PROPERTY = "OpenNLP-Version";
+        internal const string VersionProperty = "OpenNLP-Version";
         
         internal const string ComponentNameEntry = "Component-Name";
         internal const string TimestampEntry = "Timestamp";
 
-        internal const string TRAINING_CUTOFF_PROPERTY = "Training-Cutoff";
-        internal const string TRAINING_ITERATIONS_PROPERTY = "Training-Iterations";
-        internal const string TRAINING_EVENTHASH_PROPERTY = "Training-Eventhash";
+        internal const string TrainingCutoffProperty = "Training-Cutoff";
+        internal const string TrainingIterationsProperty = "Training-Iterations";
+        internal const string TrainingEventhashProperty = "Training-Eventhash";
 
         private readonly Dictionary<string, Serializer> artifactSerializers;
 
+        /// <summary>
+        /// The artifact map
+        /// </summary>
         protected readonly Dictionary<string, object> artifactMap;
 
         private class Serializer {
@@ -59,11 +59,14 @@ namespace SharpNL.Utility.Serialization {
             public DeserializeDelegate Deserialize;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArtifactProvider"/> class.
+        /// </summary>
         protected ArtifactProvider() {
             artifactSerializers = new Dictionary<string, Serializer>();
 
             artifactMap = new Dictionary<string, object> {
-                {MANIFEST_ENTRY, new Properties()}
+                {ManifestEntry, new Properties()}
             };
         }
 
@@ -84,8 +87,8 @@ namespace SharpNL.Utility.Serialization {
         /// <value>The manifest property collection.</value>
         public Properties Manifest {
             get {
-                if (artifactMap.ContainsKey(MANIFEST_ENTRY)) {
-                    return artifactMap[MANIFEST_ENTRY] as Properties;
+                if (artifactMap.ContainsKey(ManifestEntry)) {
+                    return artifactMap[ManifestEntry] as Properties;
                 }
                 return null;
             }
@@ -150,7 +153,7 @@ namespace SharpNL.Utility.Serialization {
         /// <exception cref="InvalidFormatException">Unable to find the manifest entry.</exception>
         /// <remarks>Subclasses should generally invoke base.ValidateArtifactMap at the beginning of this method.</remarks>
         protected virtual void ValidateArtifactMap() {
-            if (!artifactMap.ContainsKey(MANIFEST_ENTRY) || !(artifactMap[MANIFEST_ENTRY] is Properties)) {
+            if (!artifactMap.ContainsKey(ManifestEntry) || !(artifactMap[ManifestEntry] is Properties)) {
                 throw new InvalidFormatException("Unable to find the manifest entry.");
             }
         }
@@ -164,21 +167,27 @@ namespace SharpNL.Utility.Serialization {
 
         #region . Deserialize .
 
+        /// <summary>
+        /// Deserializes the specified input stream.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <exception cref="System.ArgumentNullException">inputStream</exception>
+        /// <exception cref="InvalidFormatException">Unable to find the manifest file.</exception>
         protected void Deserialize(Stream inputStream) {
             if (inputStream == null) {
                 throw new ArgumentNullException("inputStream");
             }
 
-            bool isSearchingForManifest = true;
+            var isSearchingForManifest = true;
 
             var lazyStack = new Stack<LazyArtifact>();
             using (var zip = new ZipInputStream(new UnclosableStream(inputStream))) {
                 ZipEntry entry;
                 while ((entry = zip.GetNextEntry()) != null) {
-                    if (entry.Name == MANIFEST_ENTRY) {
+                    if (entry.Name == ManifestEntry) {
                         isSearchingForManifest = false;
 
-                        artifactMap[MANIFEST_ENTRY] = Properties.Deserialize(new UnclosableStream(zip));
+                        artifactMap[ManifestEntry] = Properties.Deserialize(new UnclosableStream(zip));
 
                         zip.CloseEntry();
 
@@ -263,8 +272,7 @@ namespace SharpNL.Utility.Serialization {
         /// </remarks>
         protected virtual void CreateArtifactSerializers() {
             RegisterArtifactType(".properties", Properties.Serialize, Properties.Deserialize);
-            RegisterArtifactType(".dictionary", Dic.Serialize, Dic.Deserialize);
-           
+            RegisterArtifactType(".dictionary", Dictionary.Dictionary.Serialize, Dictionary.Dictionary.Deserialize);          
         }
 
         #endregion
@@ -286,7 +294,7 @@ namespace SharpNL.Utility.Serialization {
             // process the "normal" artifacts
             ZipEntry entry;
             while ((entry = zip.GetNextEntry()) != null) {
-                if (entry.Name != MANIFEST_ENTRY) {
+                if (entry.Name != ManifestEntry) {
                     LoadArtifact(entry.Name, zip);
                 }
                 zip.CloseEntry();

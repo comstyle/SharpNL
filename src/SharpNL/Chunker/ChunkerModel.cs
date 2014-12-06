@@ -32,42 +32,64 @@ using SharpNL.Utility.Model;
 using BeamSearch = SharpNL.ML.BeamSearch<string>;
 
 namespace SharpNL.Chunker {
+    /// <summary>
+    /// Represents a chunker model.
+    /// </summary>
     public class ChunkerModel : BaseModel {
         private const string ComponentName = "ChunkerME";
         private const string ChunkerEntry = "chunker.model";
 
-        private const string BEAM_SIZE_PARAMETER = "BeamSize";
-
         #region + Constructors .
 
-        public ChunkerModel(
-            string languageCode,
-            ISequenceClassificationModel<string> chunkerModel,
-            Dictionary<string, string> manifestInfoEntries,
-            ChunkerFactory factory) : base(ComponentName, languageCode, manifestInfoEntries, factory) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerModel"/> class using a <see cref="T:ISequenceClassificationModel{string}"/> as the chunker model.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="chunkerModel">The chunker model.</param>
+        /// <param name="manifestInfoEntries">The manifest information entries.</param>
+        /// <param name="factory">The chunker factory.</param>
+        public ChunkerModel(string languageCode, ISequenceClassificationModel<string> chunkerModel, Dictionary<string, string> manifestInfoEntries, ChunkerFactory factory) 
+            : base(ComponentName, languageCode, manifestInfoEntries, factory) {
+
             artifactMap.Add(ChunkerEntry, chunkerModel);
 
             CheckArtifactMap();
         }
 
-        public ChunkerModel(
-            string languageCode,
-            IMaxentModel chunkerModel,
-            Dictionary<string, string> manifestInfoEntries,
-            ChunkerFactory factory) : this(languageCode, chunkerModel, ChunkerME.DEFAULT_BEAM_SIZE, manifestInfoEntries, factory) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerModel"/> class.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="chunkerModel">The chunker model.</param>
+        /// <param name="manifestInfoEntries">The manifest information entries.</param>
+        /// <param name="factory">The chunker factory.</param>
+        public ChunkerModel(string languageCode, IMaxentModel chunkerModel, Dictionary<string, string> manifestInfoEntries, ChunkerFactory factory) 
+            : this(languageCode, chunkerModel, ChunkerME.DefaultBeamSize, manifestInfoEntries, factory) {
             
         }
 
-        public ChunkerModel(string languageCode, IMaxentModel chunkerModel, int beamSize,
-            Dictionary<string, string> manifestInfoEntries, ChunkerFactory factory) : base(ComponentName, languageCode, manifestInfoEntries, factory) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerModel"/> class with a specified <paramref name="beamSize"/> value.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="chunkerModel">The chunker model.</param>
+        /// <param name="beamSize">Size of the beam.</param>
+        /// <param name="manifestInfoEntries">The manifest information entries.</param>
+        /// <param name="factory">The chunker factory.</param>
+        public ChunkerModel(string languageCode, IMaxentModel chunkerModel, int beamSize, Dictionary<string, string> manifestInfoEntries, ChunkerFactory factory) 
+            : base(ComponentName, languageCode, manifestInfoEntries, factory) {
 
             artifactMap[ChunkerEntry] = chunkerModel;
 
-            Manifest[BEAM_SIZE_PARAMETER] = beamSize.ToString(CultureInfo.InvariantCulture);
+            Manifest[Parameters.BeamSize] = beamSize.ToString(CultureInfo.InvariantCulture);
 
             CheckArtifactMap();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerModel"/> class using a input stream to deserialize the chunker model into a new instance.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
         public ChunkerModel(Stream inputStream) : base(ComponentName, inputStream) { }
 
         #endregion
@@ -81,8 +103,8 @@ namespace SharpNL.Chunker {
         /// <value>The the beam size.</value>
         public int BeamSize {
             get {
-                return Manifest.Contains(BEAM_SIZE_PARAMETER)
-                    ? int.Parse(Manifest[BEAM_SIZE_PARAMETER])
+                return Manifest.Contains(Parameters.BeamSize)
+                    ? int.Parse(Manifest[Parameters.BeamSize])
                     : NameFinderME.DefaultBeamSize;
             }
         }
@@ -90,6 +112,10 @@ namespace SharpNL.Chunker {
 
         #region . ChunkerSequenceModel .
 
+        /// <summary>
+        /// Gets the chunker sequence model.
+        /// </summary>
+        /// <value>The chunker sequence model.</value>
         public ISequenceClassificationModel<string> ChunkerSequenceModel {
             get {
                 var maxentModel = artifactMap[ChunkerEntry] as IMaxentModel;

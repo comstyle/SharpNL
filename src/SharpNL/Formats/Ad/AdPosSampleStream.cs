@@ -129,7 +129,7 @@ namespace SharpNL.Formats.Ad {
         #endregion
 
         #region . Process .
-        private void Process(AdNode node, List<String> sentence, List<String> tags, List<String> con, List<String> prop) {
+        private void Process(AdNode node, List<string> sentence, List<string> tags, List<string> con, List<string> prop) {
             if (node == null) return;
 
             foreach (var element in node.Elements) {
@@ -290,10 +290,10 @@ namespace SharpNL.Formats.Ad {
 
             while ((paragraph = adSentenceStream.Read()) != null) {
                 var root = paragraph.Root;
-                var sentence = new List<String>();
-                var tags = new List<String>();
-                var contractions = new List<String>();
-                var prop = new List<String>();
+                var sentence = new List<string>();
+                var tags = new List<string>();
+                var contractions = new List<string>();
+                var prop = new List<string>();
                 Process(root, sentence, tags, contractions, prop);
 
                 if (sentence.Count != contractions.Count || sentence.Count != prop.Count)

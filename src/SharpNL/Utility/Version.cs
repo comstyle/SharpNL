@@ -27,11 +27,14 @@ namespace SharpNL.Utility {
     /// Represents the OpenNLP Tools library version.
     /// </summary>
     public class Version : IComparable, IComparable<Version>, IEquatable<Version> {
-        private const string DEV_VERSION_STRING = "0.0.0-SNAPSHOT";
+        private const string DevVersionString = "0.0.0-SNAPSHOT";
 
-        private const string SNAPSHOT_MARKER = "-SNAPSHOT";
-        public static readonly Version DEV_VERSION = Parse(DEV_VERSION_STRING);
+        private const string SnapshotMarker = "-SNAPSHOT";
 
+        /// <summary>
+        /// The development version representation.
+        /// </summary>
+        public static readonly Version DevVersion = Parse(DevVersionString);
 
         /// <summary>
         /// Initializes the current instance with the provided versions.
@@ -43,22 +46,61 @@ namespace SharpNL.Utility {
             Snapshot = snapshot;
         }
 
+        #region + Properties .
+
+        #region . Major .
+        /// <summary>
+        /// Gets the value of the major component of the version number for the current <see cref="Version"/> object.
+        /// </summary>
+        /// <value>The major version number.</value>
         public int Major { get; private set; }
+        #endregion
 
+        #region . Minor .
+        /// <summary>
+        /// Gets the value of the minor component of the version number for the current <see cref="Version"/> object.
+        /// </summary>
+        /// <value>The minor version number.</value>
         public int Minor { get; private set; }
+        #endregion
 
+        #region . Revision .
+        /// <summary>
+        /// Gets the value of the revision component of the version number for the current <see cref="Version"/> object.
+        /// </summary>
+        /// <value>The revision number, or -1 if the revision number is undefined.</value>
         public int Revision { get; private set; }
+        #endregion
 
+        #region . Snapshot .
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="Version"/> is a snapshot.
+        /// </summary>
+        /// <value><c>true</c> if snapshot; otherwise, <c>false</c>.</value>
         public bool Snapshot { get; private set; }
+        #endregion
 
+        #endregion
+
+        #region . Parse .
+        /// <summary>
+        /// Converts the string representation of a version to its <see cref="Version"/> equivalent.
+        /// </summary>
+        /// <param name="value">A string containing a version to convert.</param>
+        /// <returns>A <see cref="Version"/> object equivalent to the number contained in <paramref name="value"/>.</returns>
+        /// <exception cref="InvalidFormatException">
+        /// Invalid version format! Expected two dots.
+        /// or
+        /// Invalid version number.
+        /// </exception>
         public static Version Parse(string value) {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
-            var snapshot = value.Contains(SNAPSHOT_MARKER);
+            var snapshot = value.Contains(SnapshotMarker);
 
             if (snapshot)
-                value = value.Replace(SNAPSHOT_MARKER, string.Empty);
+                value = value.Replace(SnapshotMarker, string.Empty);
 
             // ignore tags like "-incubating"
             if (value.Contains("-")) {
@@ -68,7 +110,7 @@ namespace SharpNL.Utility {
             var tokens = value.Split('.');
 
             if (tokens.Length < 3) {
-                throw new InvalidFormatException("Invalid version format! Expected two dots...");
+                throw new InvalidFormatException("Invalid version format! Expected two dots.");
             }
 
             var v = new int[3];
@@ -80,7 +122,8 @@ namespace SharpNL.Utility {
 
             return new Version(v[0], v[1], v[2], snapshot);
         }
-
+        #endregion
+        
         #region + CompareTo .
 
         /// <summary>
@@ -179,7 +222,7 @@ namespace SharpNL.Utility {
         /// A string that represents the current object.
         /// </returns>
         public override string ToString() {
-            return string.Format("{0}.{1}.{2}{3}", Major, Minor, Revision, Snapshot ? SNAPSHOT_MARKER : string.Empty);
+            return string.Format("{0}.{1}.{2}{3}", Major, Minor, Revision, Snapshot ? SnapshotMarker : string.Empty);
         }
 
         #endregion

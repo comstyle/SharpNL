@@ -24,7 +24,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
+
 using SharpNL.Analyzer;
 using SharpNL.Text;
 using SharpNL.Utility;
@@ -114,17 +116,10 @@ namespace SharpNL.Tokenize {
                     sentence.Tokens = new ReadOnlyCollection<IToken>(new IToken[] {});
                 } else {
                     var list = new List<IToken>(spans.Length);
+                    list.AddRange(spans
+                        .Select(span => factory.CreateToken(sentence, span, span.GetCoveredText(text)))
+                        .Where(token => token != null));
 
-                    foreach (var span in spans) {
-                        var token = factory.CreateToken(
-                            span.Start, 
-                            span.End, 
-                            span.GetCoveredText(text),
-                            span.Probability);
-                        
-                        if (token != null)
-                            list.Add(token);
-                    }
                     sentence.Tokens = new ReadOnlyCollection<IToken>(list);
                 }
             }

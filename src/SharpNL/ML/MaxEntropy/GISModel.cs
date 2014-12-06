@@ -130,15 +130,15 @@ namespace SharpNL.ML.MaxEntropy {
         /// </summary>
         /// <param name="context">The integer values of the predicates which have been observed at the present decision point.</param>
         /// <param name="prior">The prior distribution for the specified context.</param>
-        /// <param name="model">The set of parameters used in this computation.</param>
+        /// <param name="evalParams">The set of parameters used in this computation.</param>
         /// <returns>
         /// The normalized probabilities for the outcomes given the context.
         /// The indexes of the double[] are the outcome ids, and the actual
         /// string representation of the outcomes can be obtained from the
         /// method getOutcome(int i).
         /// </returns>
-        public static double[] Eval(int[] context, double[] prior, EvalParameters model) {
-            return Eval(context, null, prior, model);
+        public static double[] Eval(int[] context, double[] prior, EvalParameters evalParams) {
+            return Eval(context, null, prior, evalParams);
         }
 
 
@@ -148,27 +148,27 @@ namespace SharpNL.ML.MaxEntropy {
         /// <param name="context">The integer values of the predicates which have been observed at the present decision point.</param>
         /// <param name="values">The values for each of the parameters.</param>
         /// <param name="prior">The prior distribution for the specified context.</param>
-        /// <param name="model">The set of parameters used in this computation.</param>
+        /// <param name="evalParams">The set of parameters used in this computation.</param>
         /// <returns>
         /// The normalized probabilities for the outcomes given the context.
         /// The indexes of the double[] are the outcome ids, and the actual
         /// string representation of the outcomes can be obtained from the
         /// method getOutcome(int i).
         /// </returns>
-        public static double[] Eval(int[] context, float[] values, double[] prior, EvalParameters model) {
+        public static double[] Eval(int[] context, float[] values, double[] prior, EvalParameters evalParams) {
 
-            var numfeats = new int[model.NumOutcomes];
+            var numfeats = new int[evalParams.NumOutcomes];
 
             double value = 1;
             for (int ci = 0; ci < context.Length; ci++) {
 
                 if (context[ci] >= 0) {
-                    var activeParameters = model.Parameters[context[ci]].Parameters;
+                    var activeParameters = evalParams.Parameters[context[ci]].Parameters;
                     if (values != null) {
                         value = values[ci];
                     }
-                    for (int ai = 0; ai < model.Parameters[context[ci]].Outcomes.Length; ai++) {
-                        int oid = model.Parameters[context[ci]].Outcomes[ai];
+                    for (int ai = 0; ai < evalParams.Parameters[context[ci]].Outcomes.Length; ai++) {
+                        int oid = evalParams.Parameters[context[ci]].Outcomes[ai];
                         numfeats[oid]++;
                         prior[oid] += activeParameters[ai]*value;
                     }
@@ -176,17 +176,17 @@ namespace SharpNL.ML.MaxEntropy {
             }
 
             double normal = 0.0;
-            for (int oid = 0; oid < model.NumOutcomes; oid++) {
-                if (!model.CorrectionParam.Equals(0d)) {
+            for (int oid = 0; oid < evalParams.NumOutcomes; oid++) {
+                if (!evalParams.CorrectionParam.Equals(0d)) {
                     //prior[oid] = Math.Exp(prior[oid] * model.ConstantInverse + ((1.0 - (numfeats[oid]/model.CorrectionConstant)) * model.CorrectionParam));
-                    prior[oid] = Math.Exp(prior[oid] * model.ConstantInverse + ((1.0 - (numfeats[oid] / model.CorrectionConstant)) * model.CorrectionParam));
+                    prior[oid] = Math.Exp(prior[oid] * evalParams.ConstantInverse + ((1.0 - (numfeats[oid] / evalParams.CorrectionConstant)) * evalParams.CorrectionParam));
                 } else {
-                    prior[oid] = Math.Exp(prior[oid] * model.ConstantInverse);
+                    prior[oid] = Math.Exp(prior[oid] * evalParams.ConstantInverse);
                 }
                 normal += prior[oid];
             }
 
-            for (int oid = 0; oid < model.NumOutcomes; oid++) {
+            for (int oid = 0; oid < evalParams.NumOutcomes; oid++) {
                 prior[oid] /= normal;
             }
 

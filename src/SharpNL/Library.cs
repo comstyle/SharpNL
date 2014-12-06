@@ -89,19 +89,24 @@ namespace SharpNL {
 
         #endregion
 
-        #region . CreateInstance .
-        internal static object CreateInstance(Type type) {
+        #region . GetInstance .
+        /// <summary>
+        /// Gets the instance for the given <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The instance of the given type.</returns>
+        /// <exception cref="System.ArgumentNullException">type</exception>
+        internal static object GetInstance(Type type) {
             if (type == null)
                 throw new ArgumentNullException("type");
 
             var instance = type.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
-            if (instance != null)
-                return instance.GetValue(null);
-
-            return Activator.CreateInstance(type);
+            return instance != null 
+                ? instance.GetValue(null) 
+                : Activator.CreateInstance(type);
         }
-        internal static T CreateInstance<T>(Type type) {
-            return (T)CreateInstance(type);
+        internal static T GetInstance<T>(Type type) {
+            return (T)GetInstance(type);
         }
         #endregion
 
@@ -112,10 +117,9 @@ namespace SharpNL {
         /// <param name="baseType">The base type.</param>
         internal static IEnumerable<Type> GetKnownTypes(Type baseType) {
             // this lock is not released until the last yield is processed.
-            var i = baseType.IsInterface;
             lock (syncLock) {
                 foreach (var type in knownTypes) {
-                    if (i) {
+                    if (baseType.IsInterface) {
                         if (type.IsAssignableFrom(baseType))
                             yield return type;
                     } else if (type.IsSubclassOf(baseType)) {

@@ -130,7 +130,7 @@ namespace SharpNL.DocumentCategorizer {
 
                         try {
                             var type = Library.TypeResolver.ResolveType(className);
-                            tokenizer = Library.CreateInstance<ITokenizer>(type);
+                            tokenizer = Library.GetInstance<ITokenizer>(type);
                         } catch (Exception ex) {
                             throw new InvalidOperationException("Unable to create the tokenizer instance.", ex);
                         }
@@ -196,7 +196,7 @@ namespace SharpNL.DocumentCategorizer {
                     throw new NotSupportedException(
                         string.Format("Unable to resolve the type {0} with the SharpNL type resolver.", classes[i]));
 
-                fgs[i] = Library.CreateInstance<IFeatureGenerator>(type);
+                fgs[i] = Library.GetInstance<IFeatureGenerator>(type);
             }
             return fgs;
         }

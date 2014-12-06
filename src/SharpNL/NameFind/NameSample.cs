@@ -39,30 +39,62 @@ namespace SharpNL.NameFind {
         public const string DefaultType = "default";
 
         private static readonly Regex StartTagRegex;
+
+        #region + Constructors .
+
+
+        /// <summary>
+        /// Initializes static members of the <see cref="NameSample"/> class.
+        /// </summary>
         static NameSample() {
             StartTagRegex = new Regex("<START(:([^:>\\s]*))?>(?=\\s|$)", RegexOptions.Compiled);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameSample"/> class.
+        /// </summary>
+        /// <param name="sentence">The sentence tokens.</param>
+        /// <param name="names">The name spans.</param>
+        /// <param name="clearAdaptiveData">if set to <c>true</c> adaptive data should be clear.</param>
         public NameSample(string[] sentence, Span[] names, bool clearAdaptiveData)
             : this(sentence, names, null, clearAdaptiveData) {
             
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameSample"/> class.
+        /// </summary>
+        /// <param name="sentence">The sentence tokens.</param>
+        /// <param name="names">The name spans.</param>
+        /// <param name="additionalContext">The additional context.</param>
+        /// <param name="clearAdaptiveData">if set to <c>true</c> adaptive data should be clear.</param>
         public NameSample(string[] sentence, Span[] names, string[][] additionalContext, bool clearAdaptiveData)
             : this(null, sentence, names, additionalContext, clearAdaptiveData) {
             
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameSample"/> class.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="sentence">The sentence tokens.</param>
+        /// <param name="names">The name spans.</param>
+        /// <param name="additionalContext">The additional context.</param>
+        /// <param name="clearAdaptiveData">if set to <c>true</c> adaptive data should be clear.</param>
+        /// <exception cref="System.ArgumentNullException"><paramref name="sentence"/></exception>
+        /// <exception cref="System.InvalidOperationException">The name spans are overlapping.</exception>
         public NameSample(string id, string[] sentence, Span[] names, string[][] additionalContext,
             bool clearAdaptiveData) {
 
             Id = id;
 
-            if (sentence == null) {
+            if (sentence == null)
                 throw new ArgumentNullException("sentence");
-            }
 
-            if (names == null) {
+            if (names == null)
                 names = new Span[0];
-            }
+
+            if (Span.IsOverlapping(names))
+                throw new InvalidOperationException("The name spans are overlapping");
 
             Sentence = sentence;
             Names = names;
@@ -70,31 +102,52 @@ namespace SharpNL.NameFind {
             AdditionalContext = additionalContext;
             ClearAdaptiveData = clearAdaptiveData;
 
-            // TODO: Check that name spans are not overlapping, otherwise throw exception
+        }
 
-          }
+
+        #endregion
 
         #region + Properties .
 
         #region . AdditionalContext .
 
+        /// <summary>
+        /// Gets the additional context.
+        /// </summary>
+        /// <value>The additional context.</value>
         public string[][] AdditionalContext { get; private set; }
 
         #endregion
 
         #region . ClearAdaptiveData .
+        /// <summary>
+        /// Gets a value indicating whether adaptive data should be cleared.
+        /// </summary>
+        /// <value><c>true</c> if adaptive data should be cleared; otherwise, <c>false</c>.</value>
         public bool ClearAdaptiveData { get; private set; }
         #endregion
 
         #region . Id .
+        /// <summary>
+        /// Gets the identifier.
+        /// </summary>
+        /// <value>The identifier.</value>
         public string Id { get; private set; }
         #endregion
 
         #region . Names .
+        /// <summary>
+        /// Gets the name spans.
+        /// </summary>
+        /// <value>The name spans.</value>
         public Span[] Names { get; private set; }
         #endregion
 
         #region . Sentence .
+        /// <summary>
+        /// Gets the sentence tokens.
+        /// </summary>
+        /// <value>The sentence tokens.</value>
         public string[] Sentence { get; private set; }
         #endregion
 
@@ -121,6 +174,13 @@ namespace SharpNL.NameFind {
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="T:NameSample"/> is equal to the current <see cref="T:NameSample"/>.
+        /// </summary>
+        /// <returns>
+        /// true if the specified object is equal to the current object; otherwise, false.
+        /// </returns>
+        /// <param name="other">The other <see cref="NameSample"/> to compare with the current object. </param>
         protected bool Equals(NameSample other) {
             if (other == null)
                 return false;
@@ -214,7 +274,7 @@ namespace SharpNL.NameFind {
         public static NameSample Parse(string taggedTokens, string defaultType, bool ClearAdaptiveData) {
             var parts = WhitespaceTokenizer.Instance.Tokenize(taggedTokens);
 
-            var tokenList = new List<String>(parts.Length);
+            var tokenList = new List<string>(parts.Length);
             var nameList = new List<Span>();
 
             string nameType = defaultType;

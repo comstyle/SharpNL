@@ -22,12 +22,10 @@
 
 
 using SharpNL.Utility;
-using SharpNL.WordNet;
 
 using System.Collections.Generic;
 
 namespace SharpNL.Text {
-
     /// <summary>
     /// A factory that provides text resources from any implementation.
     /// </summary>

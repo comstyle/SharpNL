@@ -29,11 +29,22 @@ namespace SharpNL.ML.Model {
     /// </summary>
     public class Event {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Event"/> with a outcome and its context.
+        /// </summary>
+        /// <param name="outcome">The event outcome.</param>
+        /// <param name="context">The event context.</param>
         public Event(string outcome, string[] context) {
             Outcome = outcome;
             Context = context;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Event"/> with the specified outcome, context and values.
+        /// </summary>
+        /// <param name="outcome">The event outcome.</param>
+        /// <param name="context">The event context.</param>
+        /// <param name="values">The event values.</param>
         public Event(string outcome, string[] context, float[] values) : this(outcome, context) {
             Values = values;
         }

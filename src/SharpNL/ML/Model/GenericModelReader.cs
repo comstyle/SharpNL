@@ -26,9 +26,16 @@ namespace SharpNL.ML.Model {
     using MaxEntropy.IO;
     using Perceptron.IO;
 
+    /// <summary>
+    /// Represents a generic model reader.
+    /// </summary>
     public class GenericModelReader : AbstractModelReader {
         private AbstractModelReader delegateModelReader;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericModelReader"/> using a <see cref="IDataReader"/> object.
+        /// </summary>
+        /// <param name="reader">The data reader.</param>
         public GenericModelReader(IDataReader reader) : base(reader) {}
 
         protected override void CheckModelType() {

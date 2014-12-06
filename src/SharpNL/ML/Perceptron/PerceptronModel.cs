@@ -85,11 +85,22 @@ namespace SharpNL.ML.Perceptron {
             return Eval(Array.ConvertAll(context, input => map[input]), values, outsums, evalParameters, true);
         }
 
-        public static double[] Eval(int[] context, float[] values, double[] prior, EvalParameters model, bool normalize) {
+        /// <summary>
+        /// Use this model to evaluate a context and return an array of the likelihood of each outcome given that context.
+        /// </summary>
+        /// <param name="context">The names of the predicates which have been observed at the present decision point.</param>
+        /// <param name="values">This is where the distribution is stored.</param>
+        /// <param name="prior">The prior distribution for the specified context.</param>
+        /// <param name="evalParams">The set of parameters used in this computation.</param>
+        /// <param name="normalize">if set to <c>true</c> the probabilities will be normalized.</param>
+        /// <returns>The normalized probabilities for the outcomes given the context. 
+        /// The indexes of the double[] are the outcome ids, and the actual string representation of 
+        /// the outcomes can be obtained from the method getOutcome(int i).</returns>
+        public static double[] Eval(int[] context, float[] values, double[] prior, EvalParameters evalParams, bool normalize) {
             double value = 1;
             for (var ci = 0; ci < context.Length; ci++) {
                 if (context[ci] >= 0) {
-                    var predParams = model.Parameters[context[ci]];
+                    var predParams = evalParams.Parameters[context[ci]];
                     var activeOutcomes = predParams.Outcomes;
                     var activeParameters = predParams.Parameters;
                     if (values != null) {
@@ -101,25 +112,28 @@ namespace SharpNL.ML.Perceptron {
                     }
                 }
             }
-            if (normalize) {
-                var numOutcomes = model.NumOutcomes;
 
-                double maxPrior = 1;
+            if (!normalize) 
+                return prior;
 
-                for (var oid = 0; oid < numOutcomes; oid++) {
-                    if (maxPrior < Math.Abs(prior[oid]))
-                        maxPrior = Math.Abs(prior[oid]);
-                }
+            var numOutcomes = evalParams.NumOutcomes;
 
-                var normal = 0.0;
-                for (var oid = 0; oid < numOutcomes; oid++) {
-                    prior[oid] = Math.Exp(prior[oid]/maxPrior);
-                    normal += prior[oid];
-                }
+            double maxPrior = 1;
 
-                for (var oid = 0; oid < numOutcomes; oid++)
-                    prior[oid] /= normal;
+            for (var oid = 0; oid < numOutcomes; oid++) {
+                if (maxPrior < Math.Abs(prior[oid]))
+                    maxPrior = Math.Abs(prior[oid]);
             }
+
+            var normal = 0.0;
+            for (var oid = 0; oid < numOutcomes; oid++) {
+                prior[oid] = Math.Exp(prior[oid]/maxPrior);
+                normal += prior[oid];
+            }
+
+            for (var oid = 0; oid < numOutcomes; oid++)
+                prior[oid] /= normal;
+
             return prior;
         }
     }

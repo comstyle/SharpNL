@@ -49,9 +49,9 @@ namespace SharpNL.Tests.ML {
         [TestFixtureSetUp]
         public void Setup() {
             mlParams = new TrainingParameters();
-            mlParams.Set(TrainingParameters.AlgorithmParam, GIS.MaxEntropy);
-            mlParams.Set(TrainingParameters.IterationsParam, "10");
-            mlParams.Set(TrainingParameters.CutoffParam, "5");
+            mlParams.Set(Parameters.Algorithm, GIS.MaxEntropy);
+            mlParams.Set(Parameters.Iterations, "10");
+            mlParams.Set(Parameters.Cutoff, "5");
 
             TrainerFactory.RegisterTrainer("Dummy", typeof(DummyTrainer));
         }
@@ -63,7 +63,7 @@ namespace SharpNL.Tests.ML {
 
         [Test]
         public void testCustomTrainer() {
-            mlParams.Set(TrainingParameters.AlgorithmParam, "Dummy");
+            mlParams.Set(Parameters.Algorithm, "Dummy");
             Assert.True(TrainerFactory.IsValid(mlParams));
         }
 
@@ -79,7 +79,7 @@ namespace SharpNL.Tests.ML {
 
         [Test]
         public void testInvalidTrainer() {
-            mlParams.Set(TrainingParameters.AlgorithmParam, "Nop");
+            mlParams.Set(Parameters.Algorithm, "Nop");
             Assert.False(TrainerFactory.IsValid(mlParams));
         }
 

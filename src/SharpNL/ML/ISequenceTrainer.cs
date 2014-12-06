@@ -22,8 +22,16 @@
 
 namespace SharpNL.ML {
     using Model;
+    /// <summary>
+    /// Represents a sequence trainer that uses a <see cref="ISequenceStream"/> to train a <see cref="T:Model.ISequenceClassificationModel{string}"/> model.
+    /// </summary>
     public interface ISequenceTrainer : ITrainer {
-        
+
+        /// <summary>
+        /// Trains a sequence classification model using a event sequence stream.
+        /// </summary>
+        /// <param name="events">The sequence event stream.</param>
+        /// <returns>A trained sequence classification model.</returns>
         Model.ISequenceClassificationModel<string> Train(ISequenceStream events);
 
     }

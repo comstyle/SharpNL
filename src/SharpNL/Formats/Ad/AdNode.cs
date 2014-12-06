@@ -24,7 +24,13 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace SharpNL.Formats.Ad {
+    /// <summary>
+    /// Represents a Ad node.
+    /// </summary>
     public class AdNode : AdTreeElement {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdNode"/> class.
+        /// </summary>
         public AdNode() {
             Elements = new List<AdTreeElement>();
         }

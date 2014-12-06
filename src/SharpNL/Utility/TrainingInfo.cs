@@ -30,6 +30,7 @@ namespace SharpNL.Utility {
     /// <remarks>This is a SharpNL implementation.</remarks>
     public sealed class TrainingInfo {
         private readonly StringBuilder sb;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TrainingInfo"/> class.
         /// </summary>
@@ -37,6 +38,17 @@ namespace SharpNL.Utility {
             sb = new StringBuilder();
         }
 
+        #region . Value .
+        /// <summary>
+        /// Gets the training information.
+        /// </summary>
+        /// <value>The training information.</value>
+        public string Value {
+            get { return sb.ToString(); }
+        }
+        #endregion
+
+        #region . Append .
         /// <summary>
         /// Appends the string returned by processing a composite format string, which contains zero or more format items, to this instance. Each format item is replaced by the string representation of a corresponding object argument.
         /// </summary>
@@ -48,13 +60,19 @@ namespace SharpNL.Utility {
             else
                 sb.AppendFormat(format, args);
         }
+        #endregion
 
+        #region . ToString .
         /// <summary>
-        /// Gets the training information.
+        /// Returns a string that represents the current <see cref="TrainingInfo"/> object.
         /// </summary>
-        /// <value>The training information.</value>
-        public string Value {
-            get { return sb.ToString(); }
+        /// <returns>
+        /// A string that represents the current <see cref="TrainingInfo"/> object.
+        /// </returns>
+        public override string ToString() {
+            return Value;
         }
+        #endregion
+
     }
 }

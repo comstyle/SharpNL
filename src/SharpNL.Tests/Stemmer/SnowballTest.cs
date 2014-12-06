@@ -31,7 +31,7 @@ namespace SharpNL.Tests.Stemmer {
         [Test]
         public void TestIfCrashes() {
             foreach (var type in Library.GetKnownTypes(typeof (AbstractStemmer))) {
-                var stemmer = Library.CreateInstance<IStemmer>(type);
+                var stemmer = Library.GetInstance<IStemmer>(type);
 
                 stemmer.Stem("word");
             }

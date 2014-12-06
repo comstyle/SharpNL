@@ -21,7 +21,6 @@
 //  
 
 using System;
-using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.Stemmer {

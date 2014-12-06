@@ -32,11 +32,6 @@ namespace SharpNL.Utility {
 
         private readonly Properties properties;
 
-        public const string AlgorithmParam = "Algorithm";
-        public const string TrainerTypeParam = "TrainerType";
-        public const string IterationsParam = "Iterations";
-        public const string CutoffParam = "Cutoff";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TrainingParameters"/> class.
         /// </summary>
@@ -60,10 +55,10 @@ namespace SharpNL.Utility {
         public static TrainingParameters DefaultParameters() {
             var p = new TrainingParameters();
 
-            p.Set(AlgorithmParam, "MAXENT");
-            p.Set(TrainerTypeParam, "Event");
-            p.Set(IterationsParam, "100");
-            p.Set(CutoffParam, "5");
+            p.Set(Parameters.Algorithm, "MAXENT");
+            p.Set(Parameters.TrainerType, "Event");
+            p.Set(Parameters.Iterations, "100");
+            p.Set(Parameters.Cutoff, "5");
 
             return p;
         }
@@ -218,8 +213,9 @@ namespace SharpNL.Utility {
         /// </summary>
         /// <returns><c>true</c> if the basic parameters are valid; otherwise, <c>false</c>.</returns>
         internal bool IsValid() {
-            int value = 0;
-            if (properties[CutoffParam] != null && !int.TryParse(properties[CutoffParam], out value)) {
+            var value = 0;
+
+            if (properties[Parameters.Cutoff] != null && !int.TryParse(properties[Parameters.Cutoff], out value)) {
                 return false;
             }
             if (value < 0) {
@@ -227,7 +223,7 @@ namespace SharpNL.Utility {
             }
 
             value = 0;
-            if (properties[IterationsParam] != null && !int.TryParse(properties[IterationsParam], out value)) {
+            if (properties[Parameters.Iterations] != null && !int.TryParse(properties[Parameters.Iterations], out value)) {
                 return false;
             }
 

@@ -21,8 +21,16 @@
 //  
 namespace SharpNL.ML.Model {
     using Utility;
+    /// <summary>
+    /// Represents a event trainer.
+    /// </summary>
     public interface IEventTrainer : ITrainer {
 
+        /// <summary>
+        /// Trains a <see cref="IMaxentModel"/> model using the specified <paramref name="events"/> stream.
+        /// </summary>
+        /// <param name="events">The events.</param>
+        /// <returns>A trained <see cref="IMaxentModel"/> model.</returns>
         IMaxentModel Train(IObjectStream<Event> events);
 
     }

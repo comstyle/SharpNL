@@ -21,6 +21,7 @@
 //  
 
 using System;
+using SharpNL.Utility;
 
 namespace SharpNL.ML {
     using  Model;
@@ -43,7 +44,8 @@ namespace SharpNL.ML {
 
             var model = DoTrain(events);
 
-            AddToReport(TRAINER_TYPE_PARAM, "EventModelSequence"); // EventModelSequenceTrainer.SEQUENCE_VALUE
+            
+            AddToReport(Parameters.TrainerType, "EventModelSequence"); // EventModelSequenceTrainer.SEQUENCE_VALUE
 
             return model;
         }

@@ -21,29 +21,51 @@
 //  
 
 using System.IO;
-using System.Text;
 using SharpNL.ML.Model;
 
 namespace SharpNL.ML.MaxEntropy.IO {
+    /// <summary>
+    /// Represents a binary GIS model writer.
+    /// </summary>
     public class BinaryGISModelWriter : GISModelWriter {
         private readonly BinaryFileDataWriter writer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryGISModelWriter"/> class.
+        /// </summary>
+        /// <param name="model">The GIS model.</param>
+        /// <param name="outputStream">The output stream.</param>
         public BinaryGISModelWriter(AbstractModel model, Stream outputStream) : base(model) {
             writer = new BinaryFileDataWriter(outputStream);
         }
 
+        /// <summary>
+        /// Writes the specified string value.
+        /// </summary>
+        /// <param name="value">The string value.</param>
         public override void Write(string value) {
             writer.Write(value);
         }
 
+        /// <summary>
+        /// Writes the specified int value.
+        /// </summary>
+        /// <param name="value">The int value.</param>
         public override void Write(int value) {
             writer.Write(value);
         }
 
+        /// <summary>
+        /// Writes the specified double value.
+        /// </summary>
+        /// <param name="value">The double value.</param>
         public override void Write(double value) {
             writer.Write(value);
         }
 
+        /// <summary>
+        /// Closes this instance.
+        /// </summary>
         public override void Close() {
             writer.Flush();
             writer.Close();

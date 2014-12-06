@@ -43,6 +43,7 @@
     <Compile Include="Inflecter\IInfleter.cs" />
     <Compile Include="Inflecter\Inflector.cs" />
     <Compile Include="Inflecter\Lang\en\Inflecter.cs" />
+    <Compile Include="Inflecter\Lang\pt\Inflecter.cs" />
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
     <Compile Include="Parser\ParserAnalyzer.cs" />
     <Compile Include="POSTag\POSTaggerAnalyzer.cs" />
@@ -101,15 +102,6 @@
     <Compile Include="DocumentCategorizer\NGramFeatureGenerator.cs" />
     <Compile Include="Expressions.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Featurizer\DefaultFeaturizerFactory.cs" />
-    <Compile Include="Featurizer\FeatureSample.cs" />
-    <Compile Include="Featurizer\FeatureSampleStream.cs" />
-    <Compile Include="Featurizer\FeaturizerFactory.cs" />
-    <Compile Include="Featurizer\FeaturizerModel.cs" />
-    <Compile Include="Featurizer\IFeatureDictionary.cs" />
-    <Compile Include="Featurizer\IFeaturizer.cs" />
-    <Compile Include="Featurizer\IFeaturizerContextGenerator.cs" />
-    <Compile Include="Featurizer\WordTag.cs" />
     <Compile Include="Formats\Ad\AdChunkSampleStream.cs" />
     <Compile Include="Formats\Ad\AdLeaf.cs" />
     <Compile Include="Formats\Ad\AdNode.cs" />
@@ -310,8 +302,6 @@
     <Compile Include="Parser\TreeInsert\ParserEventStream.cs" />
     <Compile Include="POSTag\DefaultPOSContextGenerator.cs" />
     <Compile Include="POSTag\DefaultPOSSequenceValidator.cs" />
-    <Compile Include="POSTag\ExtendedPOSDictionary.cs" />
-    <Compile Include="POSTag\IExtendedTagDictionary.cs" />
     <Compile Include="POSTag\IMutableTagDictionary.cs" />
     <Compile Include="POSTag\IPOSContextGenerator.cs" />
     <Compile Include="POSTag\IPOSTagger.cs" />

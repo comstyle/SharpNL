@@ -25,30 +25,92 @@ namespace SharpNL.Utility {
     /// Utility class to store common parameters.
     /// </summary>
     public static class Parameters {
+        /// <summary>
+        /// The algorithm parameter.
+        /// </summary>
         public const string Algorithm = "Algorithm";
+
+        /// <summary>
+        /// The beam size parameter.
+        /// </summary>
         public const string BeamSize = "BeamSize";
+
+        /// <summary>
+        /// The cutoff parameter.
+        /// </summary>
         public const string Cutoff = "Cutoff";
+
+        /// <summary>
+        /// The data indexer parameter.
+        /// </summary>
         public const string DataIndexer = "DataIndexer";
 
-        ///public const string Dictionary = "dict";
+        /// <summary>
+        /// The iterations parameter.
+        /// </summary>
         public const string Iterations = "Iterations";
+        /// <summary>
+        /// The tolerance parameter.
+        /// </summary>
         public const string Tolerance = "Tolerance";
+        /// <summary>
+        /// The trainer type parameter.
+        /// </summary>
         public const string TrainerType = "TrainerType";
+
+        /// <summary>
+        /// The training eventhash parameter.
+        /// </summary>
+        public const string TrainingEventhash = "Training-Eventhash";
+
+        /// <summary>
+        /// The step size decrease parameter.
+        /// </summary>
         public const string StepSizeDecrease = "StepSizeDecrease";
+
+        /// <summary>
+        /// The use average parameter
+        /// </summary>
         public const string UseAverage = "UseAverage";
+
+        /// <summary>
+        /// The use skipped averaging parameter.
+        /// </summary>
         public const string UseSkippedAveraging = "UseSkippedAveraging";
 
+        /// <summary>
+        /// The threads parameter.
+        /// </summary>
         public const string Threads = "Threads";
 
+        /// <summary>
+        /// Represents the supported algorithms.
+        /// </summary>
         public static class Algorithms {
-
+            /// <summary>
+            /// The perceptron algorithm.
+            /// </summary>
             public const string Perceptron = "PERCEPTRON";
+
+            /// <summary>
+            /// The maximum entropy algorithm.
+            /// </summary>
             public const string MaxEnt = "MAXENT";
 
         }
 
+        /// <summary>
+        /// Represents the supported data indexers.
+        /// </summary>
         public static class DataIndexers {
+            /// <summary>
+            /// The one pass data indexer.
+            /// </summary>
             public const string OnePass = "OnePass";
+
+            /// <summary>
+            /// The two pass data indexer.
+            /// </summary>
             public const string TwoPass = "TwoPass";
 
         }

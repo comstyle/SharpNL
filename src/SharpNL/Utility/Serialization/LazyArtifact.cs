@@ -22,6 +22,7 @@
 
 using System;
 using System.IO;
+
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace SharpNL.Utility.Serialization {
@@ -30,30 +31,28 @@ namespace SharpNL.Utility.Serialization {
     /// </summary>
     /// <remarks>
     /// When the manifest file is not the first compressed file in the zip and the stream is not seekable,
-    /// the artifacts need to be stored somewhere for later to be loaded. This class manages this possibility
+    /// the artifacts need to be stored somewhere for later to be loaded. This class manages this situation
     /// avoiding the seekable exception from the ZipInputStream.
-    /// Note: Generally speaking, this only happens when the model is created using a compressor like WinRAR, 7Zip, etc.
+    /// Note: Generally speaking, this only happens when the model is created or modified using a compressor like WinRAR, 7Zip, etc.
     /// </remarks>
     public sealed class LazyArtifact : IDisposable {
-
-        #region . MaxSizeInMemory .
-        /// <summary>
-        /// Gets or sets the maximum size of the artifact loaded into memory.
-        /// The artifacts that exceed this value will be stored in a temporary file.
-        /// </summary>
-        /// <value>The maximum size of the artifact loaded into memory.</value>
-        /// <remarks>The default value is 3145728 bytes (3mb).</remarks>
-        public static uint MaxSizeInMemory { get; set; }
-
-        static LazyArtifact() {
-            MaxSizeInMemory = 3145728; // (1024 ^ 3) * 3 = 3mb
-        }
-        #endregion
 
         private readonly Stream dataStream;
         private bool disposed;
 
-        #region . Constructor .
+        #region . Constructors .
+        /// <summary>
+        /// Initializes static members of the <see cref="LazyArtifact"/> class.
+        /// </summary>
+        static LazyArtifact() {
+            MaxSizeInMemory = 3145728; // (1024 ^ 3) * 3 = 3mb
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LazyArtifact"/> class.
+        /// </summary>
+        /// <param name="entry">The entry.</param>
+        /// <param name="inputStream">The input stream.</param>
         internal LazyArtifact(ZipEntry entry, ZipInputStream inputStream) {
 
             if (entry.Size > MaxSizeInMemory) {
@@ -80,6 +79,16 @@ namespace SharpNL.Utility.Serialization {
         #endregion
 
         #region + Properties .
+        
+        #region . MaxSizeInMemory .
+        /// <summary>
+        /// Gets or sets the maximum size of the artifact loaded into memory.
+        /// The artifacts that exceed this value will be stored in a temporary file.
+        /// </summary>
+        /// <value>The maximum size of the artifact loaded into memory.</value>
+        /// <remarks>The default value is 3145728 bytes (3mb).</remarks>
+        public static uint MaxSizeInMemory { get; set; }
+        #endregion
 
         #region . Name .
         /// <summary>
@@ -111,10 +120,11 @@ namespace SharpNL.Utility.Serialization {
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose() {
-            if (!disposed) {
-                dataStream.Dispose();
-                disposed = true;
-            }
+            if (disposed)
+                return;
+
+            dataStream.Dispose();
+            disposed = true;
         }
         #endregion
 

@@ -28,6 +28,9 @@ namespace SharpNL.ML.MaxEntropy {
     /// A Factory class which uses instances of <see cref="GISTrainer"/> to create and train <see cref="GISModel"/>s.
     /// </summary>
     public class GIS : AbstractEventTrainer {
+        /// <summary>
+        /// The maximum entropy entry value.
+        /// </summary>
         public const string MaxEntropy = "MAXENT";
 
         /// <summary>
@@ -54,21 +57,26 @@ namespace SharpNL.ML.MaxEntropy {
 
         #region . IsValid .
 
+        /// <summary>
+        /// Determines whether this instance is valid.
+        /// </summary>
+        /// <returns><c>true</c> if this instance is valid; otherwise, <c>false</c>.</returns>
         protected override bool IsValid() {
             if (!base.IsValid()) {
                 return false;
             }
 
-            if (Algorithm != null && Algorithm != MaxEntropy) {
-                return false;
-            }
-
-            return true;
+            return Algorithm == null || Algorithm == MaxEntropy;
         }
 
         #endregion
 
         #region . DoTrain .
+        /// <summary>
+        /// Perform the training process using the specified <paramref name="indexer"/> object.
+        /// </summary>
+        /// <param name="indexer">The indexer.</param>
+        /// <returns>The trained <see cref="IMaxentModel"/> model.</returns>
         protected override IMaxentModel DoTrain(IDataIndexer indexer) {
             var threads = GetIntParam("Threads", 1);
 
@@ -176,7 +184,7 @@ namespace SharpNL.ML.MaxEntropy {
             IPrior modelPrior,
             int cutoff,
             int threads) {
-            var trainer = new GISTrainer() {
+            var trainer = new GISTrainer {
                 Smoothing = smoothing,
                 SmoothingObservation = SmoothingObservation
             };

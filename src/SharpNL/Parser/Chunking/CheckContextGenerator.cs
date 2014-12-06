@@ -41,7 +41,7 @@ namespace SharpNL.Parser.Chunking {
         public string[] GetContext(Parse[] constituents, string type, int start, int end) {
             var ps = constituents.Length;
 
-            var features = new List<String> {
+            var features = new List<string> {
                 "default", 
                 "fl=" + constituents[0].Label // first constituent label
             };

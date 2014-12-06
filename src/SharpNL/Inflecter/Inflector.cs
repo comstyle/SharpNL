@@ -24,10 +24,16 @@ using System;
 using System.Collections.Generic;
 
 namespace SharpNL.Inflecter {
+    /// <summary>
+    /// Represents the inflector manager. This class cannot be inherited.
+    /// </summary>
     public sealed class Inflector {
 
         private static readonly Dictionary<string, IInfleter> infletors;
 
+        /// <summary>
+        /// Initializes static members of the <see cref="Inflector"/> class.
+        /// </summary>
         static Inflector() {
             infletors = new Dictionary<string, IInfleter>();
         }

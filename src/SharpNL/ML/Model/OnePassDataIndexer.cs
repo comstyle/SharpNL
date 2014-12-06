@@ -25,40 +25,98 @@ using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
     /// <summary>
-    /// An indexer for maxent model data which handles cutoffs for uncommon contextual predicates and provides a unique integer index for each of the predicates.
+    /// An indexer for maxent model data which handles cutoffs for uncommon contextual 
+    /// predicates and provides a unique integer index for each of the predicates.
     /// </summary>
     public class OnePassDataIndexer : AbstractDataIndexer {
 
-        protected readonly IObjectStream<Event> eventStream;
-        protected readonly int cutoff;
-        protected readonly bool sort;
+        #region + Constructors .
 
-        public OnePassDataIndexer(Monitor monitor, IObjectStream<Event> eventStream, int cutoff)
-            : this(monitor, eventStream, cutoff, true) {
-            
-        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OnePassDataIndexer"/> class using a event stream and a cutoff value.
+        /// </summary>
+        /// <param name="eventStream">The event stream.</param>
+        /// <param name="cutoff">The cutoff.</param>
         public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff) 
             : this(eventStream, cutoff, true) {
             
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OnePassDataIndexer"/> class, using a event stream, a cutoff value and a evaluation <see cref="Monitor"/>.
+        /// </summary>
+        /// <param name="eventStream">The event stream.</param>
+        /// <param name="cutoff">The cutoff value.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff, Monitor monitor)
+            : this(eventStream, cutoff, true, monitor) {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OnePassDataIndexer"/> class, using a event stream, a cutoff value and a value that indicates if the events should be sorted.
+        /// </summary>
+        /// <param name="eventStream">The event stream.</param>
+        /// <param name="cutoff">The cutoff.</param>
+        /// <param name="sort">if set to <c>true</c> the events will be sorted during the indexing.</param>
         public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort)
-            : this(null, eventStream, cutoff, sort) {
+            : this(eventStream, cutoff, sort, null) {
             
         }
 
-        public OnePassDataIndexer(Monitor monitor, IObjectStream<Event> eventStream, int cutoff, bool sort)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OnePassDataIndexer"/> class, using a event stream, a cutoff value and a value that indicates if the events should be sorted.
+        /// </summary>
+        /// <param name="eventStream">The event stream.</param>
+        /// <param name="cutoff">The cutoff.</param>
+        /// <param name="sort">if set to <c>true</c> the events will be sorted during the indexing.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        public OnePassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort, Monitor monitor)
             : base(monitor) {
 
-            this.eventStream = eventStream;
-            this.cutoff = cutoff;
-            this.sort = sort;
+            EventStream = eventStream;
+            Cutoff = cutoff;
+            Sort = sort;
         }
 
+        #endregion
+
+        #region + Properties .
+
+        #region . Cutoff .
+        /// <summary>
+        /// Gets the cutoff value.
+        /// </summary>
+        /// <value>The cutoff value.</value>
+        protected int Cutoff { get; private set; }
+        #endregion
+
+        #region . EventStream .
+        /// <summary>
+        /// Gets the event stream.
+        /// </summary>
+        /// <value>The event stream.</value>
+        protected IObjectStream<Event> EventStream { get; private set; }
+        #endregion
+
+        #region . Sort .
+        /// <summary>
+        /// Gets a value indicating whether data should be sorted.
+        /// </summary>
+        /// <value><c>true</c> if data should be sorted; otherwise, <c>false</c>.</value>
+        protected bool Sort { get; private set; }
+        #endregion
+
+        #endregion
+
+        #region . PerformIndexing .
+        /// <summary>
+        /// Performs the data indexing.
+        /// </summary>
         protected override void PerformIndexing() {
 
             var predicateIndex = new Dictionary<string, int>();
 
-            Display("Indexing events using cutoff of " + cutoff);
+            Display("Indexing events using cutoff of " + Cutoff);
             Display("\tComputing event counts...");
 
             var events = ComputeEventCounts(predicateIndex);
@@ -79,10 +137,12 @@ namespace SharpNL.ML.Model {
 
             Display("Sorting and merging events...");
 
-            SortAndMerge(eventsToCompare, sort);
+            SortAndMerge(eventsToCompare, Sort);
 
             Display("Done indexing.");
         }
+
+        #endregion
 
         #region . ComputeEventCounts .
 
@@ -100,13 +160,13 @@ namespace SharpNL.ML.Model {
             var events = new LinkedList<Event>();
 
             Event ev;
-            while ((ev = eventStream.Read()) != null) {
+            while ((ev = EventStream.Read()) != null) {
 
                 if (Monitor != null && Monitor.Token.CanBeCanceled)
                     Monitor.Token.ThrowIfCancellationRequested();
 
                 events.AddLast(ev);
-                Update(ev.Context, predicateSet, counter, cutoff);
+                Update(ev.Context, predicateSet, counter, Cutoff);
             }
             predCounts = new int[predicateSet.Count];
 
@@ -124,7 +184,12 @@ namespace SharpNL.ML.Model {
         #endregion
 
         #region . Index .
-
+        /// <summary>
+        /// Indexes the specified events.
+        /// </summary>
+        /// <param name="events">The events.</param>
+        /// <param name="predicateIndex">Index of the predicate.</param>
+        /// <returns>List&lt;ComparableEvent&gt;.</returns>
         protected virtual List<ComparableEvent> Index(LinkedList<Event> events, Dictionary<string, int> predicateIndex) {
             var map = new Dictionary<string, int>();
 

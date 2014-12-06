@@ -101,7 +101,7 @@ namespace SharpNL.POSTag {
                     probs = Tagger.Probabilities;
                 }
 
-                var prob = probs.Sum(p => Math.Log(p));
+                var prob = probs.Sum(p => p);
                 if (probs.Length > 0)
                     prob /= probs.Length;
 

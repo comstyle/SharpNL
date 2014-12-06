@@ -149,8 +149,8 @@ namespace SharpNL.NameFind {
             // one outcome with suffix start. After that we check if all outcomes that ends with
             // "cont" have a pair that ends with "start".
 
-            var start = new List<String>();
-            var cont = new List<String>();
+            var start = new List<string>();
+            var cont = new List<string>();
 
             foreach (var outcome in outcomes) {
                 if (outcome.EndsWith(START)) {

@@ -23,8 +23,19 @@
 using System.IO;
 
 namespace SharpNL.Utility.Serialization {
+
+    /// <summary>
+    /// A delegate to serialize a <paramref name="artifact"/> into the <paramref name="outputStream"/> stream object.
+    /// </summary>
+    /// <param name="artifact">The artifact to be serialized.</param>
+    /// <param name="outputStream">The output stream.</param>
     public delegate void SerializeDelegate(object artifact, Stream outputStream);
 
+    /// <summary>
+    /// A delegate to deserialize a artifact from a <see cref="Stream"/> object.
+    /// </summary>
+    /// <param name="inputStream">The input stream.</param>
+    /// <returns>The deserialized artifact.</returns>
     public delegate object DeserializeDelegate(Stream inputStream);
 
 }

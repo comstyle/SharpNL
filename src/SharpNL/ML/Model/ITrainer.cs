@@ -24,8 +24,16 @@ using System.Collections.Generic;
 using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a trainer.
+    /// </summary>
     public interface ITrainer {
 
+        /// <summary>
+        /// Initializes the trainer with the specified parameters.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="reportMap">The report map.</param>
         void Init(TrainingParameters parameters, Dictionary<string, string> reportMap);
 
     }

@@ -33,7 +33,7 @@ namespace SharpNL.WordNet {
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class is a modified/revamped version from Matt Gerber implementation: <br /> 
+    /// This class is a modified/revamped version from <b>Matt Gerber</b> implementation: <br /> 
     /// <see href="http://ptl.sys.virginia.edu/ptl/software" />
     /// </para>
     /// <para>
@@ -94,7 +94,7 @@ namespace SharpNL.WordNet {
         /// <summary>
         /// Gets the byte offset of synset definition within the data file
         /// </summary>
-        public int Offset { get; private set; }
+        internal int Offset { get; private set; }
         #endregion
 
         #region . Pos .
@@ -136,14 +136,13 @@ namespace SharpNL.WordNet {
         /// </summary>
         /// <param name="pos">POS of SynSet</param>
         /// <param name="offset">Byte location of SynSet definition within data file</param>
-        /// <param name="wordNet">WordNet engine used to instantiate this synset.</param>
-        internal SynSet(WordNetPos pos, int offset, WordNet wordNet) {
+        /// <param name="wordnet">WordNet engine used to instantiate this synset.</param>
+        internal SynSet(WordNetPos pos, int offset, WordNet wordnet) {
             Id = string.Format("{0}:{1}", pos, offset);
             Pos = pos;
             Offset = offset;
             Instantiated = false;
-
-            this.wordNet = wordNet;
+            wordNet = wordnet;
         }
         #endregion
 

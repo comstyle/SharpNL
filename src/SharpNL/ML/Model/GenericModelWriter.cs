@@ -26,42 +26,93 @@ using SharpNL.ML.MaxEntropy.IO;
 using SharpNL.ML.Perceptron.IO;
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a generic model writer.
+    /// </summary>
     public class GenericModelWriter : AbstractModelWriter {
-        private AbstractModelWriter delegateWriter;
 
+        /// <summary>
+        /// The model writer
+        /// </summary>
+        private readonly AbstractModelWriter writer;
+
+        #region . Constructor .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericModelWriter" /> class.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="outputStream">The output stream.</param>
+        /// <exception cref="System.InvalidOperationException">Invalid model type.</exception>
         public GenericModelWriter(AbstractModel model, Stream outputStream) {
-            Init(model, outputStream);
-        }
-
-        private void Init(AbstractModel model, Stream outputStream) {
             switch (model.ModelType) {
                 case ModelType.Maxent:
-                    delegateWriter = new BinaryGISModelWriter(model, outputStream);
+                    writer = new BinaryGISModelWriter(model, outputStream);
                     break;
                 case ModelType.MaxentQn:
-                    delegateWriter = new BinaryQNModelWriter(model, outputStream);
+                    writer = new BinaryQNModelWriter(model, outputStream);
                     break;
                 case ModelType.Perceptron:
-                    delegateWriter = new BinaryPerceptronModelWriter(model, outputStream);
+                    writer = new BinaryPerceptronModelWriter(model, outputStream);
                     break;
                 default:
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Invalid model type");
             }
         }
+        #endregion
+
+        #region + Write .
+
+        /// <summary>
+        /// Writes the specified string value.
+        /// </summary>
+        /// <param name="value">The string value.</param>
         public override void Write(string value) {
-            delegateWriter.Write(value);
+            writer.Write(value);
         }
+        /// <summary>
+        /// Writes the specified int32 value.
+        /// </summary>
+        /// <param name="value">The int32 value.</param>
         public override void Write(int value) {
-            delegateWriter.Write(value);
+            writer.Write(value);
         }
+        /// <summary>
+        /// Writes the specified double value.
+        /// </summary>
+        /// <param name="value">The double value.</param>
         public override void Write(double value) {
-            delegateWriter.Write(value);
+            writer.Write(value);
         }
+
+        #endregion
+
+        #region . Close .
+        /// <summary>
+        /// Closes this writer instance.
+        /// </summary>
         public override void Close() {
-            delegateWriter.Close();
+            writer.Close();
         }
+        #endregion
+
+        #region . Persist .
+        /// <summary>
+        /// Persists this instance.
+        /// </summary>
         public override void Persist() {
-            delegateWriter.Persist();
+            writer.Persist();
         }
+        #endregion
+
+        #region . Writer .
+        /// <summary>
+        /// Gets the model writer.
+        /// </summary>
+        /// <value>The model writer.</value>
+        protected AbstractModelWriter Writer {
+            get { return writer; }
+        }
+        #endregion
+
     }
 }

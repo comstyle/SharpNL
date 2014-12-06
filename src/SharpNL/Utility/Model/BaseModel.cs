@@ -31,25 +31,20 @@ namespace SharpNL.Utility.Model {
     /// Abstract class used by the models.
     /// </summary>
     public abstract class BaseModel : ArtifactProvider {
-        private readonly string componentName;
-        private readonly bool isLoadedFromSerialized;
-
         protected BaseToolFactory ToolFactory;
 
         #region + Constructors .
 
-        #region . BaseModel(string, bool) .
-
-        private BaseModel(string componentName, bool isLoadedFromSerialized) {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseModel"/> class.
+        /// </summary>
+        /// <param name="componentName">Name of the component.</param>
+        /// <exception cref="System.ArgumentNullException">The component name cannot be null.</exception>
+        private BaseModel(string componentName) {
             if (string.IsNullOrEmpty(componentName)) {
-                throw new ArgumentNullException("componentName", @"The componentName cannot be null.");
+                throw new ArgumentNullException("componentName", @"The component name cannot be null.");
             }
-
-            this.isLoadedFromSerialized = isLoadedFromSerialized;
-            this.componentName = componentName;
         }
-
-        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseModel"/> class.
@@ -58,21 +53,25 @@ namespace SharpNL.Utility.Model {
         /// <param name="languageCode">The language code.</param>
         /// <param name="manifestInfoEntries">The manifest information entries.</param>
         /// <param name="toolFactory">The tool factory.</param>
-        /// <exception cref="System.ArgumentNullException">The language cannot be null.</exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="componentName"/> cannot be null.
+        /// or
+        /// The <paramref name="languageCode"/> cannot be empty or null.
+        /// </exception>
         /// <exception cref="System.InvalidOperationException">Unable to initialize the factory.</exception>
         protected BaseModel(
             string componentName,
             string languageCode,
             Dictionary<string, string> manifestInfoEntries,
-            BaseToolFactory toolFactory) : this(componentName, false) {
+            BaseToolFactory toolFactory) : this(componentName) {
 
             if (string.IsNullOrEmpty(languageCode)) {
-                throw new ArgumentNullException("languageCode", @"The language cannot be null.");
+                throw new ArgumentNullException("languageCode", @"The language cannot be empty or null.");
             }
 
-            Manifest[MANIFEST_VERSION_PROPERTY] = "1.0";
+            Manifest[ManifestVersionProperty] = "1.0";
             Manifest[LanguageEntry] = languageCode;
-            Manifest[VERSION_PROPERTY] = "1.5.3"; // TODO: Implement a better version system for OpenNLP
+            Manifest[VersionProperty] = Library.OpenNLPVersion.ToString();
             Manifest[TimestampEntry] = Library.CurrentTimeMillis().ToString(CultureInfo.InvariantCulture);
             Manifest[ComponentNameEntry] = componentName;
 
@@ -88,7 +87,7 @@ namespace SharpNL.Utility.Model {
                 if (!Library.TypeResolver.IsRegistered(toolFactory.GetType()))
                     throw new InvalidOperationException("The tool factory type " + toolFactory.GetType().Name + " is not registered in the type resolver.");
 
-                Manifest[FACTORY_NAME] = Library.TypeResolver.ResolveName(toolFactory.GetType());
+                Manifest[FactoryName] = Library.TypeResolver.ResolveName(toolFactory.GetType());
 
                 var map = toolFactory.CreateArtifactMap();
                 foreach (var item in map) {
@@ -130,7 +129,7 @@ namespace SharpNL.Utility.Model {
         /// </summary>
         /// <param name="componentName">Name of the component.</param>
         /// <param name="stream">The input stream containing the model.</param>
-        protected BaseModel(string componentName, Stream stream) : this(componentName, true) {
+        protected BaseModel(string componentName, Stream stream) : this(componentName) {
             Deserialize(stream);
         }
 
@@ -141,7 +140,7 @@ namespace SharpNL.Utility.Model {
         /// <param name="componentName">Name of the component.</param>
         /// <param name="fileName">The model filename.</param>
         /// <exception cref="System.IO.FileNotFoundException">The model file does not exist.</exception>
-        protected BaseModel(string componentName, string fileName) : this(componentName, true) {
+        protected BaseModel(string componentName, string fileName) : this(componentName) {
             if (!File.Exists(fileName)) {
                 throw new FileNotFoundException("The model file does not exist.", fileName);
             }
@@ -230,7 +229,7 @@ namespace SharpNL.Utility.Model {
         /// <exception cref="InvalidFormatException">The specified factory is invalid or not supported.</exception>
         /// <exception cref="System.InvalidOperationException">Unable to initialize the tool factory.</exception>
         private void InitializeFactory() {
-            var factoryName = Manifest[FACTORY_NAME];
+            var factoryName = Manifest[FactoryName];
 
             if (string.IsNullOrEmpty(factoryName)) {
                 if (DefaultFactory != null) {
@@ -242,7 +241,7 @@ namespace SharpNL.Utility.Model {
                     try {
                         var type = Library.TypeResolver.ResolveType(factoryName);
 
-                        ToolFactory = Library.CreateInstance<BaseToolFactory>(type);
+                        ToolFactory = Library.GetInstance<BaseToolFactory>(type);
                         ToolFactory.Initialize(this);
                     } catch (Exception ex) {
                         throw new InvalidOperationException("Unable to initialize the tool factory.", ex);
@@ -278,7 +277,7 @@ namespace SharpNL.Utility.Model {
         protected override void ValidateArtifactMap() {
             base.ValidateArtifactMap();
 
-            var version = Version.Parse(Manifest[VERSION_PROPERTY]);
+            var version = Version.Parse(Manifest[VersionProperty]);
 
             if (version == null) {
                 throw new InvalidFormatException("Unable to parse the model version.");

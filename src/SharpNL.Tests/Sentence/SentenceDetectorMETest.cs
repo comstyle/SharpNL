@@ -35,8 +35,8 @@ namespace SharpNL.Tests.Sentence {
 
                 var mlParams = new TrainingParameters();
 
-                mlParams.Set(TrainingParameters.IterationsParam, "100");
-                mlParams.Set(TrainingParameters.CutoffParam, "0");
+                mlParams.Set(Parameters.Iterations, "100");
+                mlParams.Set(Parameters.Cutoff, "0");
 
                 var sdFactory = new SentenceDetectorFactory("en", true, null, null);
                 var stream = new SentenceSampleStream(new PlainTextByLineStream(file));
@@ -57,8 +57,8 @@ namespace SharpNL.Tests.Sentence {
 
                 var mlParams = new TrainingParameters();
 
-                mlParams.Set(TrainingParameters.IterationsParam, "100");
-                mlParams.Set(TrainingParameters.CutoffParam, "5");
+                mlParams.Set(Parameters.Iterations, "100");
+                mlParams.Set(Parameters.Cutoff, "5");
 
                 var sdFactory = new SentenceDetectorFactory("pt", true, null, null);
                 var stream = new SentenceSampleStream(new PlainTextByLineStream(file, Encoding.GetEncoding("ISO-8859-1")));

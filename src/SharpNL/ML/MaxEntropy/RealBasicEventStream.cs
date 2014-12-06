@@ -26,30 +26,58 @@ using SharpNL.Utility;
 
 namespace SharpNL.ML.MaxEntropy {
 
+    /// <summary>
+    /// Represents a real basic event stream.
+    /// </summary>
     public class RealBasicEventStream : IObjectStream<Event> {
-
         private readonly IObjectStream<string> objectStream;
 
+        #region + Constructors .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RealBasicEventStream"/> class.
+        /// </summary>
+        /// <param name="objectStream">The object stream.</param>
+        /// <exception cref="System.ArgumentNullException">objectStream</exception>
         public RealBasicEventStream(IObjectStream<string> objectStream) {
-            
+
             if (objectStream == null)
                 throw new ArgumentNullException("objectStream");
 
             this.objectStream = objectStream;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RealBasicEventStream"/> using a evaluation monitor.
+        /// </summary>
+        /// <param name="objectStream">The object stream.</param>
+        /// <param name="monitor">The evaluation monitor.</param>
+        /// <exception cref="System.ArgumentNullException">objectStream</exception>
+        public RealBasicEventStream(IObjectStream<string> objectStream, Monitor monitor)
+            : this(objectStream) {
+            Monitor = monitor;
+        }
+        #endregion
+
         #region . CreateEvent .
 
-        private static Event CreateEvent(string value) {
+        private static Event CreateEvent(string value, Monitor monitor) {
             var lastSpace = value.LastIndexOf(' ');
             if (lastSpace == -1)
                 return null;
 
             var contexts = value.Substring(0, lastSpace).RegExSplit(Expressions.Expression.Space);
-            var values = RealValueFileEventStream.ParseContexts(contexts);
+            var values = RealValueFileEventStream.ParseContexts(contexts, monitor);
             return new Event(value.Substring(lastSpace + 1), contexts, values);
 
         }
+        #endregion
+
+        #region . Monitor .
+        /// <summary>
+        /// Gets the evaluation monitor.
+        /// </summary>
+        /// <value>The evaluation monitor.</value>
+        protected Monitor Monitor { get; private set; }
         #endregion
 
         #region . Dispose .
@@ -71,7 +99,9 @@ namespace SharpNL.ML.MaxEntropy {
         /// </returns>
         public Event Read() {
             var eventString = objectStream.Read();
-            return eventString != null ? CreateEvent(eventString) : null;
+            return eventString != null 
+                ? CreateEvent(eventString, Monitor) 
+                : null;
         }
         #endregion
 

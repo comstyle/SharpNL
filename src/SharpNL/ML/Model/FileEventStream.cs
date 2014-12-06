@@ -33,7 +33,7 @@ namespace SharpNL.ML.Model {
     /// </summary>
     public class FileEventStream : IObjectStream<Event> {
 
-        protected StreamReader reader;
+        #region + Constructors .
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileEventStream"/> class.
@@ -67,22 +67,45 @@ namespace SharpNL.ML.Model {
             if (encoding == null)
                 throw new ArgumentNullException("encoding");
 
-            reader = new StreamReader(inputStream, encoding);
+            Reader = new StreamReader(inputStream, encoding);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileEventStream"/> class using a file as source.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
         public FileEventStream(string fileName) : this(fileName, Encoding.UTF8) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileEventStream"/> class using a file as source with the specified <see cref="Encoding"/>.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="encoding">The encoding.</param>
         public FileEventStream(string fileName, Encoding encoding) {
-            reader = new StreamReader(fileName, encoding);
+            Reader = new StreamReader(fileName, encoding);
         }
 
+        #endregion
+
+        #region + Properties .
+
+        #region . Reader .
+        /// <summary>
+        /// Gets the reader.
+        /// </summary>
+        /// <value>The reader.</value>
+        protected StreamReader Reader { get; private set; }
+        #endregion
+
+        #endregion
 
         #region . Dispose .
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public virtual void Dispose() {
-            reader.Close();
-            reader.Dispose();
+            Reader.Close();
+            Reader.Dispose();
         }
         #endregion
 
@@ -95,7 +118,7 @@ namespace SharpNL.ML.Model {
         /// The next object or null to signal that the stream is exhausted.
         /// </returns>
         public virtual Event Read() {
-            string line = reader.ReadLine();
+            string line = Reader.ReadLine();
 
             if (line == null) {
                 return null;

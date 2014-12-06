@@ -20,6 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Globalization;
 using System.Text;
 using SharpNL.Tokenize;
@@ -29,7 +30,7 @@ namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Represents a document with begin indexes of the individual sentences.
     /// </summary>
-    public class SentenceSample {
+    public class SentenceSample : IEquatable<SentenceSample> {
 
         #region + Constructors .
 
@@ -96,29 +97,52 @@ namespace SharpNL.SentenceDetector {
 
         #endregion
 
-        #region . Equals .
+        #region + Equals .
 
         /// <summary>Determines whether the specified <see cref="T:System.Object" /> is equal to the current
         /// <see cref="T:SentenceSample" />.</summary>
         /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
         /// <param name="obj">The object to compare with the current object. </param>
-#pragma warning disable 659
         public override bool Equals(object obj) {
-#pragma warning restore 659
-            if (obj == null) {
-                return false;
-            }
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
 
-            if (obj.GetType() == typeof (SentenceSample)) {
-                var sentence = (SentenceSample) obj;
-
-                return Document.Equals(sentence.Document) &&
-                       Sentences.SequenceEqual(sentence.Sentences);
-            }
-
-            return false;
+            return obj.GetType() == typeof (SentenceSample) && Equals((SentenceSample) obj);
         }
 
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        /// <param name="other">An object to compare with this object.</param>
+        public bool Equals(SentenceSample other) {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Document.Equals(other.Document) &&
+                   Sentences.SequenceEqual(other.Sentences);
+        }
+
+
         #endregion
+
+        #region . GetHashCode .
+        /// <summary>
+        /// Serves as a hash function for a particular type. 
+        /// </summary>
+        /// <returns>
+        /// A hash code for the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override int GetHashCode() {
+            unchecked {
+                return (
+                    (Document != null ? Document.GetHashCode() : 0) * 397) ^
+                    (Sentences != null ? Sentences.GetHashCode() : 0);
+            }
+        }
+        #endregion
+
     }
 }

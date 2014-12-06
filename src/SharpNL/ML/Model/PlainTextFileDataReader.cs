@@ -25,10 +25,19 @@ using System.IO;
 using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a plain text data reader.
+    /// </summary>
     public class PlainTextFileDataReader : IDataReader {
         private readonly StreamReader reader;
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlainTextFileDataReader"/> class using a input stream as source.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <exception cref="System.ArgumentNullException">inputStream</exception>
+        /// <exception cref="System.ArgumentException">The <paramref name="inputStream"/> was not readable.</exception>
         public PlainTextFileDataReader(Stream inputStream) {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
@@ -39,6 +48,11 @@ namespace SharpNL.ML.Model {
             reader = new StreamReader(inputStream);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlainTextFileDataReader"/> class using a <paramref name="streamReader"/> as source.
+        /// </summary>
+        /// <param name="streamReader">The stream reader.</param>
+        /// <exception cref="System.ArgumentNullException">streamReader</exception>
         public PlainTextFileDataReader(StreamReader streamReader) {
             if (streamReader == null)
                 throw new ArgumentNullException("streamReader");
@@ -46,6 +60,15 @@ namespace SharpNL.ML.Model {
             reader = streamReader;
         }
 
+        /// <summary>
+        /// Reads a double value.
+        /// </summary>
+        /// <returns>System.Double.</returns>
+        /// <exception cref="InvalidFormatException">
+        /// Unable to convert to double the following line: Line
+        /// or
+        /// Unable to read a double value.
+        /// </exception>
         public double ReadDouble() {
             var line = reader.ReadLine();
             if (!string.IsNullOrEmpty(line)) {
@@ -58,6 +81,15 @@ namespace SharpNL.ML.Model {
             throw new InvalidFormatException("Unable to read a double value.");
         }
 
+        /// <summary>
+        /// Reads a int value.
+        /// </summary>
+        /// <returns>System.Int32.</returns>
+        /// <exception cref="InvalidFormatException">
+        /// Unable to convert to int the following line:  + line
+        /// or
+        /// Unable to read a int value.
+        /// </exception>
         public int ReadInt() {
             var line = reader.ReadLine();
             if (!string.IsNullOrEmpty(line)) {
@@ -70,6 +102,10 @@ namespace SharpNL.ML.Model {
             throw new InvalidFormatException("Unable to read a int value.");
         }
 
+        /// <summary>
+        /// Reads a string value.
+        /// </summary>
+        /// <returns>System.String.</returns>
         public string ReadString() {
             return reader.ReadLine();
         }

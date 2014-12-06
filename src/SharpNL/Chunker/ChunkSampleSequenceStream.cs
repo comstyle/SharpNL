@@ -20,20 +20,29 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Linq;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 using Sequence = SharpNL.ML.Model.Sequence;
 
 namespace SharpNL.Chunker {
-    public class ChunkSampleSequenceStream : ISequenceStream {
+    /// <summary>
+    /// Represents a <see cref="ChunkSample" /> sequence stream.
+    /// </summary>
+    public sealed class ChunkSampleSequenceStream : ISequenceStream {
         private readonly IChunkerContextGenerator contextGenerator;
         private readonly IObjectStream<ChunkSample> samples;
 
+        #region . Constructor .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkSampleSequenceStream"/> class using the given parameters.
+        /// </summary>
+        /// <param name="samples">The chunk samples.</param>
+        /// <param name="contextGenerator">The chunker context generator.</param>
         public ChunkSampleSequenceStream(IObjectStream<ChunkSample> samples, IChunkerContextGenerator contextGenerator) {
             this.samples = samples;
             this.contextGenerator = contextGenerator;
         }
+        #endregion
 
         #region . Dispose .
 

@@ -21,7 +21,6 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.DocumentCategorizer {

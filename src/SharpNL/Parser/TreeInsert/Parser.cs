@@ -91,7 +91,7 @@ namespace SharpNL.Parser.TreeInsert {
         public Parser(ParserModel model, int beamSize, double advancePercentage) :
             this(model.BuildModel, model.AttachModel, model.CheckModel,
                 new POSTaggerME(model.ParserTaggerModel),
-                new ChunkerME(model.ParserChunkerModel, ChunkerME.DEFAULT_BEAM_SIZE, new ParserChunkerSequenceValidator(model.ParserChunkerModel), new ChunkContextGenerator()),
+                new ChunkerME(model.ParserChunkerModel, ChunkerME.DefaultBeamSize, new ParserChunkerSequenceValidator(model.ParserChunkerModel), new ChunkContextGenerator()),
                 model.HeadRules,
                 beamSize,
                 advancePercentage) {}

@@ -33,7 +33,7 @@ namespace SharpNL.Analyzer {
         /// Initializes a new instance of the <see cref="AbstractAnalyzer"/> with the specified weight.
         /// </summary>
         /// <param name="weight">The analyzer weight.</param>
-        protected AbstractAnalyzer( float weight) {
+        protected AbstractAnalyzer(float weight) {
             Weight = weight;
         }
 

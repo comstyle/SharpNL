@@ -21,7 +21,6 @@
 //  
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 
 namespace SharpNL.ML {
@@ -31,17 +30,28 @@ namespace SharpNL.ML {
     /// Represents an abstract trainer.
     /// </summary>
     public abstract class AbstractTrainer {
+        /// <summary>
+        /// The default cutoff value.
+        /// </summary>
+        public static readonly int DefaultCutoff = 5;
 
-        public static readonly string ALGORITHM_PARAM = "Algorithm";
-        public static readonly string TRAINER_TYPE_PARAM = "TrainerType";
-        public static readonly int CUTOFF_DEFAULT = 5;
-        public static readonly int ITERATIONS_DEFAULT = 100;
+        /// <summary>
+        /// The default iterations value.
+        /// </summary>
+        public static readonly int DefaultIterations = 100;
 
         private TrainingParameters trainParams;
         private Dictionary<string, string> reportMap;
 
+        /// <summary>
+        /// The training information field.
+        /// </summary>
         protected readonly TrainingInfo info;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractTrainer"/> class.
+        /// </summary>
+        /// <param name="monitor">The evaluation monitor. This value can be null.</param>
         protected AbstractTrainer(Monitor monitor) {
             Monitor = monitor;
             info = new TrainingInfo();
@@ -55,7 +65,7 @@ namespace SharpNL.ML {
         /// </summary>
         /// <value>The algorithm associated to this trainer.</value>
         public string Algorithm {
-            get { return GetStringParam(TrainingParameters.AlgorithmParam, "MAXENT"); }        
+            get { return GetStringParam(Parameters.Algorithm, "MAXENT"); }        
         }
         #endregion
 
@@ -64,7 +74,7 @@ namespace SharpNL.ML {
         /// Gets the trainer cutoff.
         /// </summary>
         /// <value>The trainer cutoff.</value>
-        public int Cutoff { get { return GetIntParam(TrainingParameters.CutoffParam, CUTOFF_DEFAULT); } }
+        public int Cutoff { get { return GetIntParam(Parameters.Cutoff, DefaultCutoff); } }
         #endregion
 
         #region . Iterations .
@@ -72,7 +82,7 @@ namespace SharpNL.ML {
         /// Gets the number of iterations of this trainer.
         /// </summary>
         /// <value>The the number of iterations of this trainer.</value>
-        public int Iterations { get { return GetIntParam(TrainingParameters.IterationsParam, ITERATIONS_DEFAULT); } }
+        public int Iterations { get { return GetIntParam(Parameters.Iterations, DefaultIterations); } }
 
         #endregion
 
@@ -87,6 +97,11 @@ namespace SharpNL.ML {
         #endregion
 
         #region . AddToReport .
+        /// <summary>
+        /// Adds the specified key and value to report map.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
         protected void AddToReport(string key, string value) {
             if (reportMap != null) {
                 reportMap.Add(key, value);
@@ -96,6 +111,10 @@ namespace SharpNL.ML {
 
         #region . Display .
 
+        /// <summary>
+        /// Displays the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
         protected void Display(string message) {
             if (Monitor != null)
                 Monitor.OnMessage(message);
@@ -107,6 +126,12 @@ namespace SharpNL.ML {
         #endregion
 
         #region . GetStringParam .
+        /// <summary>
+        /// Gets the parameter from the train parameters. 
+        /// </summary>
+        /// <param name="key">The param key.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>A value or the <paramref name="defaultValue"/>.</returns>
         protected string GetStringParam(string key, string defaultValue) {
             var value = trainParams.Get(key) ?? defaultValue;
             if (reportMap != null) {
@@ -118,36 +143,59 @@ namespace SharpNL.ML {
         #endregion
 
         #region . GetIntParam .
+        /// <summary>
+        /// Gets the int parameter from the train parameters. 
+        /// </summary>
+        /// <param name="key">The param key.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>A int value or the <paramref name="defaultValue"/>.</returns>
         protected int GetIntParam(string key, int defaultValue) {
-            if (trainParams.Get(key) == null) {
-                return defaultValue;
-            }
-            return int.Parse(trainParams.Get(key), CultureInfo.InvariantCulture);
+            return trainParams.Get(key) != null
+                ? int.Parse(trainParams.Get(key), CultureInfo.InvariantCulture)
+                : defaultValue;
         }
+
         #endregion
 
         #region . GetDoubleParam .
+        /// <summary>
+        /// Gets the double parameter from the train parameters. 
+        /// </summary>
+        /// <param name="key">The param key.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>A double value or the <paramref name="defaultValue"/>.</returns>
         protected double GetDoubleParam(string key, double defaultValue) {
-            if (trainParams.Get(key) == null) {
-                return defaultValue;
-            }
-            return double.Parse(trainParams.Get(key), CultureInfo.InvariantCulture);
+            return trainParams.Get(key) != null
+                ? double.Parse(trainParams.Get(key), CultureInfo.InvariantCulture)
+                : defaultValue;
         }
+
         #endregion
 
         #region . GetBoolParam .
+        /// <summary>
+        /// Gets the bool parameter from the train parameters. 
+        /// </summary>
+        /// <param name="key">The param key.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>A bool value or the <paramref name="defaultValue"/>.</returns>
         protected bool GetBoolParam(string key, bool defaultValue) {
-            if (trainParams.Get(key) == null) {
-                return defaultValue;
-            }
-            return bool.Parse(trainParams.Get(key));
+            return trainParams.Get(key) != null
+                ? bool.Parse(trainParams.Get(key))
+                : defaultValue;
         }
+
         #endregion
 
         #region . Init .
-        public void Init(TrainingParameters trainParameters, Dictionary<string, string> reportMap) {
+        /// <summary>
+        /// Initializes abstract trainer using the specified train parameters.
+        /// </summary>
+        /// <param name="trainParameters">The train parameters.</param>
+        /// <param name="reportMapping">The report map.</param>
+        public void Init(TrainingParameters trainParameters, Dictionary<string, string> reportMapping) {
             trainParams = trainParameters;
-            this.reportMap = reportMap;
+            reportMap = reportMapping;
         }
         #endregion
 

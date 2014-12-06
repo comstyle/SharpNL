@@ -40,8 +40,8 @@ namespace SharpNL.Tests.Compatibility {
         [TestFixtureSetUp]
         public void Setup() {
             var sParams = new TrainingParameters();
-            sParams.Set(TrainingParameters.IterationsParam, "70");
-            sParams.Set(TrainingParameters.CutoffParam, "1");
+            sParams.Set(Parameters.Iterations, "70");
+            sParams.Set(Parameters.Cutoff, "1");
 
             var jParams = new opennlp.tools.util.TrainingParameters();
             jParams.put("Iterations", "70");

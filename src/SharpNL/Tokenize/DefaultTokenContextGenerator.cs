@@ -108,7 +108,7 @@ namespace SharpNL.Tokenize {
         /// <param name="key">The key.</param>
         /// <param name="c">The c.</param>
         /// <param name="preds">The preds.</param>
-        protected virtual void AddCharPreds(String key, char c, List<String> preds) {
+        protected virtual void AddCharPreds(String key, char c, List<string> preds) {
             preds.Add(key + "=" + c);
             if (char.IsLetter(c)) {
                 preds.Add(key + "_alpha");

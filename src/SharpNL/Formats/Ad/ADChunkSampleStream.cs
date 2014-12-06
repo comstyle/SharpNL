@@ -32,7 +32,7 @@ namespace SharpNL.Formats.Ad {
     /// Class AdChunkSampleStream.
     /// </summary>
     public class AdChunkSampleStream : IObjectStream<ChunkSample> {
-        public const string Other = "O";
+        private const string Other = "O";
 
         protected readonly IObjectStream<AdSentence> adSentenceStream;
         protected readonly Monitor monitor;
@@ -181,11 +181,23 @@ namespace SharpNL.Formats.Ad {
 
         #region . GetChunkTag .
 
-        protected string GetChunkTag(AdLeaf leaf) {
+        /// <summary>
+        /// Gets the chunk tag.
+        /// </summary>
+        /// <param name="leaf">The leaf.</param>
+        /// <returns>System.String.</returns>
+        protected virtual string GetChunkTag(AdLeaf leaf) {
             return leaf.SecondaryTag == "P" ? "VP" : null;
         }
 
-        protected string GetChunkTag(AdNode node, string parent, int index) {
+        /// <summary>
+        /// Gets the chunk tag.
+        /// </summary>
+        /// <param name="node">The node.</param>
+        /// <param name="parent">The parent.</param>
+        /// <param name="index">The index.</param>
+        /// <returns>System.String.</returns>
+        protected virtual string GetChunkTag(AdNode node, string parent, int index) {
             var tag = node.SyntacticTag;
 
             var phraseTag = tag.Substring(tag.LastIndexOf(":", StringComparison.Ordinal) + 1);
@@ -220,6 +232,11 @@ namespace SharpNL.Formats.Ad {
 
         #region . GetPhraseTagFromPosTag .
 
+        /// <summary>
+        /// Gets the phrase tag from position tag.
+        /// </summary>
+        /// <param name="functionalTag">The functional tag.</param>
+        /// <returns>System.String.</returns>
         protected static string GetPhraseTagFromPosTag(string functionalTag) {
             switch (functionalTag) {
                 case "v-fin":
@@ -252,9 +269,9 @@ namespace SharpNL.Formats.Ad {
                     Index++;
                 } else {
                     var root = paragraph.Root;
-                    var sentence = new List<String>();
-                    var tags = new List<String>();
-                    var target = new List<String>();
+                    var sentence = new List<string>();
+                    var tags = new List<string>();
+                    var target = new List<string>();
 
                     ProcessRoot(root, sentence, tags, target);
 
@@ -284,7 +301,14 @@ namespace SharpNL.Formats.Ad {
         #endregion
 
         #region . ProcessRoot .
-        protected void ProcessRoot(AdNode root, List<String> sentence, List<String> tags, List<String> target) {
+        /// <summary>
+        /// Processes the root node.
+        /// </summary>
+        /// <param name="root">The root node.</param>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="target">The target.</param>
+        protected void ProcessRoot(AdNode root, List<string> sentence, List<string> tags, List<string> target) {
             if (root == null)
                 return;
 
@@ -300,8 +324,8 @@ namespace SharpNL.Formats.Ad {
 
         #region . ProcessNode .
 
-        private void ProcessNode(AdNode node, List<String> sentence, List<String> tags,
-            List<String> target, String inheritedTag) {
+        private void ProcessNode(AdNode node, List<string> sentence, List<string> tags,
+            List<string> target, String inheritedTag) {
             var phraseTag = GetChunkTag(node, inheritedTag, target.Count);
 
             var inherited = false;
@@ -351,6 +375,13 @@ namespace SharpNL.Formats.Ad {
         #endregion
 
         #region . IsIntermediate .
+        /// <summary>
+        /// Determines whether the specified tags is intermediate.
+        /// </summary>
+        /// <param name="tags">The tags.</param>
+        /// <param name="target">The target.</param>
+        /// <param name="phraseTag">The phrase tag.</param>
+        /// <returns><c>true</c> if the specified tags is intermediate; otherwise, <c>false</c>.</returns>
         protected bool IsIntermediate(List<string> tags, List<string> target, string phraseTag) {
             return target.Count > 0 && target[target.Count - 1].EndsWith("-" + phraseTag);
         }
@@ -358,6 +389,15 @@ namespace SharpNL.Formats.Ad {
 
         #region . ProcessLeaf .
 
+        /// <summary>
+        /// Processes the Ad leaf.
+        /// </summary>
+        /// <param name="leaf">The leaf.</param>
+        /// <param name="isIntermediate">if set to <c>true</c> leaf is intermediate.</param>
+        /// <param name="phraseTag">The phrase tag.</param>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="tags">The tags.</param>
+        /// <param name="target">The target.</param>
         protected void ProcessLeaf(
             AdLeaf leaf,
             bool isIntermediate,

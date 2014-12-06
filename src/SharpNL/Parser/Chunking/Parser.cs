@@ -59,9 +59,9 @@ namespace SharpNL.Parser.Chunking {
                 new POSTaggerME(model.ParserTaggerModel, 10, 0),
                 new ChunkerME(
                     model.ParserChunkerModel, 
-                    ChunkerME.DEFAULT_BEAM_SIZE, 
+                    ChunkerME.DefaultBeamSize, 
                     new ParserChunkerSequenceValidator(model.ParserChunkerModel),
-                    new ChunkContextGenerator(ChunkerME.DEFAULT_BEAM_SIZE)), 
+                    new ChunkContextGenerator(ChunkerME.DefaultBeamSize)), 
                 model.HeadRules, 
                 beamSize, 
                 advancePercentage) {

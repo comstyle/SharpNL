@@ -340,6 +340,12 @@ namespace SharpNL.Parser {
         #endregion
 
         #region . Add .
+        /// <summary>
+        /// Adds the specified daughter.
+        /// </summary>
+        /// <param name="daughter">The daughter.</param>
+        /// <param name="rules">The rules.</param>
+        /// <exception cref="System.InvalidOperationException">The head is null.</exception>
         public void Add(Parse daughter, IHeadRules rules) {
             if (daughter.PreviousPunctuationSet != null) {
                 parts.AddRange(daughter.PreviousPunctuationSet);
@@ -348,7 +354,7 @@ namespace SharpNL.Parser {
             Span = new Span(Span.Start, daughter.Span.End);
             Head = rules.GetHead(Children, Type);
             if (Head == null) {
-                throw new ArgumentNullException();
+                throw new InvalidOperationException("The head is null.");
             }
             HeadIndex = Head.HeadIndex;
         }
@@ -465,7 +471,6 @@ namespace SharpNL.Parser {
         #endregion
 
         #region . AdJoinRoot .
-
         public Parse AdJoinRoot(Parse node, AbstractHeadRules rules, int parseIndex) {
             var lastChild = parts[parseIndex];
             var adjNode = new Parse(Text, new Span(lastChild.Span.Start, node.Span.End), lastChild.Type, 1, rules.GetHead(new[] { lastChild, node }, lastChild.Type));
@@ -672,7 +677,10 @@ namespace SharpNL.Parser {
         #endregion
 
         #region . ExpandTopNode .
-
+        /// <summary>
+        /// Expands the top node.
+        /// </summary>
+        /// <param name="root">The root.</param>
         public void ExpandTopNode(Parse root) {
             bool beforeRoot = true;
             for (int pi = 0, ai = 0; pi < parts.Count; pi++, ai++) {
@@ -695,7 +703,10 @@ namespace SharpNL.Parser {
         #endregion
 
         #region . FixPossessives .
-
+        /// <summary>
+        /// Fixes the possessives from the given <paramref name="parse"/>.
+        /// </summary>
+        /// <param name="parse">The parse.</param>
         public static void FixPossessives(Parse parse) {
             var tags = parse.GetTagNodes();
             for (var ti = 0; ti < tags.Length; ti++) {
@@ -1035,13 +1046,17 @@ namespace SharpNL.Parser {
         #endregion
 
         #region . Remove .
-
+        /// <summary>
+        /// Removes a part with the specified index.
+        /// </summary>
+        /// <param name="index">The part index.</param>
         public void Remove(int index) {
             parts.RemoveAt(index);
-            if (parts.Count > 0) {
-                if (index == 0 || index == parts.Count) { // size is orig last element
-                    Span = new Span((parts[0]).Span.Start, parts[parts.Count - 1].Span.End);
-                }
+            if (parts.Count <= 0) 
+                return;
+
+            if (index == 0 || index == parts.Count) { // size is orig last element
+                Span = new Span((parts[0]).Span.Start, parts[parts.Count - 1].Span.End);
             }
         }
 

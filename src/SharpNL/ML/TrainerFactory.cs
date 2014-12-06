@@ -71,7 +71,7 @@ namespace SharpNL.ML {
         /// <returns>The <see cref="IEventTrainer"/> trainer object.</returns>
         public static IEventTrainer GetEventTrainer(TrainingParameters parameters, Dictionary<string, string> reportMap, Monitor monitor) {
 
-            var algorithm = parameters.Get(TrainingParameters.AlgorithmParam);
+            var algorithm = parameters.Get(Parameters.Algorithm);
 
             if (algorithm == null) {
                 AbstractEventTrainer trainer = new GIS(monitor);
@@ -144,7 +144,7 @@ namespace SharpNL.ML {
         /// <exception cref="System.InvalidOperationException">Trainer type couldn't be determined!</exception>
         public static ISequenceTrainer GetSequenceModelTrainer(TrainingParameters parameters, Dictionary<string, string> reportMap, Monitor monitor) {
 
-            var trainerType = parameters.Get(AbstractTrainer.ALGORITHM_PARAM);
+            var trainerType = parameters.Get(Parameters.Algorithm);
 
             ISequenceTrainer trainer = null;
 
@@ -180,9 +180,14 @@ namespace SharpNL.ML {
 
         #region . GetTrainerType .
 
+        /// <summary>
+        /// Gets the type of the trainer from the <see cref="TrainingParameters"/> object.
+        /// </summary>
+        /// <param name="trainParams">The train parameters.</param>
+        /// <returns>A nullable <see cref="TrainerType"/> value.</returns>
         public static TrainerType? GetTrainerType(TrainingParameters trainParams) {
 
-            string algorithm = trainParams.Get(TrainingParameters.AlgorithmParam);
+            var algorithm = trainParams.Get(Parameters.Algorithm);
 
             if (algorithm == null) {
                 return TrainerType.EventModelTrainer;
@@ -200,18 +205,19 @@ namespace SharpNL.ML {
         }
 
         private static TrainerType? GetTrainerType(Type trainerType) {
-            if (trainerType != null) {
-                if (typeof(IEventTrainer).IsAssignableFrom(trainerType)) {
-                    return TrainerType.EventModelTrainer;
-                }
+            if (trainerType == null) 
+                return null;
 
-                if (typeof(IEventModelSequenceTrainer).IsAssignableFrom(trainerType)) {
-                    return TrainerType.EventModelSequenceTrainer;
-                }
+            if (typeof(IEventTrainer).IsAssignableFrom(trainerType)) {
+                return TrainerType.EventModelTrainer;
+            }
 
-                if (typeof(ISequenceTrainer).IsAssignableFrom(trainerType)) {
-                    return TrainerType.SequenceTrainer;
-                }
+            if (typeof(IEventModelSequenceTrainer).IsAssignableFrom(trainerType)) {
+                return TrainerType.EventModelSequenceTrainer;
+            }
+
+            if (typeof(ISequenceTrainer).IsAssignableFrom(trainerType)) {
+                return TrainerType.SequenceTrainer;
             }
 
             return null;
@@ -233,18 +239,20 @@ namespace SharpNL.ML {
                 return false;
             }
 
-            var algorithmName = trainParams.Get(TrainingParameters.AlgorithmParam);
+            var algorithmName = trainParams.Get(Parameters.Algorithm);
             if (!(BuiltInTrainers.ContainsKey(algorithmName) || GetTrainerType(trainParams) != null)) {
                 return false;
             }
 
-            var dataIndexer = trainParams.Get(AbstractEventTrainer.DataIndexerParam);
-            if (dataIndexer != null) {
-                if (!(AbstractEventTrainer.DataIndexerOnePass.Equals(dataIndexer) ||
-                      AbstractEventTrainer.DataIndexerTwoPass.Equals(dataIndexer))) {
-                    return false;
+            var dataIndexer = trainParams.Get(Parameters.DataIndexer);
+            if (dataIndexer != null)
+                switch (dataIndexer) {
+                    case Parameters.DataIndexers.OnePass:
+                    case Parameters.DataIndexers.TwoPass:
+                        break;
+                    default:
+                        return false;
                 }
-            }
 
             return true;
         }

@@ -37,10 +37,7 @@ namespace SharpNL.ML.Model {
     /// </summary>
     public class TwoPassDataIndexer : AbstractDataIndexer {
 
-        protected readonly IObjectStream<Event> eventStream;
-        protected readonly int cutoff;
-        protected readonly bool sort;
-
+        #region + Constructors .
         /// <summary>
         /// One argument constructor for DataIndexer which calls the two argument constructor assuming no cutoff.
         /// </summary>
@@ -52,38 +49,73 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
         /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
-        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff) : this(null, eventStream, cutoff, true) { }
+        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff) : this(eventStream, cutoff, true, null) { }
 
         /// <summary>
         /// Two argument constructor for DataIndexer.
         /// </summary>
         /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
         /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
-        /// <param name="sort">if set to <c>true</c> [sort].</param>
+        /// <param name="sort">if set to <c>true</c> the events will be sorted.</param>
         public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort)
-            : this(null, eventStream, cutoff, sort) {
-            
+            : this(eventStream, cutoff, sort, null) {
+
         }
 
         /// <summary>
         /// Two argument constructor for DataIndexer.
         /// </summary>
+        /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
+        /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
+        /// <param name="sort">if set to <c>true</c> the events will be sorted.</param>
         /// <param name="monitor">
         /// A evaluation monitor that can be used to listen the evaluation messages or it can cancel the indexing operation.
         /// This argument can be a <c>null</c> value.
         /// </param>
-        /// <param name="eventStream">An event stream which contains the a list of all the Events seen in the training data.</param>
-        /// <param name="cutoff">The minimum number of times a predicate must have been observed in order to be included in the model.</param>
-        /// <param name="sort">if set to <c>true</c> [sort].</param>
-        public TwoPassDataIndexer(Monitor monitor, IObjectStream<Event> eventStream, int cutoff, bool sort) : base(monitor) {
-            this.eventStream = eventStream;
-            this.cutoff = cutoff;
-            this.sort = sort;           
+        public TwoPassDataIndexer(IObjectStream<Event> eventStream, int cutoff, bool sort, Monitor monitor)
+            : base(monitor) {
+            EventStream = eventStream;
+            Cutoff = cutoff;
+            Sort = sort;
         }
+        #endregion
 
+        #region + Properties .
+
+        #region . Cutoff .
+        /// <summary>
+        /// Gets the cutoff value.
+        /// </summary>
+        /// <value>The cutoff value.</value>
+        protected int Cutoff { get; private set; }
+        #endregion
+
+        #region . EventStream .
+        /// <summary>
+        /// Gets the event stream.
+        /// </summary>
+        /// <value>The event stream.</value>
+        protected IObjectStream<Event> EventStream { get; private set; }
+        #endregion
+
+        #region . Sort .
+        /// <summary>
+        /// Gets a value indicating whether the data should be sorted.
+        /// </summary>
+        /// <value><c>true</c> if the data should be sorted; otherwise, <c>false</c>.</value>
+        protected bool Sort { get; private set; }
+        #endregion
+
+
+        #endregion
+
+        #region . PerformIndexing .
+        /// <summary>
+        /// Performs the data indexing.
+        /// </summary>
         protected override void PerformIndexing() {
 
-            Display("Indexing events using cutoff of " + cutoff);
+            Display("Indexing events using cutoff of " + Cutoff);
             Display("\tComputing event counts...");
 
             var fileName = Path.GetTempFileName();
@@ -107,13 +139,15 @@ namespace SharpNL.ML.Model {
 
                 Display("done.");
 
-                Display(sort ? "Sorting and merging events..." : "Collecting events...");
+                Display(Sort ? "Sorting and merging events..." : "Collecting events...");
 
-                SortAndMerge(eventsToCompare, sort);
+                SortAndMerge(eventsToCompare, Sort);
 
                 Display("Done indexing.");
             }
         }
+
+        #endregion
 
         #region . ComputeEventCounts .
 
@@ -134,7 +168,7 @@ namespace SharpNL.ML.Model {
             var predicateSet = new HashSet<string>();
 
             Event ev;
-            while ((ev = eventStream.Read()) != null) {
+            while ((ev = EventStream.Read()) != null) {
 
                 if (Monitor != null && Monitor.Token.CanBeCanceled)
                     Monitor.Token.ThrowIfCancellationRequested();
@@ -143,7 +177,7 @@ namespace SharpNL.ML.Model {
 
                 eventStore.Write(FileEventStream.ToLine(ev));
 
-                Update(ev.Context, predicateSet, counter, cutoff);
+                Update(ev.Context, predicateSet, counter, Cutoff);
             }
 
             predCounts = new int[predicateSet.Count];

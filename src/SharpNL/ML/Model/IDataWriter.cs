@@ -21,11 +21,28 @@
 //  
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a data writer.
+    /// </summary>
     public interface IDataWriter {
+
+        /// <summary>
+        /// Writes the specified string value.
+        /// </summary>
+        /// <param name="value">The string value.</param>
         void Write(string value);
 
+        /// <summary>
+        /// Writes the specified double value.
+        /// </summary>
+        /// <param name="value">The double value.</param>
         void Write(double value);
 
+        /// <summary>
+        /// Writes the specified integer value.
+        /// </summary>
+        /// <param name="value">The integer value.</param>
         void Write(int value);
+
     }
 }

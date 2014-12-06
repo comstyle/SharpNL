@@ -34,7 +34,11 @@ namespace SharpNL.Chunker {
     /// find flat structures based on sequence inputs such as noun phrases or named entities.
     /// </summary>
     public class ChunkerME : IChunker {
-        public const int DEFAULT_BEAM_SIZE = 10;
+
+        /// <summary>
+        /// The default beam size.
+        /// </summary>
+        public const int DefaultBeamSize = 10;
 
         private readonly IChunkerContextGenerator contextGenerator;
         private readonly ISequenceValidator<string> sequenceValidator;
@@ -130,7 +134,7 @@ namespace SharpNL.Chunker {
         /// <returns>The top k chunk sequences for the specified sentence.</returns>
         public Sequence[] TopKSequences(string[] tokens, string[] tags) {
             return model.BestSequences(
-                DEFAULT_BEAM_SIZE,
+                DefaultBeamSize,
                 tokens,
                 new object[] {tags},
                 contextGenerator,
@@ -146,7 +150,7 @@ namespace SharpNL.Chunker {
         /// <returns>The top k chunk sequences for the specified sentence.</returns>
         public Sequence[] TopKSequences(string[] tokens, string[] tags, double minScore) {
             return model.BestSequences(
-                DEFAULT_BEAM_SIZE,
+                DefaultBeamSize,
                 tokens,
                 new object[] {tags},
                 minScore,

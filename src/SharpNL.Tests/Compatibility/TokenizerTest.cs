@@ -120,8 +120,8 @@ namespace SharpNL.Tests.Compatibility {
             using (var data = Tests.OpenFile("/opennlp/tools/tokenize/token.train")) {
                 var samples = new TokenSampleStream(new PlainTextByLineStream(data));
                 var mlParams = new TrainingParameters();
-                mlParams.Set(TrainingParameters.IterationsParam, "100");
-                mlParams.Set(TrainingParameters.CutoffParam, "0");
+                mlParams.Set(Parameters.Iterations, "100");
+                mlParams.Set(Parameters.Cutoff, "0");
                 var model = TokenizerME.Train(samples, new TokenizerFactory("en", null, true), mlParams);
 
                 var sMe = new TokenizerME(model);

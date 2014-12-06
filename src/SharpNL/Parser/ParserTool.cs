@@ -96,7 +96,7 @@ namespace SharpNL.Parser {
 
             var str = new StringTokenizer(line);
             var sb = new StringBuilder();
-            var tokens = new List<String>();
+            var tokens = new List<string>();
             while (str.HasMoreTokens) {
                 var tok = str.NextToken;
                 tokens.Add(tok);

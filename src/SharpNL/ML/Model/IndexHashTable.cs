@@ -106,6 +106,10 @@ namespace SharpNL.ML.Model {
 
         #region . Size .
 
+        /// <summary>
+        /// Gets the hash table size.
+        /// </summary>
+        /// <value>The hash table size.</value>
         public int Size {
             get { return size; }
         }

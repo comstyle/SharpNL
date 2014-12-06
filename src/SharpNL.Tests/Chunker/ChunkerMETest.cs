@@ -54,8 +54,8 @@ namespace SharpNL.Tests.Chunker {
         [TestFixtureSetUp]
         public void Setup() {
             var p = new TrainingParameters();
-            p.Set(TrainingParameters.IterationsParam, "70");
-            p.Set(TrainingParameters.CutoffParam, "1");
+            p.Set(Parameters.Iterations, "70");
+            p.Set(Parameters.Cutoff, "1");
 
             var chunkerModel = ChunkerME.Train("en", CreateSampleStream(), p, new ChunkerFactory());
 

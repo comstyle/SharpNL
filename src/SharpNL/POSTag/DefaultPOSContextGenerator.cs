@@ -177,7 +177,7 @@ namespace SharpNL.POSTag {
                 }
             }
 
-            var e = new List<String> {
+            var e = new List<string> {
                 "default",
                 "w=" + lex // add the word itself
             };

@@ -22,25 +22,57 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Text;
-using SharpNL.Utility;
 using System.Security.Cryptography;
+using System.Text;
 
+using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a stream that wraps a <see cref="T:IObjectStream{Event}"/>, 
+    /// and maintains a hash of the events readed from it.
+    /// </summary>
     public class HashSumEventStream : AbstractObjectStream<Event> {
 
         private readonly MD5 digest;
         private Event previous;
         private bool done;
 
+        #region . Constructor .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HashSumEventStream"/> class.
+        /// </summary>
+        /// <param name="eventStream">The event stream.</param>
         public HashSumEventStream(IObjectStream<Event> eventStream)
             : base(eventStream) {
 
             digest = MD5.Create();
         }
+        #endregion
 
+        #region . CalculateHashSum .
+        /// <summary>
+        /// Calculates the hash sum of the stream. 
+        /// The method must be called after the stream is completely consumed.
+        /// </summary>
+        /// <returns>The hash string value.</returns>
+        public string CalculateHashSum() {
+            if (done) {
+                var buff = Encoding.UTF8.GetBytes(previous.ToString());
+                digest.TransformFinalBlock(buff, 0, buff.Length);
+                previous = null;
 
+                var sb = new StringBuilder(32);
+                foreach (var b in digest.Hash) {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            throw new InvalidOperationException("If the stream is not consumed completely.");
+        }
+        #endregion
+
+        #region . Read .
         /// <summary>
         /// Returns the next object. Calling this method repeatedly until it returns, null will return each object from the underlying source exactly once.
         /// </summary>
@@ -60,30 +92,11 @@ namespace SharpNL.ML.Model {
 
                 previous = ev;
             } else {
-                done = true;               
+                done = true;
             }
             return ev;
         }
-
-        /// <summary>
-        /// Calculates the hash sum of the stream. 
-        /// The method must be called after the stream is completely consumed.
-        /// </summary>
-        /// <returns>The hash string value.</returns>
-        public string CalculateHashSum() {
-            if (done) {
-                var buff = Encoding.UTF8.GetBytes(previous.ToString());
-                digest.TransformFinalBlock(buff, 0, buff.Length);
-                previous = null;
-
-                var sb = new StringBuilder(32);
-                foreach (var b in digest.Hash) {
-                    sb.Append(b.ToString("x2"));
-                }
-                return sb.ToString();
-            } 
-            throw new InvalidOperationException("If the stream is not consumed completely.");
-        }
+        #endregion
         
     }
 }

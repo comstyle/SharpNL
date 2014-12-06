@@ -22,6 +22,9 @@
 using SharpNL.Utility;
 
 namespace SharpNL.Chunker {
+    /// <summary>
+    /// Represent the default chunker factory.
+    /// </summary>
     [TypeClass("opennlp.tools.chunker.ChunkerFactory")]
     public class ChunkerFactory : BaseToolFactory {
         /// <summary>

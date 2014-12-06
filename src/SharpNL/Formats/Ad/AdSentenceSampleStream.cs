@@ -28,7 +28,13 @@ using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats.Ad {
+    /// <summary>
+    /// Represents a <see cref="SentenceSample"/> sample stream for floresta Sita(c)tica Arvores Deitadas corpus.
+    /// </summary>
     public class AdSentenceSampleStream : IObjectStream<SentenceSample> {
+        /// <summary>
+        /// The EOS characters.
+        /// </summary>
         public static readonly char[] eosCharacters;
         private static readonly Regex metaTag1;
 

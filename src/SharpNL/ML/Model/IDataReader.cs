@@ -21,11 +21,24 @@
 //  
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a data reader.
+    /// </summary>
     public interface IDataReader {
+
+        /// <summary>
+        /// Reads a double value.
+        /// </summary>
         double ReadDouble();
 
+        /// <summary>
+        /// Reads a int value.
+        /// </summary>
         int ReadInt();
 
+        /// <summary>
+        /// Reads a string value.
+        /// </summary>
         string ReadString();
     }
 }

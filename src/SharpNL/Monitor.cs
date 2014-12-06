@@ -1,4 +1,26 @@
-﻿using System;
+﻿// 
+//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+// 
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+// 
+//       http://www.apache.org/licenses/LICENSE-2.0
+// 
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+// 
+//   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//   - May you do good and not evil.                                         -
+//   - May you find forgiveness for yourself and forgive others.             -
+//   - May you share freely, never taking more than you give.                -
+//   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//  
+
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,14 +29,17 @@ namespace SharpNL {
     /// <summary>
     /// Represents a SharpNL task that can be monitored or canceled. This class cannot be inherited.
     /// </summary>
-    [TypeConverter(typeof(ExpandableObjectConverter))]
+    [TypeConverter(typeof (ExpandableObjectConverter))]
     public sealed class Monitor {
         private readonly CancellationTokenSource cancelSource;
 
         private Task task;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Monitor"/> class.
+        /// </summary>
         public Monitor() {
-            cancelSource = new CancellationTokenSource();           
+            cancelSource = new CancellationTokenSource();
         }
 
         #region + Events .
@@ -42,64 +67,78 @@ namespace SharpNL {
         /// <summary>
         /// Occurs when an exception is throw during the task execution.
         /// </summary>
-        public event EventHandler<MonitorExceptionEventArgs> Exception; 
+        public event EventHandler<MonitorExceptionEventArgs> Exception;
+
         #endregion
 
         #region + Properties .
 
         #region . IsCanceled .
+
         /// <summary>
         /// Gets whether this <see cref="Monitor"/> instance has completed execution due to being canceled.
         /// </summary>
         /// <value><c>true</c> if the task has completed due to being canceled; otherwise, <c>false</c>.</value>
         public bool IsCanceled { get; private set; }
+
         #endregion
 
         #region . IsRunning .
+
         /// <summary>
         /// Gets a value indicating whether this instance is running.
         /// </summary>
         /// <value><c>true</c> if this instance is running; otherwise, <c>false</c>.</value>
         public bool IsRunning { get; internal set; }
+
         #endregion
 
         #region . TotalErrors .
+
         /// <summary>
         /// Gets the number of error messages in the current execution.
         /// </summary>
         /// <value>The number of error messages in the current execution.</value>
         [Description("The number of error messages in the current execution.")]
         public int TotalErrors { get; private set; }
+
         #endregion
 
         #region . TotalMessages .
+
         /// <summary>
         /// Gets the number of messages in the current execution.
         /// </summary>
         /// <value>The number of messages in the current execution.</value>
         [Description("The number of messages in the current execution.")]
         public int TotalMessages { get; private set; }
+
         #endregion
 
         #region . TotalWarnings .
+
         /// <summary>
         /// Gets the number of warnings in the current execution.
         /// </summary>
         /// <value>The number of warnings in the current execution.</value>
         [Description("The number of warnings in the current execution.")]
         public int TotalWarnings { get; private set; }
+
         #endregion
 
         #region . TotalExceptions .
+
         /// <summary>
         /// Gets the number of exceptions in the current execution.
         /// </summary>
         /// <value>The number of exceptions in the current execution.</value>
         [Description("The number of exceptions in the current execution.")]
         public int TotalExceptions { get; private set; }
+
         #endregion
 
         #region . Token .
+
         /// <summary>
         /// Gets the cancellation token.
         /// </summary>
@@ -118,21 +157,24 @@ namespace SharpNL {
         #endregion
 
         #region . Cancel .
+
         /// <summary>
         /// Communicates a request for cancellation.
         /// </summary>
         public void Cancel() {
             cancelSource.Cancel();
             try {
-                task.Wait(Token);    
+                task.Wait(Token);
             } catch (OperationCanceledException) {
                 IsCanceled = true;
                 IsRunning = false;
-            }           
+            }
         }
+
         #endregion
 
         #region . Execute .
+
         /// <summary>
         /// Executes the specified task action.
         /// </summary>
@@ -156,13 +198,12 @@ namespace SharpNL {
                     });
                 } catch (Exception ex) {
                     OnException(ex);
-                } finally {                   
+                } finally {
                     IsRunning = false;
                     task = null;
 
                     if (Complete != null)
                         Complete(this, EventArgs.Empty);
-
                 }
             }, cancelSource.Token);
         }
@@ -170,6 +211,7 @@ namespace SharpNL {
         #endregion
 
         #region . OnError .
+
         /// <summary>
         /// Processes the error message.
         /// </summary>
@@ -179,9 +221,11 @@ namespace SharpNL {
             if (Error != null)
                 Error(this, new MonitorMessageEventArgs(message));
         }
+
         #endregion
 
         #region . OnException .
+
         /// <summary>
         /// Process the exception.
         /// </summary>
@@ -191,9 +235,11 @@ namespace SharpNL {
             if (Exception != null)
                 Exception(this, new MonitorExceptionEventArgs(exception));
         }
+
         #endregion
 
         #region . OnMessage .
+
         /// <summary>
         /// Processes the message.
         /// </summary>
@@ -203,9 +249,11 @@ namespace SharpNL {
             if (Message != null)
                 Message(this, new MonitorMessageEventArgs(message));
         }
+
         #endregion
 
         #region . OnWarning .
+
         /// <summary>
         /// Processes the warning message.
         /// </summary>
@@ -215,9 +263,11 @@ namespace SharpNL {
             if (Warning != null)
                 Warning(this, new MonitorMessageEventArgs(message));
         }
+
         #endregion
 
         #region . Reset .
+
         /// <summary>
         /// Resets this counters in this instance.
         /// </summary>
@@ -226,9 +276,11 @@ namespace SharpNL {
             TotalMessages = 0;
             TotalWarnings = 0;
         }
+
         #endregion
 
         #region . Wait .
+
         /// <summary>
         /// Waits for the <see cref="Monitor"/> to complete execution.
         /// </summary>
@@ -236,8 +288,8 @@ namespace SharpNL {
             if (task != null)
                 task.Wait(Token);
         }
-        #endregion
 
+        #endregion
 
     }
 }

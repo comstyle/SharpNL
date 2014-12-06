@@ -25,12 +25,15 @@ using System;
 
 namespace SharpNL.ML.Model {
     using Utility;
+    /// <summary>
+    /// Represents a abstract event trainer.
+    /// </summary>
     public abstract class AbstractEventTrainer : AbstractTrainer, IEventTrainer {
-
-        public const string DataIndexerParam = "DataIndexer";
-        public const string DataIndexerOnePass = "OnePass";
-        public const string DataIndexerTwoPass = "TwoPass";
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractEventTrainer"/> class.
+        /// </summary>
+        /// <param name="monitor">The monitor.</param>
+        /// <param name="isSortAndMerge">if set to <c>true</c> [is sort and merge].</param>
         protected AbstractEventTrainer(Monitor monitor, bool isSortAndMerge) : base(monitor) {
             IsSortAndMerge = isSortAndMerge;
         }
@@ -39,13 +42,12 @@ namespace SharpNL.ML.Model {
         #region + Properties .
 
         #region . DataIndexerName .
-
         /// <summary>
         /// Gets the data indexer name.
         /// </summary>
         /// <value>The name of the data indexer.</value>
         public string DataIndexerName {
-            get { return GetStringParam(DataIndexerParam, DataIndexerTwoPass); }
+            get { return GetStringParam(Parameters.DataIndexer, Parameters.DataIndexers.TwoPass); }
         }
 
         #endregion
@@ -66,8 +68,8 @@ namespace SharpNL.ML.Model {
                 return false;
             }
 
-            var dataIndexer = GetStringParam(DataIndexerParam, DataIndexerTwoPass);
-            if (dataIndexer != DataIndexerOnePass && dataIndexer != DataIndexerTwoPass) {
+            var dataIndexer = GetStringParam(Parameters.DataIndexer, Parameters.DataIndexers.TwoPass);
+            if (dataIndexer != Parameters.DataIndexers.OnePass && dataIndexer != Parameters.DataIndexers.TwoPass) {
                 return false;
             }
 
@@ -78,19 +80,33 @@ namespace SharpNL.ML.Model {
         #endregion
 
         #region . GetDataIndexer .
+        /// <summary>
+        /// Creates a new data indexer for the given event stream.
+        /// </summary>
+        /// <param name="events">The event stream.</param>
+        /// <returns>IDataIndexer.</returns>
+        /// <exception cref="System.InvalidOperationException">Unexpected data indexer name: Name</exception>
         public IDataIndexer GetDataIndexer(IObjectStream<Event> events) {
             switch (DataIndexerName) {
-                case DataIndexerOnePass:
-                    return new OnePassDataIndexer(Monitor, events, Cutoff, IsSortAndMerge);
-                case DataIndexerTwoPass:
-                    return new TwoPassDataIndexer(Monitor, events, Cutoff, IsSortAndMerge);
+                case Parameters.DataIndexers.OnePass:
+                    return new OnePassDataIndexer(events, Cutoff, IsSortAndMerge, Monitor);
+                case Parameters.DataIndexers.TwoPass:
+                    return new TwoPassDataIndexer(events, Cutoff, IsSortAndMerge, Monitor);
                 default:
                     throw new InvalidOperationException("Unexpected data indexer name: " + DataIndexerName);
             }
         }
         #endregion
 
+        #region . DoTrain .
+        /// <summary>
+        /// Execute the training operation.
+        /// </summary>
+        /// <param name="indexer">The data indexer.</param>
+        /// <returns>The trained <see cref="IMaxentModel"/> model.</returns>
         protected abstract IMaxentModel DoTrain(IDataIndexer indexer);
+        #endregion
+
 
         /// <summary>
         /// Trains the maximum entropy model using the specified <paramref name="events"/>.
@@ -107,8 +123,8 @@ namespace SharpNL.ML.Model {
 
             var model = DoTrain(indexer);
 
-            AddToReport("Training-Eventhash", hses.CalculateHashSum());
-            AddToReport(TRAINER_TYPE_PARAM, "Event");
+            AddToReport(Parameters.TrainingEventhash, hses.CalculateHashSum());
+            AddToReport(Parameters.TrainerType, "Event");
 
             return model;
         }
