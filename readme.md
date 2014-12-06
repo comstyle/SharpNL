@@ -1,8 +1,12 @@
-#SharpNL (WiP)
+#SharpNL
 
 ## What is this?
 
 > An awesome and independent reimplementation of the [Apache OpenNLP] software library in C#
+
+## Release
+
+> Public release available at [NuGet] \(Current version: 1.0 __Beta__\)
 
 ## Main features/characteristics
 
@@ -44,5 +48,6 @@ Please, consider donating as a thank you.
 
 [![bean](resources/bean.gif)](#)
 
+[NuGet]: https://www.nuget.org/packages/Knuppe.SharpNL/
 [Apache OpenNLP]: http://opennlp.apache.org
 [CoGrOO]: http://cogroo.sourceforge.net/
