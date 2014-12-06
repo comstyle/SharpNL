@@ -20,8 +20,10 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using SharpNL.Utility;
 using SharpNL.WordNet;
 
 namespace SharpNL.Text {
@@ -32,9 +34,63 @@ namespace SharpNL.Text {
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class Token : IToken {
 
-        public Token(int start, int end, string lexeme) : this(start, end, lexeme, null, null, null) { }
+        #region + Constructors .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Token" /> class with the specified sentence, span and lexeme.
+        /// </summary>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="span">The span.</param>
+        /// <param name="lexeme">The lexeme.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="sentence"/>
+        /// or
+        /// <paramref name="span"/>
+        /// </exception>
+        public Token(Sentence sentence, Span span, string lexeme) {
+            if (sentence == null)
+                throw new ArgumentNullException("sentence");
 
-        public Token(int start, int end, string lexeme, string[] lemmas, string tag, string features) {
+            if (span == null)
+                throw new ArgumentNullException("span");
+
+            Sentence = sentence;
+            Start = span.Start;
+            End = span.End;
+            Lexeme = lexeme;
+            Probability = span.Probability;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Token"/> using the 
+        /// <paramref name="start"/> - <paramref name="end"/> positions and the <paramref name="lexeme"/>.
+        /// </summary>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <param name="lexeme">The lexeme.</param>
+        public Token(Sentence sentence, int start, int end, string lexeme)
+            : this(sentence, start, end, lexeme, null, null, null) {
+            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Token"/> with the given parameters.
+        /// </summary>
+        /// <param name="sentence">The sentence.</param>
+        /// <param name="start">The start.</param>
+        /// <param name="end">The end.</param>
+        /// <param name="lexeme">The lexeme.</param>
+        /// <param name="lemmas">The lemmas.</param>
+        /// <param name="tag">The tag.</param>
+        /// <param name="features">The features.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="sentence"/>
+        /// </exception>
+        public Token(Sentence sentence, int start, int end, string lexeme, string[] lemmas, string tag, string features) {
+            if (sentence == null)
+                throw new ArgumentNullException("sentence");
+
+            Sentence = sentence;
             Start = start;
             End = end;
             Lexeme = lexeme;
@@ -42,6 +98,7 @@ namespace SharpNL.Text {
             POSTag = tag;
             Features = features;
         }
+        #endregion
 
         #region + Properties .
 
@@ -51,6 +108,17 @@ namespace SharpNL.Text {
         /// </summary>
         /// <value>The chunk tag.</value>
         public string ChunkTag { get; set; }
+        #endregion
+
+        #region . Document .
+        /// <summary>
+        /// Gets the document associated to this sentence token.
+        /// </summary>
+        /// <value>The document associated to this sentence token.</value>
+        protected Document Document {
+            get { return Sentence.Document as Document; }
+            
+        }
         #endregion
 
         #region . End .
@@ -125,6 +193,18 @@ namespace SharpNL.Text {
         /// </summary>
         /// <value>The token probability.</value>
         public double Probability { get; set; }
+        #endregion
+
+        #region . Sentence .
+        /// <summary>
+        /// Gets the sentence.
+        /// </summary>
+        /// <value>The sentence.</value>
+        public Sentence Sentence { get; internal set; }
+        ISentence IToken.Sentence {
+            get { return Sentence; }
+        }
+
         #endregion
 
         #region . Start .

@@ -205,8 +205,7 @@ namespace SharpNL.Text {
         /// <param name="lexeme">The lexeme.</param>
         /// <returns>The created <see cref="IToken" /> object.</returns>
         public Token CreateToken(Sentence sentence, Span span, string lexeme) {
-            return new Token(span.Start, span.End, lexeme) {
-                Probability = span.Probability,
+            return new Token(sentence, span, lexeme) {
                 WordNet = WordNet
             };
         }
@@ -214,6 +213,9 @@ namespace SharpNL.Text {
         IToken ITextFactory.CreateToken(ISentence sentence, Span span, string lexeme) {
             if (sentence == null)
                 throw new ArgumentNullException("sentence");
+
+            if (span == null)
+                throw new ArgumentNullException("span");
 
             var s = sentence as Sentence;
             if (s != null)

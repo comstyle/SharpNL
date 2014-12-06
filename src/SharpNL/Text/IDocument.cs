@@ -45,5 +45,11 @@ namespace SharpNL.Text {
         /// <value>The document sentences.</value>
         IReadOnlyList<ISentence> Sentences { get; set; }
 
+        /// <summary>
+        /// Gets the factory associated to this document.
+        /// </summary>
+        /// <value>The factory associated to this document.</value>
+        ITextFactory Factory { get; }
+
     }
 }

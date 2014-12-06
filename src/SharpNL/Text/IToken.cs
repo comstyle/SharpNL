@@ -133,6 +133,14 @@ namespace SharpNL.Text {
 
         #endregion
 
+        #region . Sentence .
+        /// <summary>
+        /// Gets the sentence.
+        /// </summary>
+        /// <value>The sentence.</value>
+        ISentence Sentence { get; }
+        #endregion
+
         #region . SyntacticTag .
 
         /// <summary>

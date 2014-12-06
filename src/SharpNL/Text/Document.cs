@@ -80,6 +80,21 @@ namespace SharpNL.Text {
 
         #region + Properties .
 
+        #region . Factory .
+
+        /// <summary>
+        /// Gets the factory associated to this document.
+        /// </summary>
+        /// <value>The factory associated to this document.</value>
+        public DefaultTextFactory Factory {
+            get { return DefaultTextFactory.Instance; }
+        }
+        ITextFactory IDocument.Factory {
+            get { return Factory; }
+        }
+
+        #endregion
+
         #region . Language .
         /// <summary>
         /// Gets the language of this document.
@@ -152,7 +167,6 @@ namespace SharpNL.Text {
         /// <value>The document sentences.</value>
         [Description("The document sentences.")]
         public IReadOnlyList<Sentence> Sentences { get; private set; }
-
         IReadOnlyList<ISentence> IDocument.Sentences {
             get { return Sentences; }
             set {

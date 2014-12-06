@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using SharpNL.Stemmer;
 
 namespace SharpNL.Text {
     /// <summary>
@@ -29,6 +30,7 @@ namespace SharpNL.Text {
     /// </summary>
     public static class Extensions {
 
+        #region . GetTokens .
         /// <summary>
         /// Gets the tokens from the <see cref="ISentence"/> object.
         /// </summary>
@@ -44,7 +46,9 @@ namespace SharpNL.Text {
                 ? sentence.Tokens.Select(token => token.Lexeme).ToArray()
                 : null;
         }
+        #endregion
 
+        #region . GetTags .
         /// <summary>
         /// Gets the part-of-speech tags from the <see cref="ISentence"/> object.
         /// </summary>
@@ -63,5 +67,30 @@ namespace SharpNL.Text {
                 : null;
 
         }
+        #endregion
+
+        #region . Stem .
+        /// <summary>
+        /// Reduces the given word into its stem.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <param name="stemmer">The stemmer.</param>
+        /// <returns>The stemmed word.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// <paramref name="token"/>
+        /// or
+        /// <paramref name="stemmer"/>
+        /// </exception>
+        public static string Stem(this IToken token, IStemmer stemmer) {
+            if (token == null)
+                throw new ArgumentNullException("token");
+
+            if (stemmer == null)
+                throw new ArgumentNullException("stemmer");
+
+            return stemmer.Stem(token.Lexeme);
+        }
+        #endregion
+
     }
 }
