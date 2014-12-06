@@ -43,7 +43,6 @@
     <Compile Include="Inflecter\IInfleter.cs" />
     <Compile Include="Inflecter\Inflector.cs" />
     <Compile Include="Inflecter\Lang\en\Inflecter.cs" />
-    <Compile Include="Inflecter\Lang\pt\Inflecter.cs" />
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
     <Compile Include="Parser\ParserAnalyzer.cs" />
     <Compile Include="POSTag\POSTaggerAnalyzer.cs" />
