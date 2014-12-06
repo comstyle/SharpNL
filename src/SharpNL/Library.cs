@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Security.Permissions;
 using System.Text;
@@ -87,6 +88,17 @@ namespace SharpNL {
         public static TypeResolver TypeResolver { get; private set; }
         #endregion
 
+        #endregion
+
+        #region . Donate .
+        /// <summary>
+        /// Donate to the library author.
+        /// </summary>
+        public static void Donate() {
+            try {
+                Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7SWNPAPJNSARC");
+            } catch { }
+        }
         #endregion
 
         #region . GetInstance .
