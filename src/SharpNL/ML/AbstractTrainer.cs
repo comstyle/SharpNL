@@ -119,7 +119,7 @@ namespace SharpNL.ML {
             if (Monitor != null)
                 Monitor.OnMessage(message);
 #if DEBUG
-            Debug.Print(message);
+            System.Diagnostics.Debug.Print(message);
 #endif
         }
 
