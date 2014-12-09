@@ -59,6 +59,9 @@
     <Compile Include="Stemmer\Porter\Algorithm\Portuguese.cs" />
     <Compile Include="Stemmer\Porter\PorterAlgorithm.cs" />
     <Compile Include="Stemmer\Porter\PorterStemmer.cs" />
+    <Compile Include="Stemmer\RSLP\RSLPRule.cs" />
+    <Compile Include="Stemmer\RSLP\RSLPStemmer.cs" />
+    <Compile Include="Stemmer\RSLP\RSLPStep.cs" />
     <Compile Include="Stemmer\Stem.cs" />
     <Compile Include="Stemmer\Suffixes.cs" />
     <Compile Include="Text\Category.cs" />
