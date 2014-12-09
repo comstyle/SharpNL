@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SharpNL.Extensions;
 
 namespace SharpNL.Inflecter.Lang.en {
 
@@ -31,7 +32,7 @@ namespace SharpNL.Inflecter.Lang.en {
     /// Represents a english inflector.
     /// </summary>
     /// <remarks>
-    /// The plurilizer is based on "An Algorithmic Approach to English Pluralization" by Damian Conway:
+    /// The pluralizer is based on "An Algorithmic Approach to English Pluralization" by Damian Conway:
     /// <seealso href="http://www.csse.monash.edu.au/~damian/papers/HTML/Plurals.html"/> 
     /// 
     /// The singularize is Adapted from Bermi Ferrer's Inflector for Python

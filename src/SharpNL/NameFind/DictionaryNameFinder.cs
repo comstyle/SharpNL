@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Extensions;
 using SharpNL.Utility;
 
 namespace SharpNL.NameFind {

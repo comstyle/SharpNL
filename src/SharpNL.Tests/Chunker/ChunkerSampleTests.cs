@@ -24,6 +24,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using SharpNL.Chunker;
+using SharpNL.Extensions;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Chunker {

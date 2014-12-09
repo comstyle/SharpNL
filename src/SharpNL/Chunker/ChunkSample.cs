@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using SharpNL.Extensions;
 using SharpNL.Utility;
 
 namespace SharpNL.Chunker {

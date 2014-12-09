@@ -22,6 +22,7 @@
 
 using System;
 using System.IO;
+using SharpNL.Extensions;
 using SharpNL.ML.Model;
 
 namespace SharpNL.Utility.Model {

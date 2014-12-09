@@ -1,6 +1,7 @@
 ﻿
 using System;
 using NUnit.Framework;
+using SharpNL.Extensions;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Utility {

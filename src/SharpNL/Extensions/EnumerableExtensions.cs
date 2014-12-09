@@ -23,11 +23,32 @@
 using System;
 using System.Collections.Generic;
 
-namespace SharpNL.Tests {
-    internal static class Extensions {
+namespace SharpNL.Extensions {
+    /// <summary>
+    /// Provide a set of methods for enumerable data types.
+    /// </summary>
+    public static class EnumerableExtensions {
+
+        #region . ForEach .
+        /// <summary>
+        /// Iterates through an Enumerable and applies a <paramref name="action"/> for each element.
+        /// </summary>
+        /// <typeparam name="T">The type of the enumerator.</typeparam>
+        /// <param name="ie">The enumerator.</param>
+        /// <param name="action">The action.</param>
+        /// <example>
+        /// var values = new string[] { "a", "b", "c" };
+        /// strings.Each( ( value, index ) =&gt; {
+        /// // nice hack ;)
+        /// });
+        /// </example>
+        public static void ForEach<T>(this IEnumerable<T> ie, Action<T, int> action) {
+            var i = 0;
+            foreach (var e in ie) action(e, i++);
+        }
+        #endregion
 
         #region . SequenceEqual .
-
         /// <summary>
         /// Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
         /// </summary>
@@ -37,8 +58,10 @@ namespace SharpNL.Tests {
         /// <param name="comparer">The comparer.</param>
         /// <returns><c>true</c> if the two source sequences are of equal length and their corresponding elements are equal according to the default equality comparer for their type, <c>false</c> otherwise.</returns>
         /// <exception cref="System.ArgumentNullException">first or second.</exception>
-        internal static bool SequenceEqual<T>(this IEnumerable<T> first, IEnumerable<T> second,
-            IEqualityComparer<T> comparer = null) {
+        public static bool SequenceEqual<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null) {
+            if (first == null && second == null)
+                return true;
+
             if (first == null) {
                 throw new ArgumentNullException("first");
             }
@@ -49,8 +72,8 @@ namespace SharpNL.Tests {
                 comparer = EqualityComparer<T>.Default;
             }
 
-            using (var enumerator = first.GetEnumerator())
-            using (var enumerator2 = second.GetEnumerator()) {
+            using (IEnumerator<T> enumerator = first.GetEnumerator())
+            using (IEnumerator<T> enumerator2 = second.GetEnumerator()) {
                 while (enumerator.MoveNext()) {
                     if (!enumerator2.MoveNext() || !comparer.Equals(enumerator.Current, enumerator2.Current)) {
                         return false;
@@ -62,7 +85,6 @@ namespace SharpNL.Tests {
             }
             return true;
         }
-
         #endregion
 
     }

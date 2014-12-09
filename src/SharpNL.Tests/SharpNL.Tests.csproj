@@ -165,8 +165,10 @@
     <Compile Include="DocumentCategorizer\DocumentCategorizerFactoryTest.cs" />
     <Compile Include="DocumentCategorizer\DocumentCategorizerMETest.cs" />
     <Compile Include="DocumentCategorizer\DocumentSampleTest.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="ExtensionsTest.cs" />
+    <Compile Include="Extensions\ArrayExtensionTest.cs" />
+    <Compile Include="Extensions\StringBuilderExtensionTest.cs" />
+    <Compile Include="Extensions\StringExtensionsTest.cs" />
     <Compile Include="Formats\Ad\AdChunkSampleStreamTest.cs" />
     <Compile Include="Formats\Ad\AdContractionNameSampleStreamTest.cs" />
     <Compile Include="Formats\Ad\AdNameSampleStreamTest.cs" />

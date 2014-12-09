@@ -20,6 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using SharpNL.Extensions;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 

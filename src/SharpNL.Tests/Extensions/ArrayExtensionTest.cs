@@ -20,27 +20,27 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace SharpNL.Tests {
+using SharpNL.Extensions;
 
+namespace SharpNL.Tests.Extensions {
     [TestFixture]
-    internal class ExtensionsTest {
+    internal class ArrayExtensionTest {
+
         [Test]
-        public void TestStackToArray() {
-            var stack = new Stack<int>();
-            stack.Push(1);
-            stack.Push(2);
-            stack.Push(3);
+        public void TestArrayAdd() {
 
-            var array = stack.ToArray(2);
+            var array = new[] { 1, 2, 3 };
 
-            Assert.AreEqual(2, array.Length);
-            Assert.AreEqual(3, array[0]);
+            array = array.Add(4);
+
+            Assert.AreEqual(4, array.Length);
+            Assert.AreEqual(1, array[0]);
             Assert.AreEqual(2, array[1]);
-            
+            Assert.AreEqual(3, array[2]);
+            Assert.AreEqual(4, array[3]);
         }
-    }
 
+    }
 }

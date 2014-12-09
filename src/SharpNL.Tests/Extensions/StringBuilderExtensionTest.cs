@@ -20,27 +20,25 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
+using System.Text;
 using NUnit.Framework;
+using SharpNL.Extensions;
 
-namespace SharpNL.Tests {
-
+namespace SharpNL.Tests.Extensions {
     [TestFixture]
-    internal class ExtensionsTest {
+    internal class StringBuilderExtensionTest {
+
+
         [Test]
-        public void TestStackToArray() {
-            var stack = new Stack<int>();
-            stack.Push(1);
-            stack.Push(2);
-            stack.Push(3);
+        public void StringBuilderIndexOf() {
+            // name of the song that I was listening when I create the function :)
+            var sb = new StringBuilder("Blue Pilots Project - Million Clouds");
 
-            var array = stack.ToArray(2);
-
-            Assert.AreEqual(2, array.Length);
-            Assert.AreEqual(3, array[0]);
-            Assert.AreEqual(2, array[1]);
-            
+            Assert.AreEqual(5, sb.IndexOf("Pilots"));
+            Assert.AreEqual(20, sb.IndexOf('-'));
+            Assert.AreEqual(22, sb.IndexOf("m", 0, true));
         }
-    }
 
+
+    }
 }

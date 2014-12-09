@@ -20,27 +20,34 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
-using NUnit.Framework;
+using System;
 
-namespace SharpNL.Tests {
+namespace SharpNL.Extensions {
+    /// <summary>
+    /// Provide extension methods for arrays.
+    /// </summary>
+    public static class ArrayExtensions {
 
-    [TestFixture]
-    internal class ExtensionsTest {
-        [Test]
-        public void TestStackToArray() {
-            var stack = new Stack<int>();
-            stack.Push(1);
-            stack.Push(2);
-            stack.Push(3);
+        #region . Add .
+        /// <summary>
+        /// Adds the specified <paramref name="value"/> to the array.
+        /// </summary>
+        /// <typeparam name="T">The array type.</typeparam>
+        /// <param name="array">The array.</param>
+        /// <param name="value">The new element.</param>
+        /// <returns>The original array with the new element.</returns>
+        public static T[] Add<T>(this T[] array, T value) {
+            if (ReferenceEquals(value, null))
+                return array;
 
-            var array = stack.ToArray(2);
+            if (array == null || array.Length == 0)
+                return new[] { value };
 
-            Assert.AreEqual(2, array.Length);
-            Assert.AreEqual(3, array[0]);
-            Assert.AreEqual(2, array[1]);
-            
+            Array.Resize(ref array, array.Length + 1);
+            array[array.Length - 1] = value;
+            return array;
         }
-    }
+        #endregion
 
+    }
 }

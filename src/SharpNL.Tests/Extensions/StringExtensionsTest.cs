@@ -20,27 +20,46 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.Collections.Generic;
 using NUnit.Framework;
+using SharpNL.Extensions;
 
-namespace SharpNL.Tests {
-
+namespace SharpNL.Tests.Extensions {
     [TestFixture]
-    internal class ExtensionsTest {
+    internal class StringExtensionsTest {
+
         [Test]
-        public void TestStackToArray() {
-            var stack = new Stack<int>();
-            stack.Push(1);
-            stack.Push(2);
-            stack.Push(3);
+        public void LeftTest() {
 
-            var array = stack.ToArray(2);
+            const string text = "forgiveness";
 
-            Assert.AreEqual(2, array.Length);
-            Assert.AreEqual(3, array[0]);
-            Assert.AreEqual(2, array[1]);
-            
+            Assert.AreEqual("forgive", text.Left(7));
+
+            Assert.AreEqual("forgive", text.Left(-4));
         }
-    }
 
+        [Test]
+        public void RightTest() {
+            const string text = "freely";
+
+            Assert.AreEqual("ly", text.Right(2));
+
+            Assert.AreEqual("eely", text.Right(-2)); 
+
+
+        }
+
+        #region . TrimEnd .
+
+        [Test]
+        public void TrimEndTest() {
+
+            const string text = "abcdeefg";
+
+            Assert.AreEqual("abcde", text.TrimEnd("efg"));
+            Assert.AreEqual("abcdeefg", text.TrimEnd("xxx"));
+        }
+
+        #endregion
+       
+    }
 }

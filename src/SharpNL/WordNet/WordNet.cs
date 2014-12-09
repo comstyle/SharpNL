@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Extensions;
 
 namespace SharpNL.WordNet {
     /// <summary>

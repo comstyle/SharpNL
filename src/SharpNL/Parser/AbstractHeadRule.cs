@@ -20,6 +20,8 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using SharpNL.Extensions;
+
 namespace SharpNL.Parser {
     /// <summary>
     /// Represents an abstract head rule.

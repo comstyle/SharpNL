@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SharpNL.Extensions;
 
 namespace SharpNL.Utility {
     /// <summary>

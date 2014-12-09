@@ -22,6 +22,7 @@
 
 using System.IO;
 using NUnit.Framework;
+using SharpNL.Extensions;
 using SharpNL.SentenceDetector;
 using SharpNL.SentenceDetector.Language;
 using SharpNL.Utility;

@@ -22,6 +22,7 @@
 
 using System;
 using System.Text;
+using SharpNL.Extensions;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 

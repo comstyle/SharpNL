@@ -40,6 +40,12 @@
   <ItemGroup>
     <Compile Include="Chunker\ChunkerAnalyzer.cs" />
     <Compile Include="DocumentCategorizer\DocumentCategorizerAnalyzer.cs" />
+    <Compile Include="Extensions\ArrayExtensions.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\GenericExtensions.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Inflecter\IInfleter.cs" />
     <Compile Include="Inflecter\Inflector.cs" />
     <Compile Include="Inflecter\Lang\en\Inflecter.cs" />
@@ -100,7 +106,7 @@
     <Compile Include="DocumentCategorizer\IFeatureGenerator.cs" />
     <Compile Include="DocumentCategorizer\NGramFeatureGenerator.cs" />
     <Compile Include="Expressions.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="InternalExtensions.cs" />
     <Compile Include="Formats\Ad\AdChunkSampleStream.cs" />
     <Compile Include="Formats\Ad\AdLeaf.cs" />
     <Compile Include="Formats\Ad\AdNode.cs" />

@@ -23,7 +23,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-
+using SharpNL.Extensions;
 using SharpNL.Tokenize;
 
 namespace SharpNL.DocumentCategorizer {

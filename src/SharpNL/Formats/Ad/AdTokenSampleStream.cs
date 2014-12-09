@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using System.Globalization;
+using SharpNL.Extensions;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 using System;
