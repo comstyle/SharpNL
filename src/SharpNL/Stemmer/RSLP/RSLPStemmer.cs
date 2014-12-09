@@ -34,7 +34,11 @@ namespace SharpNL.Stemmer.RSLP {
     /// This stemmer is based on the algorithm presented in the paper "A Stemming # Algorithm for 
     /// the Portuguese Language" by Viviane Moreira Orengo and Christian Huyck.
     /// <para>
-    /// The original code is available at 
+    /// The original publication is available at:
+    /// <see cref="http://www.inf.ufrgs.br/~viviane/rslp/"/>.
+    /// </para>
+    /// <para>
+    /// The original code in C can be obtained here:
     /// <see cref="http://www.inf.ufrgs.br/~arcoelho/rslp/integrando_rslp.html"/>
     /// </para>
     /// </remarks>
