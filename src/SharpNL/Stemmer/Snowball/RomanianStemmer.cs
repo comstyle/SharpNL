@@ -54,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ported to SharpNL
 
 namespace SharpNL.Stemmer.Snowball {
-    public class RomanianStemmer : AbstractStemmer {
+    public class RomanianStemmer : SnowballStemmer {
 
         private static RomanianStemmer instance;
 

@@ -229,6 +229,8 @@
     <Compile Include="Sentence\SentenceSampleStreamTest.cs" />
     <Compile Include="Sentence\SentenceSampleTest.cs" />
     <Compile Include="Stemmer\PorterStemmerTest.cs" />
+    <Compile Include="Stemmer\Porter\EnglishTest.cs" />
+    <Compile Include="Stemmer\Porter\PortugueseTest.cs" />
     <Compile Include="Stemmer\SnowballTest.cs" />
     <Compile Include="MonitorTest.cs" />
     <Compile Include="Tests.cs" />

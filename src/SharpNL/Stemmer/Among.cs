@@ -21,7 +21,7 @@
 //  
 
 namespace SharpNL.Stemmer {
-    public class Among {
+    internal class Among {
 
         public delegate bool boolDel();
 

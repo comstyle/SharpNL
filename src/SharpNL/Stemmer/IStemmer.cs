@@ -25,11 +25,13 @@ namespace SharpNL.Stemmer {
     /// The stemmer is reducing a word to its stem.
     /// </summary>
     public interface IStemmer {
+
         /// <summary>
         /// Reduces the given word into its stem.
         /// </summary>
         /// <param name="word">The word.</param>
         /// <returns>The stemmed word.</returns>
         string Stem(string word);
+
     }
 }

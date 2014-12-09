@@ -31,7 +31,7 @@
  */
 
 namespace SharpNL.Stemmer.Snowball {
-    public class CzechStemmer : AbstractStemmer {
+    public class CzechStemmer : SnowballStemmer {
 
         private static CzechStemmer instance;
 

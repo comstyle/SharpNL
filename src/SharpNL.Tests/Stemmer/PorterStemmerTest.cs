@@ -21,7 +21,7 @@
 //  
 
 using NUnit.Framework;
-using SharpNL.Stemmer;
+using SharpNL.Stemmer.Porter;
 
 namespace SharpNL.Tests.Stemmer {
     [TestFixture]

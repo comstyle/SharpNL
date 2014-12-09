@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +53,14 @@
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
     <Compile Include="Parser\ParserAnalyzer.cs" />
     <Compile Include="POSTag\POSTaggerAnalyzer.cs" />
+    <Compile Include="Stemmer\AbstractStemmer.cs" />
+    <Compile Include="Stemmer\AbstractAlgorithm.cs" />
+    <Compile Include="Stemmer\Porter\Algorithm\English.cs" />
+    <Compile Include="Stemmer\Porter\Algorithm\Portuguese.cs" />
+    <Compile Include="Stemmer\Porter\PorterAlgorithm.cs" />
+    <Compile Include="Stemmer\Porter\PorterStemmer.cs" />
+    <Compile Include="Stemmer\Stem.cs" />
+    <Compile Include="Stemmer\Suffixes.cs" />
     <Compile Include="Text\Category.cs" />
     <Compile Include="Text\Extensions.cs" />
     <Compile Include="Text\ICategory.cs" />
@@ -158,8 +167,7 @@
     <Compile Include="NameFind\RegexNameFinder.cs" />
     <Compile Include="NameFind\TokenNameFinderCrossValidator.cs" />
     <Compile Include="NGram\NGramGenerator.cs" />
-    <Compile Include="Stemmer\PorterStemmer.cs" />
-    <Compile Include="Stemmer\Snowball\AbstractStemmer.cs" />
+    <Compile Include="Stemmer\Snowball\SnowballStemmer.cs" />
     <Compile Include="Stemmer\Among.cs" />
     <Compile Include="Stemmer\IStemmer.cs" />
     <Compile Include="Stemmer\Snowball\CzechStemmer.cs" />

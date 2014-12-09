@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Security.Permissions;
 using System.Text;
@@ -56,6 +57,13 @@ namespace SharpNL {
                     TypeResolver.Register(attr.Name, type);
                 }
             }
+
+            langCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+                // preloaded languages in the cache
+                {"en", "en"},
+                {"pt-PT","pt"},
+                {"pt-BR", "pt"}
+            };
         }
 
         #region + Properties .
@@ -139,6 +147,29 @@ namespace SharpNL {
                     }
                 }
             }
+        }
+        #endregion
+
+        #region . GetLang .
+        private static readonly Dictionary<string, string> langCache;
+        /// <summary>
+        /// Gets the ISO 639-1 two-letter code for the language of the specified <paramref name="cultureName"/>.
+        /// </summary>
+        /// <param name="cultureName">The name of a culture.</param>
+        /// <returns>The ISO 639-1 two-letter code for the language.</returns>
+        internal static string GetLang(string cultureName) {
+            if (string.IsNullOrEmpty(cultureName))
+                return null;
+
+            if (!langCache.ContainsKey(cultureName)) {
+                lock (langCache) {
+                    var info = CultureInfo.GetCultureInfo(cultureName);
+
+                    langCache[cultureName] = info.TwoLetterISOLanguageName;
+                }
+            }
+
+            return langCache[cultureName];
         }
         #endregion
 

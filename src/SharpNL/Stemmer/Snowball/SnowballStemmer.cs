@@ -35,7 +35,7 @@ namespace SharpNL.Stemmer.Snowball {
     /// <summary>
     /// Represents a abstract stemmer.
     /// </summary>
-    public abstract class AbstractStemmer : IStemmer {
+    public abstract class SnowballStemmer : IStemmer {
         protected int bra;
         protected int cursor;
         protected int ket;
@@ -44,7 +44,7 @@ namespace SharpNL.Stemmer.Snowball {
         protected StringBuilder sb;
 
 
-        protected AbstractStemmer() {
+        protected SnowballStemmer() {
             sb = new StringBuilder();
             Current = string.Empty;
         }
@@ -83,7 +83,7 @@ namespace SharpNL.Stemmer.Snowball {
 
         #endregion
 
-        protected void copy_from(AbstractStemmer other) {
+        protected void copy_from(SnowballStemmer other) {
             sb = other.sb;
             cursor = other.cursor;
             limit = other.limit;

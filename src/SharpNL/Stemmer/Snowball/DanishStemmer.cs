@@ -56,7 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System.Text;
 
 namespace SharpNL.Stemmer.Snowball {
-    public class DanishStemmer : AbstractStemmer {
+    public class DanishStemmer : SnowballStemmer {
 
         private static DanishStemmer instance;
 
