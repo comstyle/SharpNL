@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -180,5 +181,32 @@ namespace SharpNL.Extensions {
         }
         #endregion
 
+        #region . RemoveDiacritics .
+        /// <summary>
+        /// Removes diacritics (diacritical mark, diacritical point, diacritical sign) from the input string.
+        /// </summary>
+        /// <param name="input">The input string.</param>
+        /// <seealso href="http://en.wikipedia.org/wiki/Diacritic"/>
+        public static string RemoveDiacritics(this string input) {
+            if (input == null)
+                return null;
+
+            if (input.Length > 0) {
+                var chars = new char[input.Length];
+                var charIndex = 0;
+
+                input = input.Normalize(NormalizationForm.FormD);
+                foreach (var c in input) {
+                    if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                        chars[charIndex++] = c;
+                }
+
+                return new string(chars, 0, charIndex).Normalize(NormalizationForm.FormC);
+            }
+
+            return input;
+        }
+
+        #endregion
     }
 }
