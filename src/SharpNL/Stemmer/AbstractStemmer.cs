@@ -23,25 +23,24 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Caching;
+using SharpNL.Utility;
 
 namespace SharpNL.Stemmer {
     /// <summary>
     /// Represents a abstract stemmer.
     /// </summary>
-    public abstract class AbstractStemmer : IStemmer {
+    public abstract class AbstractStemmer : CacheBase<string>, IStemmer {
 
         private readonly HashSet<string> ignoreSet;
-        private readonly MemoryCache memoryCache;
 
         #region . Constructor .
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractStemmer"/> class.
         /// </summary>
-        protected AbstractStemmer(bool cache = true) {
+        protected AbstractStemmer(bool cache = true) : base(cache) {
             ignoreSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            if (cache)
-                memoryCache = new MemoryCache("Stemmer");
+
         }
         #endregion
 
@@ -53,16 +52,6 @@ namespace SharpNL.Stemmer {
         public void AddIgnore(params string[] words) {
             foreach (var word in words)
                 ignoreSet.Add(word);
-        }
-        #endregion
-
-        #region . CreateTimeOffset .
-        /// <summary>
-        /// Creates the fixed date and time at which the cache entry will expire.
-        /// </summary>
-        /// <returns>The fixed date and time at which the cache entry will expire.</returns>
-        protected virtual DateTimeOffset CreateTimeOffset() {
-            return new DateTimeOffset(DateTime.Now.AddMinutes(15));
         }
         #endregion
 
@@ -91,15 +80,15 @@ namespace SharpNL.Stemmer {
 
             word = word.ToLowerInvariant();
 
-            if (memoryCache == null) 
+            if (!CacheEnabled) 
                 return Stemming(word, posTag);
 
-            if (memoryCache.Contains(word, posTag))
-                return memoryCache.Get(word, posTag) as string;
+            if (IsCached(word, posTag))
+                return Get(word, posTag);
 
             var stem = Stemming(word, posTag);
 
-            memoryCache.Add(word, stem, CreateTimeOffset(), posTag);
+            Set(word, stem, posTag);
 
             return stem;
         }
