@@ -184,6 +184,7 @@
     <Compile Include="Formats\Ptb\PtbPosSampleStreamTest.cs" />
     <Compile Include="Formats\Ptb\PtbStreamReaderTest.cs" />
     <Compile Include="Inflecter\Inflecter.cs" />
+    <Compile Include="Lemmatizer\DictionaryLemmatizerTest.cs" />
     <Compile Include="ML\MaxEnt\MaxentPrepAttachTest.cs" />
     <Compile Include="ML\MaxEnt\RealValueModelTest.cs" />
     <Compile Include="ML\MaxEnt\ScaleDoesntMatterTest.cs" />

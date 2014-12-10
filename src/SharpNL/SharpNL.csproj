@@ -50,6 +50,10 @@
     <Compile Include="Inflecter\IInfleter.cs" />
     <Compile Include="Inflecter\Inflector.cs" />
     <Compile Include="Inflecter\Lang\en\Inflecter.cs" />
+    <Compile Include="Lemmatizer\AbstractLemmatizer.cs" />
+    <Compile Include="Lemmatizer\DictionaryLemmatizer.cs" />
+    <Compile Include="Lemmatizer\ILemmatizer.cs" />
+    <Compile Include="Lemmatizer\LemmatizerAnalyzer.cs" />
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
     <Compile Include="Parser\ParserAnalyzer.cs" />
     <Compile Include="POSTag\POSTaggerAnalyzer.cs" />

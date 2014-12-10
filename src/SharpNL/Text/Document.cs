@@ -160,6 +160,16 @@ namespace SharpNL.Text {
         }
         #endregion
 
+        #region . IsLemmatized .
+        /// <summary>
+        /// Gets a value indicating whether this instance is lemmatized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is lemmatized; otherwise, <c>false</c>.</value>
+        public bool IsLemmatized {
+            get { return IsTokenized && Sentences[0].Tokens[0].Lemmas != null; }
+        }
+        #endregion
+
         #region . Sentences .
         /// <summary>
         /// Gets the document sentences.

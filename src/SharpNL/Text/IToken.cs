@@ -68,10 +68,10 @@ namespace SharpNL.Text {
 
         #region . Lemmas .
         /// <summary>
-        /// Gets the token lemmas.
+        /// Gets or sets the token lemmas.
         /// </summary>
         /// <value>The token lemmas.</value>
-        string[] Lemmas { get; }
+        string[] Lemmas { get; set; }
 
         #endregion
 
