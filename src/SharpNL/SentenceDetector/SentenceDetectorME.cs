@@ -196,7 +196,7 @@ namespace SharpNL.SentenceDetector {
         /// <param name="fromIndex">The start of the segment currently being evaluated.</param>
         /// <param name="candidateIndex">The index of the candidate sentence ending.</param>
         /// <returns><c>true</c> if if the break is acceptable; otherwise, <c>false</c>.</returns>
-        protected bool IsAcceptableBreak(String s, int fromIndex, int candidateIndex) {
+        protected virtual bool IsAcceptableBreak(String s, int fromIndex, int candidateIndex) {
             return true;
         }
         #endregion
